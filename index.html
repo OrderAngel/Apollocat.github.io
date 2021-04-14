@@ -13,7 +13,7 @@
   </title>
   <meta name="generator" content="hexo-theme-ayer">
   
-  <link rel="shortcut icon" href="/yellowcat.ico" />
+  <link rel="shortcut icon" href="/greencat2.ico" />
   
   
 <link rel="stylesheet" href="/dist/main.css">
@@ -36,6 +36,9 @@
 <body>
   <div id="app">
     
+      
+      <canvas width="1777" height="841"
+        style="position: fixed; left: 0px; top: 0px; z-index: 99999; pointer-events: none;"></canvas>
       
     <main class="content on">
       
@@ -72,11 +75,11 @@
   <script>
     try {
       var typed = new Typed("#subtitle", {
-        strings: ['Attention！这里是阿波罗猫的地盘！', '指环上铭刻着我们的光阴', '打马依斜桥，满楼红袖招'],
+        strings: ['Attention！这里是阿波罗猫的地盘！', '嗷呜一口吃掉你！', '开玩笑啦~喵~~'],
         startDelay: 0,
         typeSpeed: 200,
         loop: true,
-        backSpeed: 100,
+        backSpeed: 300,
         showCursor: true
       });
     } catch (err) {
@@ -87,48 +90,6 @@
 <div id="main">
   <section class="outer">
   
-  
-  
-
-<div class="notice" style="margin-top:50px">
-    <i class="ri-heart-fill"></i>
-    <div class="notice-content" id="broad"></div>
-</div>
-<script type="text/javascript">
-    fetch('https://v1.hitokoto.cn')
-        .then(response => response.json())
-        .then(data => {
-            document.getElementById("broad").innerHTML = data.hitokoto;
-        })
-        .catch(console.error)
-</script>
-
-<style>
-    .notice {
-        padding: 20px;
-        border: 1px dashed #e6e6e6;
-        color: #969696;
-        position: relative;
-        display: inline-block;
-        width: 100%;
-        background: #fbfbfb50;
-        border-radius: 10px;
-    }
-
-    .notice i {
-        float: left;
-        color: #999;
-        font-size: 16px;
-        padding-right: 10px;
-        vertical-align: middle;
-        margin-top: -2px;
-    }
-
-    .notice-content {
-        display: initial;
-        vertical-align: middle;
-    }
-</style>
   
   <article class="articles">
     
@@ -388,6 +349,16 @@
   <p class="reward-p"><i class="ri-cup-line"></i>请我喝杯咖啡吧~</p>
   <div class="reward-box">
     
+    <div class="reward-item">
+      <img class="reward-img" src="https://cdn.jsdelivr.net/gh/Shen-Yu/cdn/img/alipay.jpg">
+      <span class="reward-type">支付宝</span>
+    </div>
+    
+    
+    <div class="reward-item">
+      <img class="reward-img" src="https://cdn.jsdelivr.net/gh/Shen-Yu/cdn/img/wechat.jpg">
+      <span class="reward-type">微信</span>
+    </div>
     
   </div>
 </div>
@@ -526,13 +497,13 @@
 
 <!-- ClickLove -->
 
-
-<script src="/js/clickLove.js"></script>
-
-
 <!-- ClickBoom1 -->
 
 <!-- ClickBoom2 -->
+
+
+<script src="/js/clickBoom2.js"></script>
+
 
 <!-- CodeCopy -->
 
