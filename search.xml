@@ -1,11 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
-    <title>test_my_site</title>
-    <url>/2021/04/12/test-my-site/</url>
-    <content><![CDATA[]]></content>
-  </entry>
-  <entry>
     <title>hello-yj</title>
     <url>/2021/04/13/hello-yj/</url>
     <content><![CDATA[]]></content>
@@ -27,5 +22,10 @@
 
 <p>More info: <a href="https://hexo.io/docs/one-command-deployment.html">Deployment</a></p>
 ]]></content>
+  </entry>
+  <entry>
+    <title>test_my_site</title>
+    <url>/2021/04/12/test-my-site/</url>
+    <content><![CDATA[]]></content>
   </entry>
 </search>
