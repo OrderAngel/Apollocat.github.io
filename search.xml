@@ -2,7 +2,7 @@
 <search>
   <entry>
     <title>博客简介</title>
-    <url>/%E5%8D%9A%E5%AE%A2%E7%AE%80%E4%BB%8B</url>
+    <url>/%E5%8D%9A%E5%AE%A2%E7%AE%80%E4%BB%8B/</url>
     <content><![CDATA[<h1 id="介绍"><a href="#介绍" class="headerlink" title="介绍"></a>介绍</h1><p>Hi, guys！</p>
 <p>这里是 阿波罗猫 的博客——四界。</p>
 <p>主要作用是记录个人生活，整理所学知识，放飞自我， 天天向上！</p>
@@ -53,7 +53,7 @@
   </entry>
   <entry>
     <title>Hexo+Github博客搭建教程</title>
-    <url>/Hexo-Github%E5%8D%9A%E5%AE%A2%E6%90%AD%E5%BB%BA%E6%95%99%E7%A8%8B</url>
+    <url>/Hexo-Github%E5%8D%9A%E5%AE%A2%E6%90%AD%E5%BB%BA%E6%95%99%E7%A8%8B/</url>
     <content><![CDATA[<h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>新手小白，第一次搭博客，先向前辈们大佬们隔空致敬。</p>
 <p>搭建博客有很多种方法，我选择的是Hexo静态博客框架，利用Github Page服务器，比较节省时间和金钱，可以更加专注于内容本身。</p>
 <span id="more"></span>
