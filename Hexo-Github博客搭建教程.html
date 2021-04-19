@@ -1,0 +1,806 @@
+<!DOCTYPE html>
+
+
+<html lang="zh-Hans">
+
+
+<head>
+  <meta charset="utf-8" />
+   
+  <meta name="keywords" content="记录，学习，娱乐，博客" />
+   
+  <meta name="description" content="四界云官" />
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+  <title>
+    Hexo+Github博客搭建教程 |  四界
+  </title>
+  <meta name="generator" content="hexo-theme-ayer">
+  
+  <link rel="shortcut icon" href="/greencat2.ico" />
+  
+  
+<link rel="stylesheet" href="/dist/main.css">
+
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/Shen-Yu/cdn/css/remixicon.min.css">
+  
+<link rel="stylesheet" href="/css/custom.css">
+
+  
+  <script src="https://cdn.jsdelivr.net/npm/pace-js@1.0.2/pace.min.js"></script>
+  
+  
+
+  
+
+
+<style>.github-emoji { position: relative; display: inline-block; width: 1.2em; min-height: 1.2em; overflow: hidden; vertical-align: top; color: transparent; }  .github-emoji > span { position: relative; z-index: 10; }  .github-emoji img, .github-emoji .fancybox { margin: 0 !important; padding: 0 !important; border: none !important; outline: none !important; text-decoration: none !important; user-select: none !important; cursor: auto !important; }  .github-emoji img { height: 1.2em !important; width: 1.2em !important; position: absolute !important; left: 50% !important; top: 50% !important; transform: translate(-50%, -50%) !important; user-select: none !important; cursor: auto !important; } .github-emoji-fallback { color: inherit; } .github-emoji-fallback img { opacity: 0 !important; }</style>
+</head>
+
+</html>
+
+<body>
+  <div id="app">
+    
+      
+      <canvas width="1777" height="841"
+        style="position: fixed; left: 0px; top: 0px; z-index: 99999; pointer-events: none;"></canvas>
+      
+    <main class="content on">
+      <section class="outer">
+  <article
+  id="post-Hexo-Github博客搭建教程"
+  class="article article-type-post"
+  itemscope
+  itemprop="blogPost"
+  data-scroll-reveal
+>
+  <div class="article-inner">
+    
+    <header class="article-header">
+       
+<h1 class="article-title sea-center" style="border-left:0" itemprop="name">
+  Hexo+Github博客搭建教程
+</h1>
+ 
+
+      
+    </header>
+     
+    <div class="article-meta">
+      <a href="/Hexo-Github%E5%8D%9A%E5%AE%A2%E6%90%AD%E5%BB%BA%E6%95%99%E7%A8%8B.html" class="article-date">
+  <time datetime="2021-04-15T02:50:57.000Z" itemprop="datePublished">2021-04-15</time>
+</a> 
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/%E6%95%99%E7%A8%8B/">教程</a>
+  </div>
+  
+<div class="word_count">
+    <span class="post-time">
+        <span class="post-meta-item-icon">
+            <i class="ri-quill-pen-line"></i>
+            <span class="post-meta-item-text"> Word count:</span>
+            <span class="post-count">4.1k</span>
+        </span>
+    </span>
+
+    <span class="post-time">
+        &nbsp; | &nbsp;
+        <span class="post-meta-item-icon">
+            <i class="ri-book-open-line"></i>
+            <span class="post-meta-item-text"> Reading time≈</span>
+            <span class="post-count">14 min</span>
+        </span>
+    </span>
+</div>
+ 
+    </div>
+      
+    <div class="tocbot"></div>
+
+
+
+
+  
+    <div class="article-entry" itemprop="articleBody">
+       
+  <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>新手小白，第一次搭博客，先向前辈们大佬们隔空致敬。</p>
+<p>搭建博客有很多种方法，我选择的是Hexo静态博客框架，利用Github Page服务器，比较节省时间和金钱，可以更加专注于内容本身。</p>
+<span id="more"></span>
+<p>首先附上参考链接：</p>
+<table>
+<thead>
+<tr>
+<th align="center">类型</th>
+<th align="left">链接</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">概述</td>
+<td align="left">1. <a target="_blank" rel="noopener" href="https://zoomyale.com/2016/why_blogging/">为什么要在老掉牙的独立博客上写东西</a></td>
+</tr>
+<tr>
+<td align="center">参考教程</td>
+<td align="left">1. <a target="_blank" rel="noopener" href="https://godweiyang.com/2018/04/13/hexo-blog/">超详细Hexo+Github博客搭建小白教程-韦阳</a><br>2. <a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/26625249">GitHub+Hexo 搭建个人网站详细教程 - 知乎</a><br>3. <a target="_blank" rel="noopener" href="https://www.cnblogs.com/shwee/p/11421156.html">Hexo+Github: 个人博客网站搭建完全教程- 博客园</a><br>4. <a target="_blank" rel="noopener" href="https://segmentfault.com/a/1190000021979631">超级详细Hexo+GitHub+阿里云域名的博客搭建教程，新手也能轻松学会</a><br>5. <a target="_blank" rel="noopener" href="https://www.cnblogs.com/shwee/p/11421156.html">Hexo+Github: 个人博客网站搭建完全教程</a><br>6. <a target="_blank" rel="noopener" href="https://winney07.github.io/2018/08/02/%E5%9C%A8Hexo%E5%8D%9A%E5%AE%A2%E4%B8%AD%E5%8F%91%E5%B8%83%E6%96%87%E7%AB%A0/">在Hexo博客中发布文章</a></td>
+</tr>
+<tr>
+<td align="center">个性化</td>
+<td align="left">1. <a target="_blank" rel="noopener" href="https://shen-yu.gitee.io/2019/ayer/">Ayer主题</a><br>2. <a target="_blank" rel="noopener" href="https://yuchen-lea.github.io/2016-01-18-hexo-dir-struct/">hexo目录结构小探</a></td>
+</tr>
+<tr>
+<td align="center">写作</td>
+<td align="left">1. <a target="_blank" rel="noopener" href="http://itmyhome.com/markdown/index.html">Markdown 入门参考</a><br>2. <a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/56943330">使用vscode开始Markdown写作之旅 - 知乎</a><br>3. <a target="_blank" rel="noopener" href="https://hexo.io/zh-cn/docs/">Hexo-文档</a></td>
+</tr>
+<tr>
+<td align="center">图床</td>
+<td align="left">1. <a target="_blank" rel="noopener" href="https://www.jianshu.com/p/bff6638e450f">图床工具推荐</a><br>2. <a target="_blank" rel="noopener" href="https://sunhwee.com/posts/1788dd4a.html">PicGo+GitHub：你的最佳免费图床选择-洪卫</a></td>
+</tr>
+</tbody></table>
+<h1 id="搭建博客框架"><a href="#搭建博客框架" class="headerlink" title="搭建博客框架"></a>搭建博客框架</h1><h2 id="安装Node-js"><a href="#安装Node-js" class="headerlink" title="安装Node.js"></a>安装Node.js</h2><p>Hexo基于Node.js，首先要下载<a target="_blank" rel="noopener" href="https://nodejs.org/en/download/">Node.js安装包</a>（建议选LTS版本，current版本或许无法安装一些插件），改一下安装路径，其他安装选项选择默认就行。</p>
+<p>安装完成后，<code>win+R</code>打开命令行，输入<code>node -v</code>和<code>npm -v</code>，显示版本号则安装成功。</p>
+<h2 id="添加镜像"><a href="#添加镜像" class="headerlink" title="添加镜像"></a>添加镜像</h2><p>如果没有梯子，npm部分可以用阿里国内镜像加速。</p>
+<figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">npm config set registry https://registry.npm.taobao.org</span><br></pre></td></tr></tbody></table></figure>
+
+<h2 id="安装Git"><a href="#安装Git" class="headerlink" title="安装Git"></a>安装Git</h2><p>为了将本地网页文件上传到Github上，需要安装分布式版本控制工具<a target="_blank" rel="noopener" href="https://git-scm.com/download/win">Git</a>。</p>
+<p>有兴趣深入了解Git的话，可以参考廖雪峰老师的<a target="_blank" rel="noopener" href="https://www.liaoxuefeng.com/wiki/896043488029600">Git教程</a></p>
+<p>安装完成后在命令行输入git –version验证是否安装成功。</p>
+<h2 id="Github部分"><a href="#Github部分" class="headerlink" title="Github部分"></a>Github部分</h2><p>每个程序猿都该有个Github啦，毕竟这就是猿的浪漫了~如果没有也没有关系，你可以从现在开始拥有这份独特的浪漫。</p>
+<ol>
+<li><p>注册一个<a target="_blank" rel="noopener" href="https://github.com/">Github</a>账号，强烈建议名字正常一点。</p>
+</li>
+<li><p>新建一个仓库：</p>
+<div align="center">
+<img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/blog_files/img/Pic-Github-Picbed20210415174145.png" width="300/">
+</div></li>
+<li><p>仓库基本配置如下：</p>
+<p>这里要注意的是：仓库的命名一定要跟用户名一样！</p>
+<div align="center">
+<img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/blog_files/img/Pic-Github-Picbed20210415222443.png">
+</div></li>
+<li><p>在新建好的仓库界面选择<code>setting</code>–<code>Pages</code>–<code>Choose a theme</code>，这里的主题可以随便选一个，后期可以换成别的。</p>
+</li>
+<li><p>刷新一下，<code>Pages</code>界面会出现你自己的网页链接，比如：<code>Your site is ready to be published at http://OrderAngel.com/OrderAngel.github.io</code></p>
+<p>虽然简陋，但是这就是你的博客啦~</p>
+</li>
+</ol>
+<h2 id="安装Hexo，生成静态框架"><a href="#安装Hexo，生成静态框架" class="headerlink" title="安装Hexo，生成静态框架"></a>安装Hexo，生成静态框架</h2><p>Hexo是一款基于Node.js的静态博客框架，生成的静态网页可以借助Github服务器发布。</p>
+<ol>
+<li><p>在合适的地方（这里说的一定不是C盘!）新建一个文件夹,用于存放博客文件，比如<code>E:\Study\Apollocat\blog</code>。</p>
+</li>
+<li><p>在该目录下右键，点击<code>Git Bash Here</code>，如果右键没有就直接搜Git bash，<code>cd</code>过去也行。</p>
+</li>
+<li><p>在该目录下输入<code>npm i hexo-cli -g</code>安装Hexo，或许有报错，直接无视就行。</p>
+</li>
+<li><p>安装完输入<code>hexo v</code>出现版本号则安装成功。</p>
+</li>
+<li><p>输入<code>hexo init</code>初始化文件夹，接着输入<code>nmp install</code>安装必要组件。</p>
+</li>
+<li><p>为了检测网站雏形，输入<code>hexo new "hello world"</code>新建文章。打开<code>E:\Study\Apollocat\blog\source\_posts</code>目录，可以看到一个<code>hello world.md</code>，这就是你新建的文章文件。</p>
+</li>
+<li><p>输入<code>hexo g</code>生成静态网页，再输入<code>hexo s</code>打开本地服务器。（Actually, 不生成静态网页，直接输入<code>hexo s</code>进行预览测试也可以）</p>
+<p>这时用浏览器打开<code>localhost:4000</code>就能看到你的第一篇博客了，即便它只有一个标题，且只是静态的。</p>
+<p>最后<code>ctrl+c</code>关闭本地服务器。</p>
+</li>
+</ol>
+<h2 id="链接Github与本地Git"><a href="#链接Github与本地Git" class="headerlink" title="链接Github与本地Git"></a>链接Github与本地Git</h2><p>我们的网站在本地搭建完毕，如果想要发布到Github上就需要用到Git了。前面我们已经在本地安装Git了，现在需要将你的本地Git与Github链接，该步骤我们通过设置ssh秘钥来完成。</p>
+<ol>
+<li><p>鼠标右键打开Git Bash，设置本地Git的用户名和邮箱，注意要与Github相同，别输错了：</p>
+<figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">git config --global user.name "GitHub用户名"</span><br><span class="line"></span><br><span class="line">git config --global user.email "GitHub注册邮箱"</span><br></pre></td></tr></tbody></table></figure>
+<p>可以用以下两条命令，检查一下你有没有输对:</p>
+<figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">git config user.name</span><br><span class="line"></span><br><span class="line">git config user.email</span><br></pre></td></tr></tbody></table></figure></li>
+<li><p>生成ssh秘钥：</p>
+<p>ssh简单而言是一个秘钥，<code>id_rsa</code>是本地电脑的私人秘钥，<code>id_rsa.pub</code>是公共秘钥。公钥放在Github上，当链接本地与Github时，会根据公钥匹配私钥，匹配上则成功链接，之后可以用Git上传本地文件到Github上。</p>
+<p>为啥需要设置ssh秘钥？由于Github要求每次上传文件的都是合法用户，因此每次上传都需要输入账号和密码来进行验证。这里设置ssh秘钥就是为了省去手动验证的步骤，上传时由Git自行匹配私钥与公钥完成验证。</p>
+<p>输入命令生成ssh秘钥：</p>
+<figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ssh-keygen -t rsa -C "GitHub注册邮箱"</span><br></pre></td></tr></tbody></table></figure>
+<p>直接回车，默认不设密码。</p>
+</li>
+<li><p>找到生成的.ssh文件夹中的id_rsa.pub秘钥，复制全部内容。</p>
+<p><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/blog_files/img/Pic-Github-Picbed20210416095437.png"><br>回到Github，打开<code>Settings</code>（是头像处的settings）– <code>SSH and GPG Keys</code> – <code>New SSH Key</code>：</p>
+<p><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/blog_files/img/Pic-Github-Picbed20210416101521.png"></p>
+<p>Title随便写，Key部分将刚才复制的id_rsa.pub秘钥粘进去，最后点<code>Add SHH Key</code>。</p>
+</li>
+<li><p>在本地的Git Bash里检测Github公钥是否成功设置，输入<code>ssh git@github.com</code>，如果输出部分出现你的用户名，则设置成功。</p>
+<p><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/blog_files/img/Pic-Github-Picbed20210416102021.png"></p>
+</li>
+</ol>
+<h2 id="发布网站"><a href="#发布网站" class="headerlink" title="发布网站"></a>发布网站</h2><p>此时我们的网站已经在本地搭好了，而且本地Git也和Github成果链接，接下来要做的就是把本地搭的网站发布出去，让网站可以被其他人访问。</p>
+<ol>
+<li><p>打开本地blog根目录下的站点配置文件_config.yml，该文件用于配置博客的基本信息。</p>
+<p>需要注意的是，theme文件夹中有个同名文件，我们称之为主题配置文件，用于配置博客的主题信息。</p>
+</li>
+<li><p>修改站点配置文件_config.yml的最后一行配置并保存：</p>
+<p><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/blog_files/img/Pic-Github/Blogconstruction20210416105511.png"></p>
+<p>这里的<code>repository</code>可以简写为<code>repo</code>，是你Github上创建的博客仓库的路径。</p>
+<p><strong>注意</strong>：这里的branch可以设置为main或者master，但务必与Github仓库中<code>Settings</code>–<code>Pages</code>–<code>Source</code>–<code>Branch</code>相匹配，否则即使上传成功也看不到你的网站。</p>
+<p>修改deploy其实是在给网站部署命令<code>hexo d</code>做相应配置，使用该命令进行部署时，hexo就能知道要把blog部署到Github的博客仓库中。</p>
+</li>
+<li><p>安装Git部署插件：</p>
+<figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">npm install hexo-deployer-git --save</span><br></pre></td></tr></tbody></table></figure></li>
+<li><p>分别输入以下三条命令：</p>
+<figure class="highlight c"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">hexo clean <span class="comment">//清除缓存，若是网页正常情况下可以忽略这条命令</span></span><br><span class="line"></span><br><span class="line">hexo g <span class="comment">//生成静态网页</span></span><br><span class="line"></span><br><span class="line">hexo d <span class="comment">//部署</span></span><br></pre></td></tr></tbody></table></figure>
+<p>之后打开浏览器，输入部分博客仓库路径<code>OrderAngel.github.io</code>，就能看到你发布的博客了。</p>
+</li>
+</ol>
+<h1 id="优化博客框架"><a href="#优化博客框架" class="headerlink" title="优化博客框架"></a>优化博客框架</h1><h2 id="绑定域名"><a href="#绑定域名" class="headerlink" title="绑定域名"></a>绑定域名</h2><p>如果嫌弃<code>balabala.github.io</code>这种统一标识的域名，可以绑定自己的个性化域名。</p>
+<ol>
+<li><p>没有域名的话要先买个域名，百度云阿里云腾讯云之类的都能买，我个人用的是<a target="_blank" rel="noopener" href="https://homenew.console.aliyun.com/home/dashboard/ProductAndService">阿里云</a>。</p>
+<p>登陆后进入右上角的<code>控制台</code>，点<code>产品与服务</code> – <code>域名</code> –<code>域名注册</code>。</p>
+<p>把喜欢的域名买下来吧~</p>
+</li>
+<li><p>解析域名：在域名控制台界面下，点击<code>解析</code>。</p>
+<p><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/blog_files/img/Pic-Github/Blogconstruction20210418093157.png"></p>
+<p>在解析设置界面，点击<code>添加记录</code>，添加两条记录：</p>
+<p><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/blog_files/img/Pic-Github/Blogconstruction20210418093651.png"></p>
+<p><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/blog_files/img/Pic-Github/Blogconstruction20210418093743.png"></p>
+<p>记录值这里是：<code>用户名.github.io</code>这个现在可以直接访问的部分仓库路径。</p>
+</li>
+<li><p>回到你的Github博客仓库中，选择<code>Settings</code> – <code>Pages</code>，在<code>Custom domain</code>这里， 输入你购买的域名后保存。</p>
+<p><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/blog_files/img/Pic-Github/Blogconstruction20210418094423.png"></p>
+<p>这里的<code>www.</code>输不输都行。</p>
+</li>
+<li><p>在本地blog文件夹中，blog/source目录下，创建一个记事本文件，输入你购买的域名。</p>
+<p><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/blog_files/img/Pic-Github/Blogconstruction20210418095345.png"></p>
+<p>这里的域名建议不带<code>www.</code>，如果带上以后必须有完整的<code>www.balabala..</code>才能访问，如果不带，以后域名有没有<code>www.</code>都能访问。</p>
+<p>文件命名为<code>CNAME</code>，保存类型为<code>所有文件(*.*)</code>。</p>
+</li>
+<li><p>最后，将我们改动的配置同步到Github中就行了：在本地blog目录下，进入Git Bash命令行(cmd和powershell也行)，输入：</p>
+<figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">hexo clean </span><br><span class="line"></span><br><span class="line">hexo g</span><br><span class="line"></span><br><span class="line">hexo d</span><br></pre></td></tr></tbody></table></figure>
+
+<p>现在，打开浏览器输入你自己的域名，就可以直接进入你的博客了~</p>
+</li>
+</ol>
+<h2 id="更换主题"><a href="#更换主题" class="headerlink" title="更换主题"></a>更换主题</h2><p>之前随便选的Hexo主题或许不合心意，但不用care，因为我们还可以更换其他主题。</p>
+<p>可以在<a target="_blank" rel="noopener" href="https://hexo.io/themes/">Theme</a>中Pick心水的主题。我个人用的是<a target="_blank" rel="noopener" href="https://shen-yu.gitee.io/">Ayer</a>，这位博主的写的主题配置教程很nice。其他常用的，比如Next主题，也很棒。</p>
+<ol>
+<li>如果Theme的博主有相关教程，按说明进行安装配置；如果没有的话，先去Github里下载下来，放在本地的<code>blog\themes</code>目录下：<img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/blog_files/img/Pic-Github/Blogconstruction20210418105207.png"></li>
+</ol>
+<ol start="2">
+<li><p>在本地blog目录下，打开站点配置文件<code>_config.yml</code>，修改theme为你选的主题名，比如ayer。这里注意要与<code>blog\themes</code>目录下该主题命名相同。</p>
+<p><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/blog_files/img/Pic-Github/Blogconstruction20210418105658.png"></p>
+</li>
+<li><p>一般关于该主题的使用教程会在Theme博主的Blog里给出；如果没有的话，搜下有无相关教程，或者自行研究一下本地<code>blog\themes\主题名</code>目录下的主题配置文件<code>_config.yml</code>，主题相关的主要配置都在该文件中。</p>
+<p>关于主题文件夹的目录说明，可以参考<a target="_blank" rel="noopener" href="https://hexo.io/zh-cn/docs/themes.html">主题hexo</a>。</p>
+</li>
+<li><p>最后，再次部署网站，还是：</p>
+<figure class="highlight c"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">hexo s <span class="comment">//本地预览测试：可以先打开本地服务器，在localhost:4000中看看效果</span></span><br><span class="line"></span><br><span class="line">hexo clean <span class="comment">//清除缓存</span></span><br><span class="line"></span><br><span class="line">hexo g <span class="comment">//生成</span></span><br><span class="line"></span><br><span class="line">hexo d <span class="comment">//部署</span></span><br></pre></td></tr></tbody></table></figure></li>
+</ol>
+<h2 id="hexo私人定制"><a href="#hexo私人定制" class="headerlink" title="hexo私人定制"></a>hexo私人定制</h2><p>工欲善其事，必先利其器。在进行一些更高级的私人配置前，我们有必要先了解一下blog文件夹里的文件都是用来干啥的。</p>
+<h3 id="hexo目录说明"><a href="#hexo目录说明" class="headerlink" title="hexo目录说明"></a>hexo目录说明</h3><p>这是我blog文件夹下的目录，由于使用了一段时间，因此也有些私设，请大致参考。</p>
+<figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">|──_config.yml</span><br><span class="line">|──package.json</span><br><span class="line">|──.deploy_git</span><br><span class="line">|──node_modules</span><br><span class="line">|──public</span><br><span class="line">|──scaffolds</span><br><span class="line">|──source</span><br><span class="line">      |──_posts</span><br><span class="line">      |──categories</span><br><span class="line">      |──pictures</span><br><span class="line">      |──tags</span><br><span class="line">|──themes</span><br><span class="line">      |──landscape</span><br><span class="line">      |──ayer</span><br></pre></td></tr></tbody></table></figure>
+<h4 id="1-config-yml"><a href="#1-config-yml" class="headerlink" title="1. _config.yml"></a>1. _config.yml</h4><p>   站点配置文件，初始化时自动创建。</p>
+<p>   具体配置可参考<a target="_blank" rel="noopener" href="https://hexo.io/zh-cn/docs/configuration.html">配置hexo</a></p>
+<h4 id="2-package-json"><a href="#2-package-json" class="headerlink" title="2. package.json"></a>2. package.json</h4><p>   应用程序文件，初始化时自动创建。</p>
+<p>   可以查看hexo版本以及安装的扩展版本。</p>
+<h4 id="3-deploy-git"><a href="#3-deploy-git" class="headerlink" title="3. .deploy_git"></a>3. .deploy_git</h4><p>   对应Github博客仓库中的内容 = 最近一次成功上传到Github上的public文件夹内容。在部署到Github后自动创建。</p>
+<p>   可能出现的与public内容不一致，是由于重新生成但未上传所致。简而言之，public是<code>hexo g</code>生成静态页面的内容，而.deploy_git中是<code>hexo d</code>部署到Github中的内容。</p>
+<h4 id="4-node-modules"><a href="#4-node-modules" class="headerlink" title="4. node_modules"></a>4. node_modules</h4><p>   存放安装的Hexo扩展，还有node .js的各种库。</p>
+<h4 id="5-public"><a href="#5-public" class="headerlink" title="5. public"></a>5. public</h4><p>   执行<code>hexo g</code>命令后，Hexo会解析source文件夹和当前的Theme，从而生成静态网页，该内容存放于public文件夹中。</p>
+<h4 id="6-scaffolds"><a href="#6-scaffolds" class="headerlink" title="6. scaffolds"></a>6. scaffolds</h4><p>   模板文件夹。<br>   内有页面模板<code>page.md</code>、文章模板<code>post.md</code>、草稿模板<code>draft.md</code>三个文件。<br>   具体可参考<a target="_blank" rel="noopener" href="https://hexo.io/zh-cn/docs/templates.html">模板hexo</a>。</p>
+<h4 id="7-source"><a href="#7-source" class="headerlink" title="7. source"></a>7. source</h4><p>   存放用户资源。</p>
+<ol>
+<li><p>_post</p>
+<p>存放文章。<br>其中markdown文件(md)、html文件、org文件在<code>hexo g</code>生成页面过程中会被解析并拷贝到public文件夹中，最终通过<code>hexo d</code>发布。</p>
+</li>
+<li><p>其他_balabala文件夹/文件</p>
+<p>生成时将会被忽略。</p>
+<p>因此可以在此目录下创建_drafts文件夹来存放草稿。</p>
+</li>
+<li><p>其他非_balabala文件夹/文件</p>
+<p>生成时会被拷贝到public中。</p>
+<p>除了文章外，还会有图片、标签等用户资源，可以使用<code>hexo new page pilipili</code>来新建子目录<code>pilipili</code>。</p>
+<p>比如我的目录下就有categories、pictures、tags等子目录。</p>
+</li>
+</ol>
+<h4 id="themes"><a href="#themes" class="headerlink" title="themes"></a>themes</h4><p>   主题文件夹。<br>   我使用的是Ayer主题，因此在我的themes文件夹下，除了默认主题lanscape外，还有ayer文件夹。</p>
+<h3 id="可以考虑的定制"><a href="#可以考虑的定制" class="headerlink" title="可以考虑的定制"></a>可以考虑的定制</h3><h4 id="1-对-config-yml进行修改"><a href="#1-对-config-yml进行修改" class="headerlink" title="1. 对_config.yml进行修改"></a>1. 对_config.yml进行修改</h4><p>   对blog目录下的站点配置文件_config.yml进行个性化修改，具体可以参考<a target="_blank" rel="noopener" href="https://hexo.io/zh-cn/docs/configuration.html">配置hexo</a>。</p>
+<h5 id="网站Site："><a href="#网站Site：" class="headerlink" title="网站Site："></a>网站Site：</h5><p>我们可以对文件中的site部分进行修改，比如：</p>
+<p><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/blog_files/img/Pic-Github/Blogconstruction20210418121141.png"></p>
+<h5 id="网址URL"><a href="#网址URL" class="headerlink" title="网址URL"></a>网址URL</h5><p>将url改成自己的网站域名，如：<code>http://apollomao.com</code>。</p>
+<p>还可以对网址的永久链接格式进行修改，具体可参考<a target="_blank" rel="noopener" href="https://hexo.io/zh-cn/docs/permalinks">永久链接</a></p>
+<h4 id="2-对scaffolds文件夹中的模板文件进行修改"><a href="#2-对scaffolds文件夹中的模板文件进行修改" class="headerlink" title="2. 对scaffolds文件夹中的模板文件进行修改"></a>2. 对scaffolds文件夹中的模板文件进行修改</h4><p>所谓模板，即就是预定义，可以在每创建一篇文章后，预定义文章头部，省事。</p>
+<p>比如，我的文章模板<code>post.md</code>为：</p>
+<p><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/blog_files/img/Pic-Github/Blogconstruction/Hexo20210418230721.png"></p>
+<p>那么我每次<code>hexo new post balabala</code>生成新的文章，该文章的头部就会是：</p>
+<p><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/blog_files/img/Pic-Github/Blogconstruction/Hexo20210418230825.png"></p>
+<p>只需要按照需求补充一下tages、categories等值即可：</p>
+<p><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/blog_files/img/Pic-Github/Blogconstruction/Hexo20210418231042.png"></p>
+<p>网页模板<code>page.md</code>和草稿模板<code>draft.md</code>也可参考<code>post.md</code>进行设置。创建命令分别是<code>hexo new page balabala</code>和<code>hexo new draft balabala</code>。</p>
+<h4 id="3-其他"><a href="#3-其他" class="headerlink" title="3. 其他"></a>3. 其他</h4><p>还有一些常见的定制策略，比如加背景、加侧栏菜单、加背景音乐、加404界面等等，部分功能可能主题自带的，其他感兴趣的可以自行搜索~（开头的<a target="_blank" rel="noopener" href="https://www.cnblogs.com/shwee/p/11421156.html">参考教程5</a>中包含一些，我没有尝试，仅供参考）</p>
+<h2 id="图床"><a href="#图床" class="headerlink" title="图床"></a>图床</h2><p>图床是可以上传图片的服务器。常用的图床有很多，可以参考开头的<a target="_blank" rel="noopener" href="https://www.jianshu.com/p/bff6638e450f">图床工具推荐</a>选择合适的图床和图床工具。</p>
+<p>我个人用的是Github + PicGo的组合，因为省钱233</p>
+<p>具体安装教程可以参考开头的<a target="_blank" rel="noopener" href="https://sunhwee.com/posts/1788dd4a.html">PicGo+GitHub：你的最佳免费图床选择-洪卫</a>。</p>
+<p>附上我的PicGo配置仅供参考：</p>
+<p><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/blog_files/img/Pic-Github/Blogconstruction/Hexo20210419001244.png"></p>
+<p>需要注意的是，与参考教程不同，在配置PicGo阶段，设定分支名需要与Github仓库中<code>Settings</code>–<code>Pages</code>–<code>Source</code>–<code>Branch</code>相对应，而不是统一设master。</p>
+<ul>
+<li>Note<ul>
+<li>PicGo为了稳定期间最好别装测试版。</li>
+<li>不要试图装watermark插件，别问我怎么知道的… orz</li>
+</ul>
+</li>
+</ul>
+<h1 id="牛刀小试"><a href="#牛刀小试" class="headerlink" title="牛刀小试"></a>牛刀小试</h1><p>现在我们来正经发一篇文章。</p>
+<h2 id="Markdown基础"><a href="#Markdown基础" class="headerlink" title="Markdown基础"></a>Markdown基础</h2><p>博客文章主要用Markdown编写，有很多写作工具，我个人用的是VSCode。</p>
+<p>零基础的同学可以参考<a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/56943330">使用vscode开始Markdown写作之旅</a>进行学习，亲测很好用~</p>
+<p>附上其中的基础语法仅供参考：</p>
+<p><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/blog_files/img/Pic-Github/Blogconstruction/Hexo20210419002530.png"></p>
+<p>等你正式开始写文章的时候，具体一些用法还可以参考<a target="_blank" rel="noopener" href="http://itmyhome.com/markdown/index.html">Learning-Markdown (Markdown 入门参考)</a></p>
+<ul>
+<li>最后再贴出来一个范例：</li>
+</ul>
+<p><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/blog_files/img/Pic-Github/Blogconstruction/Hexo20210419003218.png"></p>
+<p>这部分除了基础语法，我还用到了插入链接 <code>[title](网址)</code>，以及插入图片 <code>![title](图床地址or本地链接)</code>(直接从PicGo图床里复制就行)。</p>
+<h2 id="正经发布一篇文章"><a href="#正经发布一篇文章" class="headerlink" title="正经发布一篇文章"></a>正经发布一篇文章</h2><p>get了最基础的markdown语法后，我们来走一遍完整流程。</p>
+<ol>
+<li><p>创建一篇文章”博客简介”</p>
+<p>在本地blog目录下，右键进入Git Bash，输入：</p>
+<figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">hexo new post "博客简介"</span><br></pre></td></tr></tbody></table></figure>
+<p><strong>注意</strong>：</p>
+<ul>
+<li><p>post是默认值可以省略。</p>
+</li>
+<li><p>如果title有空格，必须要加双引号，否则双引号可以省略。</p>
+</li>
+</ul>
+</li>
+<li><p>编辑文章</p>
+<p>在 blog\source_posts 路径下生成了<code>博客简介.md</code>文件，用vscode打开，编辑自己的文章。</p>
+<p>比如我的博客简介是这么写的（仅供参考）：</p>
+<p><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/blog_files/img/Pic-Github/Blogconstruction/Hexo20210419093855.png"></p>
+<ul>
+<li><p>可以在文章任意位置添加<code>&lt;!--more--&gt;</code>，首页只会显示more前的内容，more后的内容点击阅读全文后展示。</p>
+</li>
+<li><p>如果想给文章添加分类和标签，可以在文章头部补充，比如我是这么写的：<br><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/blog_files/img/Pic-Github/Blogconstruction/Hexo20210419093519.png"></p>
+</li>
+</ul>
+</li>
+<li><p>本地预览</p>
+<p>写好文章后保存。</p>
+<p><code>hexo s</code>启动本地服务器，在 <a target="_blank" rel="noopener" href="http://localhost:4000/">http://localhost:4000</a> 进行预览测试。</p>
+</li>
+<li><p>发布文章<br>Finally!<br>输入以下命令，将写好的“博客简介”发布到网站上吧~</p>
+<figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">hexo clean</span><br><span class="line"></span><br><span class="line">hexo g</span><br><span class="line"></span><br><span class="line">hexo d</span><br></pre></td></tr></tbody></table></figure>
+<p>此时，在浏览器访问自己的博客域名，就可以看到我们写的第一篇正经文章啦~ <span class="github-emoji"><span>☀</span><img src="https://github.githubassets.com/images/icons/emoji/unicode/2600.png?v8" aria-hidden="true" onerror="this.parent.classList.add('github-emoji-fallback')"></span><span class="github-emoji"><span>😼</span><img src="https://github.githubassets.com/images/icons/emoji/unicode/1f63c.png?v8" aria-hidden="true" onerror="this.parent.classList.add('github-emoji-fallback')"></span></p>
+<p><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/blog_files/img/Pic-Github/Blogconstruction/Hexo20210419101933.png"><br><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/blog_files/img/Pic-Github/Blogconstruction/Hexo20210419101753.png"></p>
+<ul>
+<li>附上<a target="_blank" rel="noopener" href="https://sunhwee.com/posts/a927e90e.html#toc-heading-5">Markdown Emoji表情语法速查表</a></li>
+</ul>
+</li>
+</ol>
+<h1 id="后记"><a href="#后记" class="headerlink" title="后记"></a>后记</h1><p>Anyway，终于搞完了~</p>
+<p>4.12号开始搭，断断续续搞，也遇到了不少bug，4.14才搭的差不多，然后这篇教程又断断续续写了4天 orz</p>
+<p>希望能对你有所帮助，欢迎批评指正，爱你ღ( ´･ᴗ･` )</p>
+<hr>
+<p>阿波罗猫</p>
+<p>20210419</p>
+ 
+      <!-- reward -->
+      
+    </div>
+    
+
+    <!-- copyright -->
+    
+    <footer class="article-footer">
+       
+<div class="share-btn">
+      <span class="share-sns share-outer">
+        <i class="ri-share-forward-line"></i>
+        分享
+      </span>
+      <div class="share-wrap">
+        <i class="arrow"></i>
+        <div class="share-icons">
+          
+          <a class="weibo share-sns" href="javascript:;" data-type="weibo">
+            <i class="ri-weibo-fill"></i>
+          </a>
+          <a class="weixin share-sns wxFab" href="javascript:;" data-type="weixin">
+            <i class="ri-wechat-fill"></i>
+          </a>
+          <a class="qq share-sns" href="javascript:;" data-type="qq">
+            <i class="ri-qq-fill"></i>
+          </a>
+          <a class="douban share-sns" href="javascript:;" data-type="douban">
+            <i class="ri-douban-line"></i>
+          </a>
+          <!-- <a class="qzone share-sns" href="javascript:;" data-type="qzone">
+            <i class="icon icon-qzone"></i>
+          </a> -->
+          
+          <a class="facebook share-sns" href="javascript:;" data-type="facebook">
+            <i class="ri-facebook-circle-fill"></i>
+          </a>
+          <a class="twitter share-sns" href="javascript:;" data-type="twitter">
+            <i class="ri-twitter-fill"></i>
+          </a>
+          <a class="google share-sns" href="javascript:;" data-type="google">
+            <i class="ri-google-fill"></i>
+          </a>
+        </div>
+      </div>
+</div>
+
+<div class="wx-share-modal">
+    <a class="modal-close" href="javascript:;"><i class="ri-close-circle-line"></i></a>
+    <p>扫一扫，分享到微信</p>
+    <div class="wx-qrcode">
+      <img src="//api.qrserver.com/v1/create-qr-code/?size=150x150&data=https://apollomao.com/Hexo-Github%E5%8D%9A%E5%AE%A2%E6%90%AD%E5%BB%BA%E6%95%99%E7%A8%8B.html" alt="微信分享二维码">
+    </div>
+</div>
+
+<div id="share-mask"></div>  
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Blog/" rel="tag">Blog</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E6%95%99%E7%A8%8B/" rel="tag">教程</a></li></ul>
+
+    </footer>
+  </div>
+
+   
+  <nav class="article-nav">
+    
+    
+      <a href="/%E5%8D%9A%E5%AE%A2%E7%AE%80%E4%BB%8B.html" class="article-nav-link">
+        <strong class="article-nav-caption">下一篇</strong>
+        <div class="article-nav-title">博客简介</div>
+      </a>
+    
+  </nav>
+
+  
+   
+     
+</article>
+
+</section>
+      <footer class="footer">
+  <div class="outer">
+    <ul>
+      <li>
+        Copyrights &copy;
+        2021
+        <i class="ri-heart-fill heart_icon"></i> 阿波罗猫
+      </li>
+    </ul>
+    <ul>
+      <li>
+        
+        
+        
+        Powered by <a href="https://hexo.io" target="_blank">Hexo</a>
+        <span class="division">|</span>
+        Theme - <a href="https://github.com/Shen-Yu/hexo-theme-ayer" target="_blank">Ayer</a>
+        
+      </li>
+    </ul>
+    <ul>
+      <li>
+        
+      </li>
+    </ul>
+    <ul>
+      
+    </ul>
+    <ul>
+      
+    </ul>
+    <ul>
+      <li>
+        <!-- cnzz统计 -->
+        
+      </li>
+    </ul>
+  </div>
+</footer>
+      <div class="float_btns">
+        <div class="totop" id="totop">
+  <i class="ri-arrow-up-line"></i>
+</div>
+
+<div class="todark" id="todark">
+  <i class="ri-moon-line"></i>
+</div>
+
+      </div>
+    </main>
+    <aside class="sidebar on">
+      <button class="navbar-toggle"></button>
+<nav class="navbar">
+  
+  <div class="logo">
+    <a href="/"><img src="/images/bluecat.svg" alt="四界"></a>
+  </div>
+  
+  <ul class="nav nav-main">
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/">主页</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/archives">归档</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/categories">分类</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/tags">标签</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/tags/%E9%9A%8F%E7%AC%94/">随笔</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/2021/about">关于我</a>
+    </li>
+    
+  </ul>
+</nav>
+<nav class="navbar navbar-bottom">
+  <ul class="nav">
+    <li class="nav-item">
+      
+      <a class="nav-item-link nav-item-search"  title="Search">
+        <i class="ri-search-line"></i>
+      </a>
+      
+      
+    </li>
+  </ul>
+</nav>
+<div class="search-form-wrap">
+  <div class="local-search local-search-plugin">
+  <input type="search" id="local-search-input" class="local-search-input" placeholder="Search...">
+  <div id="local-search-result" class="local-search-result"></div>
+</div>
+</div>
+    </aside>
+    <div id="mask"></div>
+
+<!-- #reward -->
+<div id="reward">
+  <span class="close"><i class="ri-close-line"></i></span>
+  <p class="reward-p"><i class="ri-cup-line"></i>请我喝杯咖啡吧~</p>
+  <div class="reward-box">
+    
+    <div class="reward-item">
+      <img class="reward-img" src="https://cdn.jsdelivr.net/gh/Shen-Yu/cdn/img/alipay.jpg">
+      <span class="reward-type">支付宝</span>
+    </div>
+    
+    
+    <div class="reward-item">
+      <img class="reward-img" src="https://cdn.jsdelivr.net/gh/Shen-Yu/cdn/img/wechat.jpg">
+      <span class="reward-type">微信</span>
+    </div>
+    
+  </div>
+</div>
+    
+<script src="/js/jquery-2.0.3.min.js"></script>
+
+
+<script src="/js/lazyload.min.js"></script>
+
+<!-- Tocbot -->
+
+
+<script src="/js/tocbot.min.js"></script>
+
+<script>
+  tocbot.init({
+    tocSelector: '.tocbot',
+    contentSelector: '.article-entry',
+    headingSelector: 'h1, h2, h3, h4, h5, h6',
+    hasInnerContainers: true,
+    scrollSmooth: true,
+    scrollContainer: 'main',
+    positionFixedSelector: '.tocbot',
+    positionFixedClass: 'is-position-fixed',
+    fixedSidebarOffset: 'auto'
+  });
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/jquery-modal@0.9.2/jquery.modal.min.js"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/jquery-modal@0.9.2/jquery.modal.min.css">
+<script src="https://cdn.jsdelivr.net/npm/justifiedGallery@3.7.0/dist/js/jquery.justifiedGallery.min.js"></script>
+
+<script src="/dist/main.js"></script>
+
+<!-- ImageViewer -->
+
+<!-- Root element of PhotoSwipe. Must have class pswp. -->
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+
+    <!-- Background of PhotoSwipe. 
+         It's a separate element as animating opacity is faster than rgba(). -->
+    <div class="pswp__bg"></div>
+
+    <!-- Slides wrapper with overflow:hidden. -->
+    <div class="pswp__scroll-wrap">
+
+        <!-- Container that holds slides. 
+            PhotoSwipe keeps only 3 of them in the DOM to save memory.
+            Don't modify these 3 pswp__item elements, data is added later on. -->
+        <div class="pswp__container">
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+        </div>
+
+        <!-- Default (PhotoSwipeUI_Default) interface on top of sliding area. Can be changed. -->
+        <div class="pswp__ui pswp__ui--hidden">
+
+            <div class="pswp__top-bar">
+
+                <!--  Controls are self-explanatory. Order can be changed. -->
+
+                <div class="pswp__counter"></div>
+
+                <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+
+                <button class="pswp__button pswp__button--share" style="display:none" title="Share"></button>
+
+                <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+
+                <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+
+                <!-- Preloader demo http://codepen.io/dimsemenov/pen/yyBWoR -->
+                <!-- element will get class pswp__preloader--active when preloader is running -->
+                <div class="pswp__preloader">
+                    <div class="pswp__preloader__icn">
+                        <div class="pswp__preloader__cut">
+                            <div class="pswp__preloader__donut"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+                <div class="pswp__share-tooltip"></div>
+            </div>
+
+            <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+            </button>
+
+            <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+            </button>
+
+            <div class="pswp__caption">
+                <div class="pswp__caption__center"></div>
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/default-skin/default-skin.min.css">
+<script src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe-ui-default.min.js"></script>
+
+<script>
+    function viewer_init() {
+        let pswpElement = document.querySelectorAll('.pswp')[0];
+        let $imgArr = document.querySelectorAll(('.article-entry img:not(.reward-img)'))
+
+        $imgArr.forEach(($em, i) => {
+            $em.onclick = () => {
+                // slider展开状态
+                // todo: 这样不好，后面改成状态
+                if (document.querySelector('.left-col.show')) return
+                let items = []
+                $imgArr.forEach(($em2, i2) => {
+                    let img = $em2.getAttribute('data-idx', i2)
+                    let src = $em2.getAttribute('data-target') || $em2.getAttribute('src')
+                    let title = $em2.getAttribute('alt')
+                    // 获得原图尺寸
+                    const image = new Image()
+                    image.src = src
+                    items.push({
+                        src: src,
+                        w: image.width || $em2.width,
+                        h: image.height || $em2.height,
+                        title: title
+                    })
+                })
+                var gallery = new PhotoSwipe(pswpElement, PhotoSwipeUI_Default, items, {
+                    index: parseInt(i)
+                });
+                gallery.init()
+            }
+        })
+    }
+    viewer_init()
+</script>
+
+<!-- MathJax -->
+
+<!-- Katex -->
+
+<!-- busuanzi  -->
+
+<!-- ClickLove -->
+
+<!-- ClickBoom1 -->
+
+<!-- ClickBoom2 -->
+
+
+<script src="/js/clickBoom2.js"></script>
+
+
+<!-- CodeCopy -->
+
+
+<link rel="stylesheet" href="/css/clipboard.css">
+
+<script src="https://cdn.jsdelivr.net/npm/clipboard@2/dist/clipboard.min.js"></script>
+<script>
+  function wait(callback, seconds) {
+    var timelag = null;
+    timelag = window.setTimeout(callback, seconds);
+  }
+  !function (e, t, a) {
+    var initCopyCode = function(){
+      var copyHtml = '';
+      copyHtml += '<button class="btn-copy" data-clipboard-snippet="">';
+      copyHtml += '<i class="ri-file-copy-2-line"></i><span>COPY</span>';
+      copyHtml += '</button>';
+      $(".highlight .code pre").before(copyHtml);
+      $(".article pre code").before(copyHtml);
+      var clipboard = new ClipboardJS('.btn-copy', {
+        target: function(trigger) {
+          return trigger.nextElementSibling;
+        }
+      });
+      clipboard.on('success', function(e) {
+        let $btn = $(e.trigger);
+        $btn.addClass('copied');
+        let $icon = $($btn.find('i'));
+        $icon.removeClass('ri-file-copy-2-line');
+        $icon.addClass('ri-checkbox-circle-line');
+        let $span = $($btn.find('span'));
+        $span[0].innerText = 'COPIED';
+        
+        wait(function () { // 等待两秒钟后恢复
+          $icon.removeClass('ri-checkbox-circle-line');
+          $icon.addClass('ri-file-copy-2-line');
+          $span[0].innerText = 'COPY';
+        }, 2000);
+      });
+      clipboard.on('error', function(e) {
+        e.clearSelection();
+        let $btn = $(e.trigger);
+        $btn.addClass('copy-failed');
+        let $icon = $($btn.find('i'));
+        $icon.removeClass('ri-file-copy-2-line');
+        $icon.addClass('ri-time-line');
+        let $span = $($btn.find('span'));
+        $span[0].innerText = 'COPY FAILED';
+        
+        wait(function () { // 等待两秒钟后恢复
+          $icon.removeClass('ri-time-line');
+          $icon.addClass('ri-file-copy-2-line');
+          $span[0].innerText = 'COPY';
+        }, 2000);
+      });
+    }
+    initCopyCode();
+  }(window, document);
+</script>
+
+
+<!-- CanvasBackground -->
+
+
+    
+  </div>
+</body>
+
+</html>
