@@ -131,9 +131,9 @@
 <h2 id="链接Github与本地Git"><a href="#链接Github与本地Git" class="headerlink" title="链接Github与本地Git"></a>链接Github与本地Git</h2><p>我们的网站在本地搭建完毕，如果想要发布到Github上就需要用到Git了。前面我们已经在本地安装Git了，现在需要将你的本地Git与Github链接，该步骤我们通过设置ssh秘钥来完成。</p>
 <ol>
 <li><p>鼠标右键打开Git Bash，设置本地Git的用户名和邮箱，注意要与Github相同，别输错了：</p>
-<figure class="highlight plain"><table><tbody><tr><td class="code"><pre><span class="line">git config --global user.name "GitHub用户名"</span><br><span class="line"></span><br><span class="line">git config --global user.email "GitHub注册邮箱"</span><br></pre></td></tr></tbody></table></figure>
+<figure class="highlight plain"><table><tbody><tr><td class="code"><pre><span class="line">git config --global user.name "GitHub用户名"</span><br><span class="line">git config --global user.email "GitHub注册邮箱"</span><br></pre></td></tr></tbody></table></figure>
 <p>可以用以下两条命令，检查一下你有没有输对:</p>
-<figure class="highlight plain"><table><tbody><tr><td class="code"><pre><span class="line">git config user.name</span><br><span class="line"></span><br><span class="line">git config user.email</span><br></pre></td></tr></tbody></table></figure></li>
+<figure class="highlight plain"><table><tbody><tr><td class="code"><pre><span class="line">git config user.name</span><br><span class="line">git config user.email</span><br></pre></td></tr></tbody></table></figure></li>
 <li><p>生成ssh秘钥：</p>
 <p>ssh简单而言是一个秘钥，<code>id_rsa</code>是本地电脑的私人秘钥，<code>id_rsa.pub</code>是公共秘钥。公钥放在Github上，当链接本地与Github时，会根据公钥匹配私钥，匹配上则成功链接，之后可以用Git上传本地文件到Github上。</p>
 <p>为啥需要设置ssh秘钥？由于Github要求每次上传文件的都是合法用户，因此每次上传都需要输入账号和密码来进行验证。这里设置ssh秘钥就是为了省去手动验证的步骤，上传时由Git自行匹配私钥与公钥完成验证。</p>
@@ -164,7 +164,7 @@
 <li><p>安装Git部署插件：</p>
 <figure class="highlight plain"><table><tbody><tr><td class="code"><pre><span class="line">npm install hexo-deployer-git --save</span><br></pre></td></tr></tbody></table></figure></li>
 <li><p>分别输入以下三条命令：</p>
-<figure class="highlight c"><table><tbody><tr><td class="code"><pre><span class="line">hexo clean <span class="comment">//清除缓存，若是网页正常情况下可以忽略这条命令</span></span><br><span class="line"></span><br><span class="line">hexo g <span class="comment">//生成静态网页</span></span><br><span class="line"></span><br><span class="line">hexo d <span class="comment">//部署</span></span><br></pre></td></tr></tbody></table></figure>
+<figure class="highlight c"><table><tbody><tr><td class="code"><pre><span class="line">hexo clean <span class="comment">//清除缓存，若是网页正常情况下可以忽略这条命令</span></span><br><span class="line">hexo g <span class="comment">//生成静态网页</span></span><br><span class="line">hexo d <span class="comment">//部署</span></span><br></pre></td></tr></tbody></table></figure>
 <p>之后打开浏览器，输入部分博客仓库路径<code>OrderAngel.github.io</code>，就能看到你发布的博客了。</p>
 </li>
 </ol>
@@ -191,7 +191,7 @@
 <p>文件命名为<code>CNAME</code>，保存类型为<code>所有文件(*.*)</code>。</p>
 </li>
 <li><p>最后，将我们改动的配置同步到Github中就行了：在本地blog目录下，进入Git Bash命令行(cmd和powershell也行)，输入：</p>
-<figure class="highlight plain"><table><tbody><tr><td class="code"><pre><span class="line">hexo clean </span><br><span class="line"></span><br><span class="line">hexo g</span><br><span class="line"></span><br><span class="line">hexo d</span><br></pre></td></tr></tbody></table></figure>
+<figure class="highlight plain"><table><tbody><tr><td class="code"><pre><span class="line">hexo clean </span><br><span class="line">hexo g</span><br><span class="line">hexo d</span><br></pre></td></tr></tbody></table></figure>
 
 <p>现在，打开浏览器输入你自己的域名，就可以直接进入你的博客了~</p>
 </li>
@@ -209,7 +209,7 @@
 <p>关于主题文件夹的目录说明，可以参考<a href="https://hexo.io/zh-cn/docs/themes.html">主题hexo</a>。</p>
 </li>
 <li><p>最后，再次部署网站，还是：</p>
-<figure class="highlight c"><table><tbody><tr><td class="code"><pre><span class="line">hexo s <span class="comment">//本地预览测试：可以先打开本地服务器，在localhost:4000中看看效果</span></span><br><span class="line"></span><br><span class="line">hexo clean <span class="comment">//清除缓存</span></span><br><span class="line"></span><br><span class="line">hexo g <span class="comment">//生成</span></span><br><span class="line"></span><br><span class="line">hexo d <span class="comment">//部署</span></span><br></pre></td></tr></tbody></table></figure></li>
+<figure class="highlight c"><table><tbody><tr><td class="code"><pre><span class="line">hexo s <span class="comment">//本地预览测试：可以先打开本地服务器，在localhost:4000中看看效果</span></span><br><span class="line">hexo clean <span class="comment">//清除缓存</span></span><br><span class="line">hexo g <span class="comment">//生成</span></span><br><span class="line">hexo d <span class="comment">//部署</span></span><br></pre></td></tr></tbody></table></figure></li>
 </ol>
 <h2 id="hexo私人定制"><a href="#hexo私人定制" class="headerlink" title="hexo私人定制"></a>hexo私人定制</h2><p>工欲善其事，必先利其器。在进行一些更高级的私人配置前，我们有必要先了解一下blog文件夹里的文件都是用来干啥的。</p>
 <h3 id="hexo目录说明"><a href="#hexo目录说明" class="headerlink" title="hexo目录说明"></a>hexo目录说明</h3><p>这是我blog文件夹下的目录，由于使用了一段时间，因此也有些私设，请大致参考。</p>
@@ -306,7 +306,7 @@
 <p><code>hexo s</code>启动本地服务器，在 <a href="http://localhost:4000/">http://localhost:4000</a> 进行预览测试。</p>
 </li>
 <li><p>发布文章<br>Finally!<br>输入以下命令，将写好的“博客简介”发布到网站上吧~</p>
-<figure class="highlight plain"><table><tbody><tr><td class="code"><pre><span class="line">hexo clean</span><br><span class="line"></span><br><span class="line">hexo g</span><br><span class="line"></span><br><span class="line">hexo d</span><br></pre></td></tr></tbody></table></figure>
+<figure class="highlight plain"><table><tbody><tr><td class="code"><pre><span class="line">hexo clean</span><br><span class="line">hexo g</span><br><span class="line">hexo d</span><br></pre></td></tr></tbody></table></figure>
 <p>此时，在浏览器访问自己的博客域名，就可以看到我们写的第一篇正经文章啦~ <span class="github-emoji"><span>☀</span><img src="https://github.githubassets.com/images/icons/emoji/unicode/2600.png?v8" aria-hidden="true" onerror="this.parent.classList.add('github-emoji-fallback')"></span><span class="github-emoji"><span>😼</span><img src="https://github.githubassets.com/images/icons/emoji/unicode/1f63c.png?v8" aria-hidden="true" onerror="this.parent.classList.add('github-emoji-fallback')"></span></p>
 <p><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/blog_files/img/Pic-Github/Blogconstruction/Hexo20210419101933.png"><br><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/blog_files/img/Pic-Github/Blogconstruction/Hexo20210419101753.png"></p>
 <ul>
