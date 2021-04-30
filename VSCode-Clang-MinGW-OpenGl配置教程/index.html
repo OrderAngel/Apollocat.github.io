@@ -1,0 +1,645 @@
+<!DOCTYPE html>
+
+
+<html lang="zh-Hans">
+
+
+<head>
+  <meta charset="utf-8" />
+   
+  <meta name="keywords" content="记录，学习，娱乐，博客" />
+   
+  <meta name="description" content="四界云官" />
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+  <title>
+    VSCode+Clang+MinGW+OpenGl配置教程 |  四界
+  </title>
+  <meta name="generator" content="hexo-theme-ayer">
+  
+  <link rel="shortcut icon" href="/greencat2.ico" />
+  
+  
+<link rel="stylesheet" href="/dist/main.css">
+
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/Shen-Yu/cdn/css/remixicon.min.css">
+  
+<link rel="stylesheet" href="/css/custom.css">
+
+  
+  <script src="https://cdn.jsdelivr.net/npm/pace-js@1.0.2/pace.min.js"></script>
+  
+  
+
+  
+
+
+<style>.github-emoji { position: relative; display: inline-block; width: 1.2em; min-height: 1.2em; overflow: hidden; vertical-align: top; color: transparent; }  .github-emoji > span { position: relative; z-index: 10; }  .github-emoji img, .github-emoji .fancybox { margin: 0 !important; padding: 0 !important; border: none !important; outline: none !important; text-decoration: none !important; user-select: none !important; cursor: auto !important; }  .github-emoji img { height: 1.2em !important; width: 1.2em !important; position: absolute !important; left: 50% !important; top: 50% !important; transform: translate(-50%, -50%) !important; user-select: none !important; cursor: auto !important; } .github-emoji-fallback { color: inherit; } .github-emoji-fallback img { opacity: 0 !important; }</style>
+</head>
+
+</html>
+
+<body>
+  <div id="app">
+    
+      
+      <canvas width="1777" height="841"
+        style="position: fixed; left: 0px; top: 0px; z-index: 99999; pointer-events: none;"></canvas>
+      
+    <main class="content on">
+      <section class="outer">
+  <article
+  id="post-VSCode-Clang-MinGW-OpenGl配置教程"
+  class="article article-type-post"
+  itemscope
+  itemprop="blogPost"
+  data-scroll-reveal
+>
+  <div class="article-inner">
+    
+    <header class="article-header">
+       
+<h1 class="article-title sea-center" style="border-left:0" itemprop="name">
+  VSCode+Clang+MinGW+OpenGl配置教程
+</h1>
+ 
+
+      
+    </header>
+     
+    <div class="article-meta">
+      <a href="/VSCode-Clang-MinGW-OpenGl%E9%85%8D%E7%BD%AE%E6%95%99%E7%A8%8B/" class="article-date">
+  <time datetime="2021-04-27T02:29:58.000Z" itemprop="datePublished">2021-04-27</time>
+</a> 
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/%E6%95%99%E7%A8%8B/">教程</a> / <a class="article-category-link" href="/categories/%E6%95%99%E7%A8%8B/VSCode/">VSCode</a>
+  </div>
+  
+<div class="word_count">
+    <span class="post-time">
+        <span class="post-meta-item-icon">
+            <i class="ri-quill-pen-line"></i>
+            <span class="post-meta-item-text"> Word count:</span>
+            <span class="post-count">2.7k</span>
+        </span>
+    </span>
+
+    <span class="post-time">
+        &nbsp; | &nbsp;
+        <span class="post-meta-item-icon">
+            <i class="ri-book-open-line"></i>
+            <span class="post-meta-item-text"> Reading time≈</span>
+            <span class="post-count">11 min</span>
+        </span>
+    </span>
+</div>
+ 
+    </div>
+      
+    <div class="tocbot"></div>
+
+
+
+
+  
+    <div class="article-entry" itemprop="articleBody">
+       
+  <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>这几天帮别人跑一个天空盒代码，需要用到OpenGl环境，配置过程掉坑比较多略为艰难，因此写个教程记录一下，免得以后换电脑配环境的时候又掉坑233。</p>
+<p>顺便吐槽一下，这位仁兄电脑是联想核显，据说因为木有GPU，跑不了OpenGl程序，多好的反面教材<span class="github-emoji"><span>😄</span><img src="https://github.githubassets.com/images/icons/emoji/unicode/1f604.png?v8" aria-hidden="true" onerror="this.parent.classList.add('github-emoji-fallback')"></span>~ 这里提醒诸君，搞计算机视觉的话，电脑还是独显比较好。</p>
+<p>其实很久以前笔者在CodeBlocks上配置过OpenGl环境，当时用的是袁学长提供的傻瓜教程，私以为so easy……In fact，光是环境配置就要了老命，果然配置教程这种东西要及时记录！</p>
+<p><strong>掉坑的核心：64位和32位一定要区分清楚，所有配置必须all32或all64，否则程序会出现<code>skipping imcompatible</code>的问题。</strong></p>
+<p><strong>——以下配置都是64bit！</strong></p>
+<p>老规矩，附上参考链接，向前辈致敬：<br>|链接|<br>|:—|<br>|1. <a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/87864677">VSCode配置C/C++环境</a>|<br>|2. <a target="_blank" rel="noopener" href="https://anyway521.github.io/post/fb46ea0d.html">VSCode配置C/C++环境完整版(附OpenGL配置)</a>|<br>|3. <a target="_blank" rel="noopener" href="https://blog.csdn.net/qq_41523096/article/details/104628484">20秒 一键配置 VSCode (Visual Studio Code) C/C++开发环境</a>|<br>|4. <a target="_blank" rel="noopener" href="https://my.oschina.net/u/4277479/blog/3525117">VS Code + MinGW + Clang + OpenGL (vscode 配置 opengl环境)</a>|</p>
+<h1 id="VSCode配置C-C-环境"><a href="#VSCode配置C-C-环境" class="headerlink" title="VSCode配置C/C++环境"></a>VSCode配置C/C++环境</h1><p>首先，如果你只需要一个在VSCode上的C/C++环境，其他类似OpenGL、OpenCV等等都需求，那么强烈推荐<a target="_blank" rel="noopener" href="https://blog.csdn.net/qq_41523096/article/details/104628484">C参考链接3</a>，全自动傻瓜配置，非常nice。</p>
+<p>另外，如果你还没有装VSCode或者想要卸载，推荐<a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/87864677">参考链接1</a>，里面有VSCode的安装教程，在此就不累述了。</p>
+<p>那么，正文开始。</p>
+<h2 id="1-安装Clang"><a href="#1-安装Clang" class="headerlink" title="1. 安装Clang"></a>1. 安装Clang</h2><p>根据维基百科的定义，Clang是一个编译器前端，采用LLVM（一款用来开发编译器前后端的软件）作为其后端。Clang作为GNU编译器套装（<code>GCC</code>）的替代品，支持GNU编译器的大多数编译设定。Clang支持C、C++、Objective-C和Objective-C++。简单来说，我们安装LLVM等同于安装配置Clang。</p>
+<ul>
+<li>下载地址：<a target="_blank" rel="noopener" href="https://releases.llvm.org/download.html">LLVM</a></li>
+</ul>
+<p>以LLVM 11.1.0为例：</p>
+<p><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/blog_files/img/Pic-Github/OpenGLconfig/20210427120902.png"><br><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/blog_files/img/Pic-Github/OpenGLconfig/20210427121320.png"></p>
+<p>笔者的安装位置：<code>D:\Programfiles\LLVM</code>，安装过程中注意勾选：<code>添加环境变量</code></p>
+<p><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/blog_files/img/Pic-Github/OpenGLconfig/20210427121625.png"></p>
+<h2 id="2-安装MinGM-W64"><a href="#2-安装MinGM-W64" class="headerlink" title="2. 安装MinGM-W64"></a>2. 安装MinGM-W64</h2><p>首先我们需要大概了解一下MinGM是个啥。前述的Clang作为GCC的替代品，和GCC一样也是主要用在Unix系统下的，我们想在Windows系统中使用Clang，便需要借助MinGM (Minimalist GNU for Windows)的力量。</p>
+<p>MinGM简单来讲，就是Window上的GNU开发平台，等于说有了MinGM你不用装linux也可以在Windows上玩GNU。</p>
+<ul>
+<li>版本说明：<ul>
+<li><p>MinGM（mingm32）—32位；</p>
+</li>
+<li><p>MinGM-w64—32+64位【我用的是这个】</p>
+<p>下载地址：<a target="_blank" rel="noopener" href="https://sourceforge.net/projects/mingw-w64/files/">MinGW-w64 - for 32 and 64 bit Window</a></p>
+<p><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/blog_files/img/Pic-Github/OpenGLconfig/20210428111555.png"></p>
+</li>
+</ul>
+</li>
+<li><strong>注意：</strong> MinGW是在线安装，但是由于某种不可抗力，安装过程缓慢到不能忍受，因此我最后用的是离线安装的方法。</li>
+</ul>
+<h3 id="离线安装方法"><a href="#离线安装方法" class="headerlink" title="离线安装方法"></a>离线安装方法</h3><ol>
+<li><p>下载X86_64-win32-seh：<br>下载地址：<a target="_blank" rel="noopener" href="https://sourceforge.net/projects/mingw-w64/files/">MinGW-w64 - for 32 and 64 bit Windows</a></p>
+<p><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/blog_files/img/Pic-Github/OpenGLconfig/20210428111823.png"></p>
+</li>
+<li><p>解压、合并文件：将解压后<code>mingw64</code>文件夹中的所有文件直接复制到之前的LLVM安装目录<code>D:\Programfiles\LLVM</code>，系统会自动整合同名文件夹中的文件。</p>
+<p><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/blog_files/img/Pic-Github/OpenGLconfig/20210428112733.png"></p>
+</li>
+<li><p>输入<code>clang -v</code>和<code>gcc -v</code>进行测试，出现版本号则安装成功。</p>
+<p><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/blog_files/img/Pic-Github/OpenGLconfig/20210428130609.png"></p>
+<p>当前系统的环境变量为：</p>
+<p><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/blog_files/img/Pic-Github/OpenGLconfig/20210428131225.png"></p>
+</li>
+</ol>
+<h2 id="3-安装VSCode插件"><a href="#3-安装VSCode插件" class="headerlink" title="3. 安装VSCode插件"></a>3. 安装VSCode插件</h2><p>在VSCode左侧的<code>扩展</code>中搜索安装以下插件：</p>
+<p><em>ps，在此之前，建议通过重定向将插件储存位置从C盘改出来:<br><code>"D:\Program Files (x86)\Microsoft VS Code\Code.exe" --extensions-dir "D:\Program Files (x86)\Microsoft VS Code\extensions"</code></em></p>
+<p><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/blog_files/img/Pic-Github/OpenGLconfig/20210428132711.png"></p>
+<ul>
+<li><p>插件1：C/C++</p>
+<p><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/blog_files/img/Pic-Github/OpenGLconfig/20210428132109.png"></p>
+</li>
+<li><p>插件2：C/C++ Clang Command Adapter</p>
+<p><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/blog_files/img/Pic-Github/OpenGLconfig/20210428132325.png"></p>
+</li>
+<li><p>插件3：Code Runner</p>
+<p><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/blog_files/img/Pic-Github/OpenGLconfig/20210428132842.png"></p>
+</li>
+</ul>
+<h1 id="VSCode配置Gult环境"><a href="#VSCode配置Gult环境" class="headerlink" title="VSCode配置Gult环境"></a>VSCode配置Gult环境</h1><p>Gult是OpenGl需要的相关依赖，包括<code>glut.h</code>，<code>glut32.lib</code>，<code>glut32.dll</code>文件。</p>
+<p>值得注意的是，由于之前的C++环境是64位的，gult版本必须与之对应，即64位。</p>
+<ol>
+<li><p>下载<code>glut.h</code>，<code>glut32.lib</code>，<code>glut32.dll</code>：</p>
+<p>下载地址：<a target="_blank" rel="noopener" href="https://pan.baidu.com/s/1PN_0SxxKGJ-D_AZRDa4LDA">https://pan.baidu.com/s/1PN_0SxxKGJ-D_AZRDa4LDA</a> 提取码：sf1z </p>
+</li>
+<li><p>将gult文件放到相应目录下（LLVM安装路径）：</p>
+</li>
+</ol>
+<ul>
+<li><code>gult.h</code>放到目录：<code>D:\Programfiles\LLVM\include</code></li>
+<li><code>gult32.dll</code>放到目录：<code>D:\Programfiles\LLVM\bin</code></li>
+<li><code>gult32.lib</code>放到目录：<code>D:\Programfiles\LLVM\lib</code></li>
+</ul>
+<h1 id="VSCode配置文件"><a href="#VSCode配置文件" class="headerlink" title="VSCode配置文件"></a>VSCode配置文件</h1><p>在文件夹里新建<code>.vscode</code>，<code>include</code>和<code>lib</code>文件夹，<code>include</code>和<code>lib</code>现在先不用管，先专注<code>.vscode</code>文件夹，做VSCode下C/C++环境的基本配置。</p>
+<p>在<code>.vscode</code>文件夹里新建<code>c_cpp_properties.json</code>，<code>launch.json</code>，<code>settings.json</code>以及<code>tasks.json</code>。</p>
+<p><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/blog_files/img/Pic-Github/OpenGLconfig/20210430102555.png"></p>
+<h2 id="1-配置编译器：c-cpp-properties-json"><a href="#1-配置编译器：c-cpp-properties-json" class="headerlink" title="1. 配置编译器：c_cpp_properties.json"></a>1. 配置编译器：c_cpp_properties.json</h2><p>首先配置编译器路径。</p>
+<h3 id="方法-1："><a href="#方法-1：" class="headerlink" title="方法 1："></a>方法 1：</h3><figure class="highlight c++"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line">{</span><br><span class="line">    <span class="string">"configurations"</span>: [</span><br><span class="line">        {</span><br><span class="line">            <span class="string">"name"</span>: <span class="string">"MinGW"</span>,</span><br><span class="line">            <span class="string">"intelliSenseMode"</span>: <span class="string">"clang-x64"</span>,</span><br><span class="line">            <span class="string">"compilerPath"</span>: <span class="string">"D:/Programfiles/LLVM/bin/g++.exe"</span>, <span class="comment">//之前安装的编译器的路径</span></span><br><span class="line">            <span class="string">"includePath"</span>: [</span><br><span class="line">                <span class="string">"${workspaceFolder}/**"</span>,</span><br><span class="line">                <span class="string">"${workspaceFolder}/include/*"</span>, <span class="comment">//当前文件夹下的include</span></span><br><span class="line">                <span class="string">"D:/Programfiles/LLVM/include/*"</span>, <span class="comment">//LLVM的include</span></span><br><span class="line">                <span class="string">"D:/Programfiles/LLVM/lib/gcc/x86_64-w64-mingw32/8.1.0/include/*"</span> <span class="comment">//mingw的include</span></span><br><span class="line">            ],</span><br><span class="line">            <span class="string">"defines"</span>: [],</span><br><span class="line">            <span class="string">"browse"</span>: {</span><br><span class="line">                <span class="string">"path"</span>: [</span><br><span class="line">                    <span class="string">"${workspaceFolder}"</span></span><br><span class="line">                ],</span><br><span class="line">                <span class="string">"limitSymbolsToIncludedHeaders"</span>: <span class="literal">true</span>,</span><br><span class="line">                <span class="string">"databaseFilename"</span>: <span class="string">""</span></span><br><span class="line">            },</span><br><span class="line">            <span class="string">"cStandard"</span>: <span class="string">"c11"</span>,</span><br><span class="line">            <span class="string">"cppStandard"</span>: <span class="string">"c++17"</span></span><br><span class="line">        }</span><br><span class="line">    ],</span><br><span class="line">    <span class="string">"version"</span>: <span class="number">4</span></span><br><span class="line">}</span><br></pre></td></tr></tbody></table></figure>
+<h3 id="方法-2："><a href="#方法-2：" class="headerlink" title="方法 2："></a>方法 2：</h3><p><a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/87864677">参考链接1</a>中<code>配置编译器</code>部分给出了另一种图形化的配置方式。</p>
+<p>简单来说就是不需要手动新建<code>.vscode</code>文件夹和<code>c_cpp_properties.json</code>文件，直接用<code>Ctrl+Shift+P</code>调出控制面板，输入<code>C/C++</code>选择<code>Edit Configurations(UI)</code>进入配置。</p>
+<ul>
+<li><p>修改编译器路径：D:/Programfiles/LLVM/bin/g++.exe</p>
+</li>
+<li><p>修改intelliSense：clang-x64</p>
+</li>
+</ul>
+<p>配置完成后，自动新建了<code>.vscode</code>文件夹和<code>c_cpp_properties.json</code>文件，再在<code>c_cpp_properties</code>文件中修改include路径即可。</p>
+<h2 id="2-配置构建任务tasks-json"><a href="#2-配置构建任务tasks-json" class="headerlink" title="2. 配置构建任务tasks.json"></a>2. 配置构建任务tasks.json</h2><p><code>tasks.json</code>可以告诉VSCode如何编译程序。</p>
+<h3 id="方法-1：-1"><a href="#方法-1：-1" class="headerlink" title="方法 1："></a>方法 1：</h3><figure class="highlight c++"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br></pre></td><td class="code"><pre><span class="line">{</span><br><span class="line">{</span><br><span class="line">    <span class="string">"version"</span>: <span class="string">"2.0.0"</span>,</span><br><span class="line">    <span class="string">"tasks"</span>: [</span><br><span class="line">        {</span><br><span class="line">            <span class="string">"label"</span>: <span class="string">"Compile"</span>, <span class="comment">// 任务名称，与launch.json的preLaunchTask相对应</span></span><br><span class="line">            <span class="string">"command"</span>: <span class="string">"clang++"</span>,</span><br><span class="line">            <span class="string">"args"</span>: [ <span class="comment">//编译时的参数</span></span><br><span class="line">                <span class="string">"${file}"</span>,</span><br><span class="line">                <span class="string">"-o"</span>, <span class="comment">//指定输出文件名</span></span><br><span class="line">                <span class="string">"${fileDirname}/${fileBasenameNoExtension}.exe"</span>,</span><br><span class="line">                <span class="string">"-g"</span>, <span class="comment">//添加gdb调试选项</span></span><br><span class="line">                <span class="string">"-Wall"</span>,  <span class="comment">//开启额外警告</span></span><br><span class="line">                <span class="string">"-static-libgcc"</span>, <span class="comment">//静态链接libgcc</span></span><br><span class="line">                <span class="string">"--target=x86_64-w64-mingw"</span>,  <span class="comment">//clang编译器需要加上这条，因为它默认的target是msvc；如果用gcc或者linux要注释掉</span></span><br><span class="line">                <span class="string">"-std=c++17"</span>,</span><br><span class="line">                <span class="string">"-I${workspaceFolder}/include"</span>, <span class="comment">//添加工作路径下的include</span></span><br><span class="line">                <span class="string">"-L${workspaceFolder}/lib"</span>, <span class="comment">//添加工作路径下的lib</span></span><br><span class="line">                <span class="string">"-lglut32"</span>, <span class="comment">//使用glut</span></span><br><span class="line">                <span class="string">"-lglu32"</span>,  <span class="comment">//使用glut</span></span><br><span class="line">                <span class="string">"-lopengl32"</span>, <span class="comment">//使用opengl</span></span><br><span class="line">                <span class="string">"-lglad"</span>, <span class="comment">//使用glad+glfw，这里可以先注释掉</span></span><br><span class="line">                <span class="string">"-lglfw3"</span>,  <span class="comment">//使用glad+glfw，这里可以先注释掉 </span></span><br><span class="line">                <span class="string">"-lglfw3dll"</span>, <span class="comment">//使用glad+glfw，这里可以先注释掉</span></span><br><span class="line">                <span class="string">"-lgdi32"</span>,  <span class="comment">//使用glad+glfw，这里可以先注释掉</span></span><br><span class="line">            ],</span><br><span class="line">            <span class="string">"type"</span>: <span class="string">"shell"</span>,</span><br><span class="line">            <span class="string">"group"</span>: {</span><br><span class="line">                <span class="string">"kind"</span>: <span class="string">"build"</span>,</span><br><span class="line">                <span class="string">"isDefault"</span>: <span class="literal">true</span> <span class="comment">//表示快捷键Ctrl+Shift+B可以运行该任务</span></span><br><span class="line">            },</span><br><span class="line">            <span class="string">"presentation"</span>: {</span><br><span class="line">                <span class="string">"echo"</span>: <span class="literal">true</span>,</span><br><span class="line">                <span class="string">"reveal"</span>: <span class="string">"always"</span>, <span class="comment">// 执行任务时是否跳转到终端面板</span></span><br><span class="line">                <span class="string">"focus"</span>: <span class="literal">false</span>,</span><br><span class="line">                <span class="string">"panel"</span>: <span class="string">"shared"</span> <span class="comment">// 不同的文件的编译信息共享一个终端面板</span></span><br><span class="line">            },</span><br><span class="line">            <span class="string">"problemMatcher"</span>: []</span><br><span class="line">        }</span><br><span class="line">    ]</span><br><span class="line">}</span><br></pre></td></tr></tbody></table></figure>
+
+<h3 id="方法-2：-1"><a href="#方法-2：-1" class="headerlink" title="方法 2："></a>方法 2：</h3><p><a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/87864677">参考链接1</a>中<code>配置构建任务</code>部分给出了另一种图形化的配置方式。</p>
+<p>不需要手动新建<code>tasks.json</code>文件，直接用<code>Ctrl+Shift+P</code>调出控制面板，输入<code>tasks</code>选择<code>Tasks:Configure Default Build Task</code>，自动生成tasks.json文件，主要修改其中的<code>"args"</code>参数部分。</p>
+<h2 id="配置调试设置launch-json"><a href="#配置调试设置launch-json" class="headerlink" title="配置调试设置launch.json"></a>配置调试设置launch.json</h2><p><code>launch.json</code>用来配置调试的相关信息。</p>
+<h3 id="方法-1：-2"><a href="#方法-1：-2" class="headerlink" title="方法 1："></a>方法 1：</h3><figure class="highlight c++"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line">{</span><br><span class="line">    <span class="string">"version"</span>: <span class="string">"0.2.0"</span>,</span><br><span class="line">    <span class="string">"configurations"</span>: [</span><br><span class="line">        {</span><br><span class="line">            <span class="string">"name"</span>: <span class="string">"(gdb) Launch"</span>, <span class="comment">// 配置名称，将会在启动配置的下拉菜单中显示</span></span><br><span class="line">            <span class="string">"type"</span>: <span class="string">"cppdbg"</span>, <span class="comment">// 配置类型，cppdbg对应cpptools提供的调试功能；可以认为此处只能是cppdbg</span></span><br><span class="line">            <span class="string">"request"</span>: <span class="string">"launch"</span>, <span class="comment">// 请求配置类型，可以为launch（启动）或attach（附加）</span></span><br><span class="line">            <span class="string">"program"</span>: <span class="string">"${fileDirname}/${fileBasenameNoExtension}.exe"</span>, <span class="comment">// 将要进行调试的程序的路径</span></span><br><span class="line">            <span class="string">"args"</span>: [], <span class="comment">// 程序调试时传递给程序的命令行参数，一般设为空即可</span></span><br><span class="line">            <span class="string">"stopAtEntry"</span>: <span class="literal">false</span>, <span class="comment">// 设为true时程序将暂停在程序入口处，相当于在main上打断点</span></span><br><span class="line">            <span class="string">"cwd"</span>: <span class="string">"${workspaceFolder}"</span>, <span class="comment">// 调试程序时的工作目录，此为工作区文件夹；改成${fileDirname}可变为文件所在目录</span></span><br><span class="line">            <span class="string">"environment"</span>: [], <span class="comment">// 环境变量</span></span><br><span class="line">            <span class="string">"externalConsole"</span>: <span class="literal">false</span>, <span class="comment">// 为true时使用单独的cmd窗口，与其它IDE一致；18年10月后设为false可调用VSC内置终端</span></span><br><span class="line">            <span class="string">"internalConsoleOptions"</span>: <span class="string">"neverOpen"</span>, <span class="comment">// 如果不设为neverOpen，调试时会跳到“调试控制台”选项卡，你应该不需要对gdb手动输命令吧？</span></span><br><span class="line">            <span class="string">"MIMode"</span>: <span class="string">"gdb"</span>, <span class="comment">// 指定连接的调试器，可以为gdb或lldb。但我没试过lldb</span></span><br><span class="line">            <span class="string">"miDebuggerPath"</span>: <span class="string">"gdb.exe"</span>, <span class="comment">// 调试器路径，Windows下后缀不能省略，Linux下则不要</span></span><br><span class="line">            <span class="string">"setupCommands"</span>: [</span><br><span class="line">                { <span class="comment">// 模板自带，好像可以更好地显示STL容器的内容，具体作用自行Google</span></span><br><span class="line">                    <span class="string">"description"</span>: <span class="string">"Enable pretty-printing for gdb"</span>,</span><br><span class="line">                    <span class="string">"text"</span>: <span class="string">"-enable-pretty-printing"</span>,</span><br><span class="line">                    <span class="string">"ignoreFailures"</span>: <span class="literal">false</span></span><br><span class="line">                }</span><br><span class="line">            ],</span><br><span class="line">            <span class="string">"preLaunchTask"</span>: <span class="string">"Compile"</span> <span class="comment">// 调试会话开始前执行的任务，一般为编译程序。与tasks.json的label相对应</span></span><br><span class="line">        }</span><br><span class="line">    ]</span><br><span class="line">}</span><br></pre></td></tr></tbody></table></figure>
+
+<h3 id="方法-2：-2"><a href="#方法-2：-2" class="headerlink" title="方法 2："></a>方法 2：</h3><p>菜单栏<code>运行</code>-<code>启动调试</code>-<code>C++(GDB/LLDB)</code>，自动生成一个<code>launch.json</code>文件，再根据需要修改相关配置。</p>
+<p>ps，不推荐该方法，原博主也遇到了没解决的问题，笔者也没深究，还是建议方法1。</p>
+<h2 id="配置用户设置settings-json"><a href="#配置用户设置settings-json" class="headerlink" title="配置用户设置settings.json"></a>配置用户设置settings.json</h2><figure class="highlight c++"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><span class="line">{</span><br><span class="line">  <span class="string">"files.defaultLanguage"</span>: <span class="string">"cpp"</span>, <span class="comment">// ctrl+N新建文件后默认的语言</span></span><br><span class="line">  <span class="string">"editor.formatOnType"</span>: <span class="literal">true</span>, <span class="comment">// 输入时就进行格式化，默认触发字符较少，分号可以触发</span></span><br><span class="line">  <span class="string">"editor.snippetSuggestions"</span>: <span class="string">"top"</span>, <span class="comment">// snippets代码优先显示补全</span></span><br><span class="line">  <span class="string">"code-runner.runInTerminal"</span>: <span class="literal">true</span>, <span class="comment">// 设置成false会在“输出”中输出，无法输入</span></span><br><span class="line">  <span class="string">"code-runner.executorMap"</span>: {</span><br><span class="line">      <span class="string">"c"</span>: <span class="string">"cd $dir &amp;&amp; clang $fileName -o $fileNameWithoutExt.exe -Wall -g -Og -static-libgcc -fcolor-diagnostics --target=x86_64-w64-mingw -std=c11 &amp;&amp; $dir$fileNameWithoutExt"</span>,</span><br><span class="line">      <span class="string">"cpp"</span>: <span class="string">"cd $dir &amp;&amp; clang++ $fileName -o $fileNameWithoutExt.exe -Wall -g -Og -static-libgcc -fcolor-diagnostics --target=x86_64-w64-mingw -lglut32 -lglu32 -lopengl32 -std=c++17 &amp;&amp; $dir$fileNameWithoutExt"</span> </span><br><span class="line">  }, <span class="comment">// 设置code runner的命令行</span></span><br><span class="line">  <span class="string">"code-runner.saveFileBeforeRun"</span>: <span class="literal">true</span>, <span class="comment">// run code前保存</span></span><br><span class="line">  <span class="string">"code-runner.preserveFocus"</span>: <span class="literal">true</span>, <span class="comment">// 若为false，run code后光标会聚焦到终端上。如果需要频繁输入数据可设为false</span></span><br><span class="line">  <span class="string">"code-runner.clearPreviousOutput"</span>: <span class="literal">false</span>, <span class="comment">// 每次run code前清空属于code runner的终端消息</span></span><br><span class="line"></span><br><span class="line">  <span class="string">"C_Cpp.clang_format_sortIncludes"</span>: <span class="literal">true</span>, <span class="comment">// 格式化时调整include的顺序（按字母排序）</span></span><br><span class="line">  <span class="string">"C_Cpp.intelliSenseEngine"</span>: <span class="string">"Default"</span>, <span class="comment">// 可以为Default或Tag Parser，后者较老，功能较简单。具体差别参考cpptools扩展文档</span></span><br><span class="line">  <span class="string">"C_Cpp.errorSquiggles"</span>: <span class="string">"Disabled"</span>, <span class="comment">// 因为有clang的lint，所以关掉</span></span><br><span class="line">  <span class="string">"C_Cpp.autocomplete"</span>: <span class="string">"Disabled"</span>, <span class="comment">// 因为有clang的补全，所以关掉</span></span><br><span class="line"></span><br><span class="line">  <span class="string">"clang.cflags"</span>: [ <span class="comment">// 控制c语言静态检测的参数</span></span><br><span class="line">      <span class="string">"--target=x86_64-w64-mingw"</span>,</span><br><span class="line">      <span class="string">"-std=c11"</span>,</span><br><span class="line">      <span class="string">"-Wall"</span>,</span><br><span class="line">      <span class="string">"-I./include"</span>,</span><br><span class="line">      <span class="string">"-L./lib"</span></span><br><span class="line">  ],</span><br><span class="line">  <span class="string">"clang.cxxflags"</span>: [ <span class="comment">// 控制c++静态检测时的参数</span></span><br><span class="line">      <span class="string">"--target=x86_64-w64-mingw"</span>,</span><br><span class="line">      <span class="string">"-std=c++17"</span>,</span><br><span class="line">      <span class="string">"-Wall"</span>,</span><br><span class="line">      <span class="string">"-I./include"</span>,</span><br><span class="line">      <span class="string">"-L./lib"</span></span><br><span class="line">  ],</span><br><span class="line">  <span class="string">"clang.completion.enable"</span>:<span class="literal">true</span>, <span class="comment">// 效果效果比cpptools要好</span></span><br><span class="line">  <span class="string">"clang.diagnostic.delay"</span>:<span class="number">300</span></span><br><span class="line">}</span><br></pre></td></tr></tbody></table></figure>
+
+<p><strong>值得注意的是</strong>，之前我run code一直报错找不到一些glut函数定义，只有debug能跑。后来发现问题出在<code>code-runner.executorMap</code>这里。</p>
+<p>之前<code>tasks.json</code>中调试参数部分为：<br><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/blog_files/img/Pic-Github/OpenGLconfig/20210430124111.png"></p>
+<p>而<code>settings.json</code>的<code>code-runner.executorMap</code>部分需要与之对应：<br><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/blog_files/img/Pic-Github/OpenGLconfig/20210430124608.png"></p>
+<p>加上红框部分就能run code了。</p>
+<h2 id="迁移"><a href="#迁移" class="headerlink" title="迁移"></a>迁移</h2><p>至此VSCode配置结束，之后跑新的C++项目只需要将<code>.vscode</code>文件夹复制过去就行，如果要用到其他库，只需要对其中一些参数稍作修改。</p>
+<h1 id="测试"><a href="#测试" class="headerlink" title="测试"></a>测试</h1><p>最后，我们建个main.cpp来测试一下：</p>
+<figure class="highlight c++"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;glut.h&gt;</span></span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">init</span><span class="params">()</span></span>;</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">display</span><span class="params">()</span></span>;</span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">(<span class="keyword">int</span> argc, <span class="keyword">char</span>* argv[])</span></span>{</span><br><span class="line">    <span class="built_in">glutInit</span>(&amp;argc, argv);</span><br><span class="line">    <span class="built_in">glutInitDisplayMode</span>(GLUT_RGB | GLUT_SINGLE);</span><br><span class="line">    <span class="built_in">glutInitWindowPosition</span>(<span class="number">800</span>, <span class="number">150</span>);</span><br><span class="line">    <span class="built_in">glutInitWindowSize</span>(<span class="number">600</span>, <span class="number">400</span>);</span><br><span class="line">    <span class="built_in">glutCreateWindow</span>(<span class="string">"OpenGL 3D View"</span>);</span><br><span class="line">    <span class="built_in">init</span>();</span><br><span class="line">    <span class="built_in">glutDisplayFunc</span>(display);</span><br><span class="line">    <span class="built_in">glutMainLoop</span>();</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">}</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">init</span><span class="params">()</span></span>{</span><br><span class="line">    <span class="built_in">glClearColor</span>(<span class="number">0.0</span>, <span class="number">0.0</span>, <span class="number">0.0</span>, <span class="number">0.0</span>);</span><br><span class="line">    <span class="built_in">glMatrixMode</span>(GL_PROJECTION);</span><br><span class="line">    <span class="built_in">glOrtho</span>(<span class="number">-5</span>, <span class="number">5</span>, <span class="number">-5</span>, <span class="number">5</span>, <span class="number">5</span>, <span class="number">15</span>);</span><br><span class="line">    <span class="built_in">glMatrixMode</span>(GL_MODELVIEW);</span><br><span class="line">    <span class="built_in">gluLookAt</span>(<span class="number">0</span>, <span class="number">0</span>, <span class="number">10</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">1</span>, <span class="number">0</span>);</span><br><span class="line">}</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">display</span><span class="params">()</span></span>{</span><br><span class="line">    <span class="built_in">glClear</span>(GL_COLOR_BUFFER_BIT);</span><br><span class="line">    <span class="built_in">glColor3f</span>(<span class="number">0</span>, <span class="number">1.0</span>, <span class="number">0</span>);</span><br><span class="line">    <span class="built_in">glutWireTeapot</span>(<span class="number">3</span>);</span><br><span class="line">    <span class="built_in">glFlush</span>();</span><br><span class="line">}</span><br></pre></td></tr></tbody></table></figure>
+<p>run code：</p>
+<p><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/blog_files/img/Pic-Github/OpenGLconfig/20210430121933.png"></p>
+<p>大功告成！<span class="github-emoji"><span>☀</span><img src="https://github.githubassets.com/images/icons/emoji/unicode/2600.png?v8" aria-hidden="true" onerror="this.parent.classList.add('github-emoji-fallback')"></span><span class="github-emoji"><span>🐱</span><img src="https://github.githubassets.com/images/icons/emoji/unicode/1f431.png?v8" aria-hidden="true" onerror="this.parent.classList.add('github-emoji-fallback')"></span>~</p>
+<h1 id="后记"><a href="#后记" class="headerlink" title="后记"></a>后记</h1><p>emm，没啥好说的啦，干的不错喵喵喵~</p>
+ 
+      <!-- reward -->
+      
+    </div>
+    
+
+    <!-- copyright -->
+    
+    <footer class="article-footer">
+       
+<div class="share-btn">
+      <span class="share-sns share-outer">
+        <i class="ri-share-forward-line"></i>
+        分享
+      </span>
+      <div class="share-wrap">
+        <i class="arrow"></i>
+        <div class="share-icons">
+          
+          <a class="weibo share-sns" href="javascript:;" data-type="weibo">
+            <i class="ri-weibo-fill"></i>
+          </a>
+          <a class="weixin share-sns wxFab" href="javascript:;" data-type="weixin">
+            <i class="ri-wechat-fill"></i>
+          </a>
+          <a class="qq share-sns" href="javascript:;" data-type="qq">
+            <i class="ri-qq-fill"></i>
+          </a>
+          <a class="douban share-sns" href="javascript:;" data-type="douban">
+            <i class="ri-douban-line"></i>
+          </a>
+          <!-- <a class="qzone share-sns" href="javascript:;" data-type="qzone">
+            <i class="icon icon-qzone"></i>
+          </a> -->
+          
+          <a class="facebook share-sns" href="javascript:;" data-type="facebook">
+            <i class="ri-facebook-circle-fill"></i>
+          </a>
+          <a class="twitter share-sns" href="javascript:;" data-type="twitter">
+            <i class="ri-twitter-fill"></i>
+          </a>
+          <a class="google share-sns" href="javascript:;" data-type="google">
+            <i class="ri-google-fill"></i>
+          </a>
+        </div>
+      </div>
+</div>
+
+<div class="wx-share-modal">
+    <a class="modal-close" href="javascript:;"><i class="ri-close-circle-line"></i></a>
+    <p>扫一扫，分享到微信</p>
+    <div class="wx-qrcode">
+      <img src="//api.qrserver.com/v1/create-qr-code/?size=150x150&data=https://apollomao.com/VSCode-Clang-MinGW-OpenGl%E9%85%8D%E7%BD%AE%E6%95%99%E7%A8%8B/" alt="微信分享二维码">
+    </div>
+</div>
+
+<div id="share-mask"></div>  
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/OpenGl/" rel="tag">OpenGl</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/VSCode/" rel="tag">VSCode</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E6%95%99%E7%A8%8B/" rel="tag">教程</a></li></ul>
+
+    </footer>
+  </div>
+
+   
+  <nav class="article-nav">
+    
+    
+      <a href="/Hexo-Github%E5%8D%9A%E5%AE%A2%E6%90%AD%E5%BB%BA%E6%95%99%E7%A8%8B/" class="article-nav-link">
+        <strong class="article-nav-caption">下一篇</strong>
+        <div class="article-nav-title">Hexo+Github博客搭建教程</div>
+      </a>
+    
+  </nav>
+
+  
+   
+     
+</article>
+
+</section>
+      <footer class="footer">
+  <div class="outer">
+    <ul>
+      <li>
+        Copyrights &copy;
+        2021
+        <i class="ri-heart-fill heart_icon"></i> 阿波罗猫
+      </li>
+    </ul>
+    <ul>
+      <li>
+        
+        
+        
+        Powered by <a href="https://hexo.io" target="_blank">Hexo</a>
+        <span class="division">|</span>
+        Theme - <a href="https://github.com/Shen-Yu/hexo-theme-ayer" target="_blank">Ayer</a>
+        
+      </li>
+    </ul>
+    <ul>
+      <li>
+        
+      </li>
+    </ul>
+    <ul>
+      
+    </ul>
+    <ul>
+      
+    </ul>
+    <ul>
+      <li>
+        <!-- cnzz统计 -->
+        
+      </li>
+    </ul>
+  </div>
+</footer>
+      <div class="float_btns">
+        <div class="totop" id="totop">
+  <i class="ri-arrow-up-line"></i>
+</div>
+
+<div class="todark" id="todark">
+  <i class="ri-moon-line"></i>
+</div>
+
+      </div>
+    </main>
+    <aside class="sidebar on">
+      <button class="navbar-toggle"></button>
+<nav class="navbar">
+  
+  <div class="logo">
+    <a href="/"><img src="/images/bluecat.svg" alt="四界"></a>
+  </div>
+  
+  <ul class="nav nav-main">
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/">主页</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/archives">归档</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/categories">分类</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/tags">标签</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/tags/%E9%9A%8F%E7%AC%94/">随笔</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/2021/about">关于我</a>
+    </li>
+    
+  </ul>
+</nav>
+<nav class="navbar navbar-bottom">
+  <ul class="nav">
+    <li class="nav-item">
+      
+      <a class="nav-item-link nav-item-search"  title="Search">
+        <i class="ri-search-line"></i>
+      </a>
+      
+      
+    </li>
+  </ul>
+</nav>
+<div class="search-form-wrap">
+  <div class="local-search local-search-plugin">
+  <input type="search" id="local-search-input" class="local-search-input" placeholder="Search...">
+  <div id="local-search-result" class="local-search-result"></div>
+</div>
+</div>
+    </aside>
+    <div id="mask"></div>
+
+<!-- #reward -->
+<div id="reward">
+  <span class="close"><i class="ri-close-line"></i></span>
+  <p class="reward-p"><i class="ri-cup-line"></i>请我喝杯咖啡吧~</p>
+  <div class="reward-box">
+    
+    <div class="reward-item">
+      <img class="reward-img" src="https://cdn.jsdelivr.net/gh/Shen-Yu/cdn/img/alipay.jpg">
+      <span class="reward-type">支付宝</span>
+    </div>
+    
+    
+    <div class="reward-item">
+      <img class="reward-img" src="https://cdn.jsdelivr.net/gh/Shen-Yu/cdn/img/wechat.jpg">
+      <span class="reward-type">微信</span>
+    </div>
+    
+  </div>
+</div>
+    
+<script src="/js/jquery-2.0.3.min.js"></script>
+
+
+<script src="/js/lazyload.min.js"></script>
+
+<!-- Tocbot -->
+
+
+<script src="/js/tocbot.min.js"></script>
+
+<script>
+  tocbot.init({
+    tocSelector: '.tocbot',
+    contentSelector: '.article-entry',
+    headingSelector: 'h1, h2, h3, h4, h5, h6',
+    hasInnerContainers: true,
+    scrollSmooth: true,
+    scrollContainer: 'main',
+    positionFixedSelector: '.tocbot',
+    positionFixedClass: 'is-position-fixed',
+    fixedSidebarOffset: 'auto'
+  });
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/jquery-modal@0.9.2/jquery.modal.min.js"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/jquery-modal@0.9.2/jquery.modal.min.css">
+<script src="https://cdn.jsdelivr.net/npm/justifiedGallery@3.7.0/dist/js/jquery.justifiedGallery.min.js"></script>
+
+<script src="/dist/main.js"></script>
+
+<!-- ImageViewer -->
+
+<!-- Root element of PhotoSwipe. Must have class pswp. -->
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+
+    <!-- Background of PhotoSwipe. 
+         It's a separate element as animating opacity is faster than rgba(). -->
+    <div class="pswp__bg"></div>
+
+    <!-- Slides wrapper with overflow:hidden. -->
+    <div class="pswp__scroll-wrap">
+
+        <!-- Container that holds slides. 
+            PhotoSwipe keeps only 3 of them in the DOM to save memory.
+            Don't modify these 3 pswp__item elements, data is added later on. -->
+        <div class="pswp__container">
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+        </div>
+
+        <!-- Default (PhotoSwipeUI_Default) interface on top of sliding area. Can be changed. -->
+        <div class="pswp__ui pswp__ui--hidden">
+
+            <div class="pswp__top-bar">
+
+                <!--  Controls are self-explanatory. Order can be changed. -->
+
+                <div class="pswp__counter"></div>
+
+                <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+
+                <button class="pswp__button pswp__button--share" style="display:none" title="Share"></button>
+
+                <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+
+                <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+
+                <!-- Preloader demo http://codepen.io/dimsemenov/pen/yyBWoR -->
+                <!-- element will get class pswp__preloader--active when preloader is running -->
+                <div class="pswp__preloader">
+                    <div class="pswp__preloader__icn">
+                        <div class="pswp__preloader__cut">
+                            <div class="pswp__preloader__donut"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+                <div class="pswp__share-tooltip"></div>
+            </div>
+
+            <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+            </button>
+
+            <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+            </button>
+
+            <div class="pswp__caption">
+                <div class="pswp__caption__center"></div>
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/default-skin/default-skin.min.css">
+<script src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe-ui-default.min.js"></script>
+
+<script>
+    function viewer_init() {
+        let pswpElement = document.querySelectorAll('.pswp')[0];
+        let $imgArr = document.querySelectorAll(('.article-entry img:not(.reward-img)'))
+
+        $imgArr.forEach(($em, i) => {
+            $em.onclick = () => {
+                // slider展开状态
+                // todo: 这样不好，后面改成状态
+                if (document.querySelector('.left-col.show')) return
+                let items = []
+                $imgArr.forEach(($em2, i2) => {
+                    let img = $em2.getAttribute('data-idx', i2)
+                    let src = $em2.getAttribute('data-target') || $em2.getAttribute('src')
+                    let title = $em2.getAttribute('alt')
+                    // 获得原图尺寸
+                    const image = new Image()
+                    image.src = src
+                    items.push({
+                        src: src,
+                        w: image.width || $em2.width,
+                        h: image.height || $em2.height,
+                        title: title
+                    })
+                })
+                var gallery = new PhotoSwipe(pswpElement, PhotoSwipeUI_Default, items, {
+                    index: parseInt(i)
+                });
+                gallery.init()
+            }
+        })
+    }
+    viewer_init()
+</script>
+
+<!-- MathJax -->
+
+<!-- Katex -->
+
+<!-- busuanzi  -->
+
+<!-- ClickLove -->
+
+<!-- ClickBoom1 -->
+
+<!-- ClickBoom2 -->
+
+
+<script src="/js/clickBoom2.js"></script>
+
+
+<!-- CodeCopy -->
+
+
+<link rel="stylesheet" href="/css/clipboard.css">
+
+<script src="https://cdn.jsdelivr.net/npm/clipboard@2/dist/clipboard.min.js"></script>
+<script>
+  function wait(callback, seconds) {
+    var timelag = null;
+    timelag = window.setTimeout(callback, seconds);
+  }
+  !function (e, t, a) {
+    var initCopyCode = function(){
+      var copyHtml = '';
+      copyHtml += '<button class="btn-copy" data-clipboard-snippet="">';
+      copyHtml += '<i class="ri-file-copy-2-line"></i><span>COPY</span>';
+      copyHtml += '</button>';
+      $(".highlight .code pre").before(copyHtml);
+      $(".article pre code").before(copyHtml);
+      var clipboard = new ClipboardJS('.btn-copy', {
+        target: function(trigger) {
+          return trigger.nextElementSibling;
+        }
+      });
+      clipboard.on('success', function(e) {
+        let $btn = $(e.trigger);
+        $btn.addClass('copied');
+        let $icon = $($btn.find('i'));
+        $icon.removeClass('ri-file-copy-2-line');
+        $icon.addClass('ri-checkbox-circle-line');
+        let $span = $($btn.find('span'));
+        $span[0].innerText = 'COPIED';
+        
+        wait(function () { // 等待两秒钟后恢复
+          $icon.removeClass('ri-checkbox-circle-line');
+          $icon.addClass('ri-file-copy-2-line');
+          $span[0].innerText = 'COPY';
+        }, 2000);
+      });
+      clipboard.on('error', function(e) {
+        e.clearSelection();
+        let $btn = $(e.trigger);
+        $btn.addClass('copy-failed');
+        let $icon = $($btn.find('i'));
+        $icon.removeClass('ri-file-copy-2-line');
+        $icon.addClass('ri-time-line');
+        let $span = $($btn.find('span'));
+        $span[0].innerText = 'COPY FAILED';
+        
+        wait(function () { // 等待两秒钟后恢复
+          $icon.removeClass('ri-time-line');
+          $icon.addClass('ri-file-copy-2-line');
+          $span[0].innerText = 'COPY';
+        }, 2000);
+      });
+    }
+    initCopyCode();
+  }(window, document);
+</script>
+
+
+<!-- CanvasBackground -->
+
+
+    
+  </div>
+</body>
+
+</html>
