@@ -343,7 +343,7 @@
 <p><strong>掉坑的核心：64位和32位一定要区分清楚，所有配置必须all32或all64，否则程序会出现<code>skipping imcompatible</code>的问题。</strong></p>
 <p><strong>——以下配置都是64bit！</strong></p>
 <p>老规矩，附上参考链接，向前辈致敬：<br>|链接|<br>|:—|<br>|1. <a href="https://zhuanlan.zhihu.com/p/87864677">VSCode配置C/C++环境</a>|<br>|2. <a href="https://anyway521.github.io/post/fb46ea0d.html">VSCode配置C/C++环境完整版(附OpenGL配置)</a>|<br>|3. <a href="https://blog.csdn.net/qq_41523096/article/details/104628484">20秒 一键配置 VSCode (Visual Studio Code) C/C++开发环境</a>|<br>|4. <a href="https://my.oschina.net/u/4277479/blog/3525117">VS Code + MinGW + Clang + OpenGL (vscode 配置 opengl环境)</a>|</p>
-<h1 id="VSCode配置C-C-环境"><a href="#VSCode配置C-C-环境" class="headerlink" title="VSCode配置C/C++环境"></a>VSCode配置C/C++环境</h1><p>首先，如果你只需要一个在VSCode上的C/C++环境，其他类似OpenGL、OpenCV等等都需求，那么强烈推荐<a href="https://blog.csdn.net/qq_41523096/article/details/104628484">C参考链接3</a>，全自动傻瓜配置，非常nice。</p>
+<h1 id="VSCode配置C-C-环境"><a href="#VSCode配置C-C-环境" class="headerlink" title="VSCode配置C/C++环境"></a>VSCode配置C/C++环境</h1><p>首先，如果你只需要一个在VSCode上的C/C++环境，其他类似OpenGL、OpenCV等等都不需求，那么强烈推荐<a href="https://blog.csdn.net/qq_41523096/article/details/104628484">C参考链接3</a>，全自动傻瓜配置，非常nice。</p>
 <p>另外，如果你还没有装VSCode或者想要卸载，推荐<a href="https://zhuanlan.zhihu.com/p/87864677">参考链接1</a>，里面有VSCode的安装教程，在此就不累述了。</p>
 <p>那么，正文开始。</p>
 <h2 id="1-安装Clang"><a href="#1-安装Clang" class="headerlink" title="1. 安装Clang"></a>1. 安装Clang</h2><p>根据维基百科的定义，Clang是一个编译器前端，采用LLVM（一款用来开发编译器前后端的软件）作为其后端。Clang作为GNU编译器套装（<code>GCC</code>）的替代品，支持GNU编译器的大多数编译设定。Clang支持C、C++、Objective-C和Objective-C++。简单来说，我们安装LLVM等同于安装配置Clang。</p>
