@@ -328,10 +328,11 @@
 ]]></content>
       <categories>
         <category>教程</category>
+        <category>Blog搭建</category>
       </categories>
       <tags>
-        <tag>Blog</tag>
         <tag>教程</tag>
+        <tag>Hexo</tag>
       </tags>
   </entry>
   <entry>
@@ -342,7 +343,26 @@
 <p>其实很久以前笔者在CodeBlocks上配置过OpenGl环境，当时用的是袁学长提供的傻瓜教程，私以为so easy……In fact，光是环境配置就要了老命，果然配置教程这种东西要及时记录！</p>
 <p><strong>掉坑的核心：64位和32位一定要区分清楚，所有配置必须all32或all64，否则程序会出现<code>skipping imcompatible</code>的问题。</strong></p>
 <p><strong>——以下配置都是64bit！</strong></p>
-<p>老规矩，附上参考链接，向前辈致敬：<br>|链接|<br>|:—|<br>|1. <a href="https://zhuanlan.zhihu.com/p/87864677">VSCode配置C/C++环境</a>|<br>|2. <a href="https://anyway521.github.io/post/fb46ea0d.html">VSCode配置C/C++环境完整版(附OpenGL配置)</a>|<br>|3. <a href="https://blog.csdn.net/qq_41523096/article/details/104628484">20秒 一键配置 VSCode (Visual Studio Code) C/C++开发环境</a>|<br>|4. <a href="https://my.oschina.net/u/4277479/blog/3525117">VS Code + MinGW + Clang + OpenGL (vscode 配置 opengl环境)</a>|</p>
+<p>老规矩，附上参考链接，向前辈致敬：</p>
+<table>
+<thead>
+<tr>
+<th>链接</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>1. <a href="https://zhuanlan.zhihu.com/p/87864677">VSCode配置C/C++环境</a></td>
+</tr>
+<tr>
+<td>2. <a href="https://anyway521.github.io/post/fb46ea0d.html">VSCode配置C/C++环境完整版(附OpenGL配置)</a></td>
+</tr>
+<tr>
+<td>3. <a href="https://blog.csdn.net/qq_41523096/article/details/104628484">20秒 一键配置 VSCode (Visual Studio Code) C/C++开发环境</a></td>
+</tr>
+<tr>
+<td>4. <a href="https://my.oschina.net/u/4277479/blog/3525117">VS Code + MinGW + Clang + OpenGL (vscode 配置 opengl环境)</a></td>
+</tr>
+</tbody></table>
 <h1 id="VSCode配置C-C-环境"><a href="#VSCode配置C-C-环境" class="headerlink" title="VSCode配置C/C++环境"></a>VSCode配置C/C++环境</h1><p>首先，如果你只需要一个在VSCode上的C/C++环境，其他类似OpenGL、OpenCV等等都不需求，那么强烈推荐<a href="https://blog.csdn.net/qq_41523096/article/details/104628484">C参考链接3</a>，全自动傻瓜配置，非常nice。</p>
 <p>另外，如果你还没有装VSCode或者想要卸载，推荐<a href="https://zhuanlan.zhihu.com/p/87864677">参考链接1</a>，里面有VSCode的安装教程，在此就不累述了。</p>
 <p>那么，正文开始。</p>
