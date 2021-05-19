@@ -45,10 +45,151 @@
 <p>祝愿我的未来无论走出多远，归来仍是少年。</p>
 ]]></content>
       <categories>
-        <category>日常</category>
+        <category>生活</category>
       </categories>
       <tags>
         <tag>Blog</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>VSCode+Clang+MinGW+OpenGl配置教程</title>
+    <url>/VSCode-Clang-MinGW-OpenGl%E9%85%8D%E7%BD%AE%E6%95%99%E7%A8%8B/</url>
+    <content><![CDATA[<h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>这几天帮别人跑一个天空盒代码，需要用到OpenGl环境，配置过程掉坑比较多略为艰难，因此写个教程记录一下，免得以后换电脑配环境的时候又掉坑233。</p>
+<p>顺便吐槽一下，这位仁兄电脑是联想核显，据说因为木有GPU，跑不了OpenGl程序，多好的反面教材<span class="github-emoji"><span>😄</span><img src="https://github.githubassets.com/images/icons/emoji/unicode/1f604.png?v8" aria-hidden="true" onerror="this.parent.classList.add('github-emoji-fallback')"></span>~ 这里提醒诸君，搞计算机视觉的话，电脑还是独显比较好。</p>
+<p>其实很久以前笔者在CodeBlocks上配置过OpenGl环境，当时用的是袁学长提供的傻瓜教程，私以为so easy……In fact，光是环境配置就要了老命，果然配置教程这种东西要及时记录！</p>
+<p><strong>掉坑的核心：64位和32位一定要区分清楚，所有配置必须all32或all64，否则程序会出现<code>skipping imcompatible</code>的问题。</strong></p>
+<p><strong>——以下配置都是64bit！</strong></p>
+<p>老规矩，附上参考链接，向前辈致敬：</p>
+<table>
+<thead>
+<tr>
+<th>链接</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>1. <a href="https://zhuanlan.zhihu.com/p/87864677">VSCode配置C/C++环境</a></td>
+</tr>
+<tr>
+<td>2. <a href="https://anyway521.github.io/post/fb46ea0d.html">VSCode配置C/C++环境完整版(附OpenGL配置)</a></td>
+</tr>
+<tr>
+<td>3. <a href="https://blog.csdn.net/qq_41523096/article/details/104628484">20秒 一键配置 VSCode (Visual Studio Code) C/C++开发环境</a></td>
+</tr>
+<tr>
+<td>4. <a href="https://my.oschina.net/u/4277479/blog/3525117">VS Code + MinGW + Clang + OpenGL (vscode 配置 opengl环境)</a></td>
+</tr>
+</tbody></table>
+<h1 id="VSCode配置C-C-环境"><a href="#VSCode配置C-C-环境" class="headerlink" title="VSCode配置C/C++环境"></a>VSCode配置C/C++环境</h1><p>首先，如果你只需要一个在VSCode上的C/C++环境，其他类似OpenGL、OpenCV等等都不需求，那么强烈推荐<a href="https://blog.csdn.net/qq_41523096/article/details/104628484">C参考链接3</a>，全自动傻瓜配置，非常nice。</p>
+<p>另外，如果你还没有装VSCode或者想要卸载，推荐<a href="https://zhuanlan.zhihu.com/p/87864677">参考链接1</a>，里面有VSCode的安装教程，在此就不累述了。</p>
+<p>那么，正文开始。</p>
+<h2 id="1-安装Clang"><a href="#1-安装Clang" class="headerlink" title="1. 安装Clang"></a>1. 安装Clang</h2><p>根据维基百科的定义，Clang是一个编译器前端，采用LLVM（一款用来开发编译器前后端的软件）作为其后端。Clang作为GNU编译器套装（<code>GCC</code>）的替代品，支持GNU编译器的大多数编译设定。Clang支持C、C++、Objective-C和Objective-C++。简单来说，我们安装LLVM等同于安装配置Clang。</p>
+<ul>
+<li>下载地址：<a href="https://releases.llvm.org/download.html">LLVM</a></li>
+</ul>
+<p>以LLVM 11.1.0为例：</p>
+<p><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/blog_files/img/Pic-Github/OpenGLconfig/20210427120902.png"><br><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/blog_files/img/Pic-Github/OpenGLconfig/20210427121320.png"></p>
+<p>笔者的安装位置：<code>D:\Programfiles\LLVM</code>，安装过程中注意勾选：<code>添加环境变量</code></p>
+<p><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/blog_files/img/Pic-Github/OpenGLconfig/20210427121625.png"></p>
+<h2 id="2-安装MinGM-W64"><a href="#2-安装MinGM-W64" class="headerlink" title="2. 安装MinGM-W64"></a>2. 安装MinGM-W64</h2><p>首先我们需要大概了解一下MinGM是个啥。前述的Clang作为GCC的替代品，和GCC一样也是主要用在Unix系统下的，我们想在Windows系统中使用Clang，便需要借助MinGM (Minimalist GNU for Windows)的力量。</p>
+<p>MinGM简单来讲，就是Window上的GNU开发平台，等于说有了MinGM你不用装linux也可以在Windows上玩GNU。</p>
+<ul>
+<li>版本说明：<ul>
+<li><p>MinGM（mingm32）—32位；</p>
+</li>
+<li><p>MinGM-w64—32+64位【我用的是这个】</p>
+<p>下载地址：<a href="https://sourceforge.net/projects/mingw-w64/files/">MinGW-w64 - for 32 and 64 bit Window</a></p>
+<p><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/blog_files/img/Pic-Github/OpenGLconfig/20210428111555.png"></p>
+</li>
+</ul>
+</li>
+<li><strong>注意：</strong> MinGW是在线安装，但是由于某种不可抗力，安装过程缓慢到不能忍受，因此我最后用的是离线安装的方法。</li>
+</ul>
+<h3 id="离线安装方法"><a href="#离线安装方法" class="headerlink" title="离线安装方法"></a>离线安装方法</h3><ol>
+<li><p>下载X86_64-win32-seh：<br>下载地址：<a href="https://sourceforge.net/projects/mingw-w64/files/">MinGW-w64 - for 32 and 64 bit Windows</a></p>
+<p><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/blog_files/img/Pic-Github/OpenGLconfig/20210428111823.png"></p>
+</li>
+<li><p>解压、合并文件：将解压后<code>mingw64</code>文件夹中的所有文件直接复制到之前的LLVM安装目录<code>D:\Programfiles\LLVM</code>，系统会自动整合同名文件夹中的文件。</p>
+<p><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/blog_files/img/Pic-Github/OpenGLconfig/20210428112733.png"></p>
+</li>
+<li><p>输入<code>clang -v</code>和<code>gcc -v</code>进行测试，出现版本号则安装成功。</p>
+<p><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/blog_files/img/Pic-Github/OpenGLconfig/20210428130609.png"></p>
+<p>当前系统的环境变量为：</p>
+<p><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/blog_files/img/Pic-Github/OpenGLconfig/20210428131225.png"></p>
+</li>
+</ol>
+<h2 id="3-安装VSCode插件"><a href="#3-安装VSCode插件" class="headerlink" title="3. 安装VSCode插件"></a>3. 安装VSCode插件</h2><p>在VSCode左侧的<code>扩展</code>中搜索安装以下插件：</p>
+<p><em>ps，在此之前，建议通过重定向将插件储存位置从C盘改出来:<br><code>"D:\Program Files (x86)\Microsoft VS Code\Code.exe" --extensions-dir "D:\Program Files (x86)\Microsoft VS Code\extensions"</code></em></p>
+<p><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/blog_files/img/Pic-Github/OpenGLconfig/20210428132711.png"></p>
+<ul>
+<li><p>插件1：C/C++</p>
+<p><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/blog_files/img/Pic-Github/OpenGLconfig/20210428132109.png"></p>
+</li>
+<li><p>插件2：C/C++ Clang Command Adapter</p>
+<p><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/blog_files/img/Pic-Github/OpenGLconfig/20210428132325.png"></p>
+</li>
+<li><p>插件3：Code Runner</p>
+<p><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/blog_files/img/Pic-Github/OpenGLconfig/20210428132842.png"></p>
+</li>
+</ul>
+<h1 id="VSCode配置Gult环境"><a href="#VSCode配置Gult环境" class="headerlink" title="VSCode配置Gult环境"></a>VSCode配置Gult环境</h1><p>Gult是OpenGl需要的相关依赖，包括<code>glut.h</code>，<code>glut32.lib</code>，<code>glut32.dll</code>文件。</p>
+<p>值得注意的是，由于之前的C++环境是64位的，gult版本必须与之对应，即64位。</p>
+<ol>
+<li><p>下载<code>glut.h</code>，<code>glut32.lib</code>，<code>glut32.dll</code>：</p>
+<p>下载地址：<a href="https://pan.baidu.com/s/1PN_0SxxKGJ-D_AZRDa4LDA">https://pan.baidu.com/s/1PN_0SxxKGJ-D_AZRDa4LDA</a> 提取码：sf1z </p>
+</li>
+<li><p>将gult文件放到相应目录下（LLVM安装路径）：</p>
+</li>
+</ol>
+<ul>
+<li><code>gult.h</code>放到目录：<code>D:\Programfiles\LLVM\include</code></li>
+<li><code>gult32.dll</code>放到目录：<code>D:\Programfiles\LLVM\bin</code></li>
+<li><code>gult32.lib</code>放到目录：<code>D:\Programfiles\LLVM\lib</code></li>
+</ul>
+<h1 id="VSCode配置文件"><a href="#VSCode配置文件" class="headerlink" title="VSCode配置文件"></a>VSCode配置文件</h1><p>在文件夹里新建<code>.vscode</code>，<code>include</code>和<code>lib</code>文件夹，<code>include</code>和<code>lib</code>现在先不用管，先专注<code>.vscode</code>文件夹，做VSCode下C/C++环境的基本配置。</p>
+<p>在<code>.vscode</code>文件夹里新建<code>c_cpp_properties.json</code>，<code>launch.json</code>，<code>settings.json</code>以及<code>tasks.json</code>。</p>
+<p><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/blog_files/img/Pic-Github/OpenGLconfig/20210430102555.png"></p>
+<h2 id="1-配置编译器：c-cpp-properties-json"><a href="#1-配置编译器：c-cpp-properties-json" class="headerlink" title="1. 配置编译器：c_cpp_properties.json"></a>1. 配置编译器：c_cpp_properties.json</h2><p>首先配置编译器路径。</p>
+<h3 id="方法-1："><a href="#方法-1：" class="headerlink" title="方法 1："></a>方法 1：</h3><figure class="highlight c++"><table><tbody><tr><td class="code"><pre><span class="line">{</span><br><span class="line">    <span class="string">"configurations"</span>: [</span><br><span class="line">        {</span><br><span class="line">            <span class="string">"name"</span>: <span class="string">"MinGW"</span>,</span><br><span class="line">            <span class="string">"intelliSenseMode"</span>: <span class="string">"clang-x64"</span>,</span><br><span class="line">            <span class="string">"compilerPath"</span>: <span class="string">"D:/Programfiles/LLVM/bin/g++.exe"</span>, <span class="comment">//之前安装的编译器的路径</span></span><br><span class="line">            <span class="string">"includePath"</span>: [</span><br><span class="line">                <span class="string">"${workspaceFolder}/**"</span>,</span><br><span class="line">                <span class="string">"${workspaceFolder}/include/*"</span>, <span class="comment">//当前文件夹下的include</span></span><br><span class="line">                <span class="string">"D:/Programfiles/LLVM/include/*"</span>, <span class="comment">//LLVM的include</span></span><br><span class="line">                <span class="string">"D:/Programfiles/LLVM/lib/gcc/x86_64-w64-mingw32/8.1.0/include/*"</span> <span class="comment">//mingw的include</span></span><br><span class="line">            ],</span><br><span class="line">            <span class="string">"defines"</span>: [],</span><br><span class="line">            <span class="string">"browse"</span>: {</span><br><span class="line">                <span class="string">"path"</span>: [</span><br><span class="line">                    <span class="string">"${workspaceFolder}"</span></span><br><span class="line">                ],</span><br><span class="line">                <span class="string">"limitSymbolsToIncludedHeaders"</span>: <span class="literal">true</span>,</span><br><span class="line">                <span class="string">"databaseFilename"</span>: <span class="string">""</span></span><br><span class="line">            },</span><br><span class="line">            <span class="string">"cStandard"</span>: <span class="string">"c11"</span>,</span><br><span class="line">            <span class="string">"cppStandard"</span>: <span class="string">"c++17"</span></span><br><span class="line">        }</span><br><span class="line">    ],</span><br><span class="line">    <span class="string">"version"</span>: <span class="number">4</span></span><br><span class="line">}</span><br></pre></td></tr></tbody></table></figure>
+<h3 id="方法-2："><a href="#方法-2：" class="headerlink" title="方法 2："></a>方法 2：</h3><p><a href="https://zhuanlan.zhihu.com/p/87864677">参考链接1</a>中<code>配置编译器</code>部分给出了另一种图形化的配置方式。</p>
+<p>简单来说就是不需要手动新建<code>.vscode</code>文件夹和<code>c_cpp_properties.json</code>文件，直接用<code>Ctrl+Shift+P</code>调出控制面板，输入<code>C/C++</code>选择<code>Edit Configurations(UI)</code>进入配置。</p>
+<ul>
+<li><p>修改编译器路径：D:/Programfiles/LLVM/bin/g++.exe</p>
+</li>
+<li><p>修改intelliSense：clang-x64</p>
+</li>
+</ul>
+<p>配置完成后，自动新建了<code>.vscode</code>文件夹和<code>c_cpp_properties.json</code>文件，再在<code>c_cpp_properties</code>文件中修改include路径即可。</p>
+<h2 id="2-配置构建任务tasks-json"><a href="#2-配置构建任务tasks-json" class="headerlink" title="2. 配置构建任务tasks.json"></a>2. 配置构建任务tasks.json</h2><p><code>tasks.json</code>可以告诉VSCode如何编译程序。</p>
+<h3 id="方法-1：-1"><a href="#方法-1：-1" class="headerlink" title="方法 1："></a>方法 1：</h3><figure class="highlight c++"><table><tbody><tr><td class="code"><pre><span class="line">{</span><br><span class="line">{</span><br><span class="line">    <span class="string">"version"</span>: <span class="string">"2.0.0"</span>,</span><br><span class="line">    <span class="string">"tasks"</span>: [</span><br><span class="line">        {</span><br><span class="line">            <span class="string">"label"</span>: <span class="string">"Compile"</span>, <span class="comment">// 任务名称，与launch.json的preLaunchTask相对应</span></span><br><span class="line">            <span class="string">"command"</span>: <span class="string">"clang++"</span>,</span><br><span class="line">            <span class="string">"args"</span>: [ <span class="comment">//编译时的参数</span></span><br><span class="line">                <span class="string">"${file}"</span>,</span><br><span class="line">                <span class="string">"-o"</span>, <span class="comment">//指定输出文件名</span></span><br><span class="line">                <span class="string">"${fileDirname}/${fileBasenameNoExtension}.exe"</span>,</span><br><span class="line">                <span class="string">"-g"</span>, <span class="comment">//添加gdb调试选项</span></span><br><span class="line">                <span class="string">"-Wall"</span>,  <span class="comment">//开启额外警告</span></span><br><span class="line">                <span class="string">"-static-libgcc"</span>, <span class="comment">//静态链接libgcc</span></span><br><span class="line">                <span class="string">"--target=x86_64-w64-mingw"</span>,  <span class="comment">//clang编译器需要加上这条，因为它默认的target是msvc；如果用gcc或者linux要注释掉</span></span><br><span class="line">                <span class="string">"-std=c++17"</span>,</span><br><span class="line">                <span class="string">"-I${workspaceFolder}/include"</span>, <span class="comment">//添加工作路径下的include</span></span><br><span class="line">                <span class="string">"-L${workspaceFolder}/lib"</span>, <span class="comment">//添加工作路径下的lib</span></span><br><span class="line">                <span class="string">"-lglut32"</span>, <span class="comment">//使用glut</span></span><br><span class="line">                <span class="string">"-lglu32"</span>,  <span class="comment">//使用glut</span></span><br><span class="line">                <span class="string">"-lopengl32"</span>, <span class="comment">//使用opengl</span></span><br><span class="line">                <span class="string">"-lglad"</span>, <span class="comment">//使用glad+glfw，这里可以先注释掉</span></span><br><span class="line">                <span class="string">"-lglfw3"</span>,  <span class="comment">//使用glad+glfw，这里可以先注释掉 </span></span><br><span class="line">                <span class="string">"-lglfw3dll"</span>, <span class="comment">//使用glad+glfw，这里可以先注释掉</span></span><br><span class="line">                <span class="string">"-lgdi32"</span>,  <span class="comment">//使用glad+glfw，这里可以先注释掉</span></span><br><span class="line">            ],</span><br><span class="line">            <span class="string">"type"</span>: <span class="string">"shell"</span>,</span><br><span class="line">            <span class="string">"group"</span>: {</span><br><span class="line">                <span class="string">"kind"</span>: <span class="string">"build"</span>,</span><br><span class="line">                <span class="string">"isDefault"</span>: <span class="literal">true</span> <span class="comment">//表示快捷键Ctrl+Shift+B可以运行该任务</span></span><br><span class="line">            },</span><br><span class="line">            <span class="string">"presentation"</span>: {</span><br><span class="line">                <span class="string">"echo"</span>: <span class="literal">true</span>,</span><br><span class="line">                <span class="string">"reveal"</span>: <span class="string">"always"</span>, <span class="comment">// 执行任务时是否跳转到终端面板</span></span><br><span class="line">                <span class="string">"focus"</span>: <span class="literal">false</span>,</span><br><span class="line">                <span class="string">"panel"</span>: <span class="string">"shared"</span> <span class="comment">// 不同的文件的编译信息共享一个终端面板</span></span><br><span class="line">            },</span><br><span class="line">            <span class="string">"problemMatcher"</span>: []</span><br><span class="line">        }</span><br><span class="line">    ]</span><br><span class="line">}</span><br></pre></td></tr></tbody></table></figure>
+
+<h3 id="方法-2：-1"><a href="#方法-2：-1" class="headerlink" title="方法 2："></a>方法 2：</h3><p><a href="https://zhuanlan.zhihu.com/p/87864677">参考链接1</a>中<code>配置构建任务</code>部分给出了另一种图形化的配置方式。</p>
+<p>不需要手动新建<code>tasks.json</code>文件，直接用<code>Ctrl+Shift+P</code>调出控制面板，输入<code>tasks</code>选择<code>Tasks:Configure Default Build Task</code>，自动生成tasks.json文件，主要修改其中的<code>"args"</code>参数部分。</p>
+<h2 id="配置调试设置launch-json"><a href="#配置调试设置launch-json" class="headerlink" title="配置调试设置launch.json"></a>配置调试设置launch.json</h2><p><code>launch.json</code>用来配置调试的相关信息。</p>
+<h3 id="方法-1：-2"><a href="#方法-1：-2" class="headerlink" title="方法 1："></a>方法 1：</h3><figure class="highlight c++"><table><tbody><tr><td class="code"><pre><span class="line">{</span><br><span class="line">    <span class="string">"version"</span>: <span class="string">"0.2.0"</span>,</span><br><span class="line">    <span class="string">"configurations"</span>: [</span><br><span class="line">        {</span><br><span class="line">            <span class="string">"name"</span>: <span class="string">"(gdb) Launch"</span>, <span class="comment">// 配置名称，将会在启动配置的下拉菜单中显示</span></span><br><span class="line">            <span class="string">"type"</span>: <span class="string">"cppdbg"</span>, <span class="comment">// 配置类型，cppdbg对应cpptools提供的调试功能；可以认为此处只能是cppdbg</span></span><br><span class="line">            <span class="string">"request"</span>: <span class="string">"launch"</span>, <span class="comment">// 请求配置类型，可以为launch（启动）或attach（附加）</span></span><br><span class="line">            <span class="string">"program"</span>: <span class="string">"${fileDirname}/${fileBasenameNoExtension}.exe"</span>, <span class="comment">// 将要进行调试的程序的路径</span></span><br><span class="line">            <span class="string">"args"</span>: [], <span class="comment">// 程序调试时传递给程序的命令行参数，一般设为空即可</span></span><br><span class="line">            <span class="string">"stopAtEntry"</span>: <span class="literal">false</span>, <span class="comment">// 设为true时程序将暂停在程序入口处，相当于在main上打断点</span></span><br><span class="line">            <span class="string">"cwd"</span>: <span class="string">"${workspaceFolder}"</span>, <span class="comment">// 调试程序时的工作目录，此为工作区文件夹；改成${fileDirname}可变为文件所在目录</span></span><br><span class="line">            <span class="string">"environment"</span>: [], <span class="comment">// 环境变量</span></span><br><span class="line">            <span class="string">"externalConsole"</span>: <span class="literal">false</span>, <span class="comment">// 为true时使用单独的cmd窗口，与其它IDE一致；18年10月后设为false可调用VSC内置终端</span></span><br><span class="line">            <span class="string">"internalConsoleOptions"</span>: <span class="string">"neverOpen"</span>, <span class="comment">// 如果不设为neverOpen，调试时会跳到“调试控制台”选项卡，你应该不需要对gdb手动输命令吧？</span></span><br><span class="line">            <span class="string">"MIMode"</span>: <span class="string">"gdb"</span>, <span class="comment">// 指定连接的调试器，可以为gdb或lldb。但我没试过lldb</span></span><br><span class="line">            <span class="string">"miDebuggerPath"</span>: <span class="string">"gdb.exe"</span>, <span class="comment">// 调试器路径，Windows下后缀不能省略，Linux下则不要</span></span><br><span class="line">            <span class="string">"setupCommands"</span>: [</span><br><span class="line">                { <span class="comment">// 模板自带，好像可以更好地显示STL容器的内容，具体作用自行Google</span></span><br><span class="line">                    <span class="string">"description"</span>: <span class="string">"Enable pretty-printing for gdb"</span>,</span><br><span class="line">                    <span class="string">"text"</span>: <span class="string">"-enable-pretty-printing"</span>,</span><br><span class="line">                    <span class="string">"ignoreFailures"</span>: <span class="literal">false</span></span><br><span class="line">                }</span><br><span class="line">            ],</span><br><span class="line">            <span class="string">"preLaunchTask"</span>: <span class="string">"Compile"</span> <span class="comment">// 调试会话开始前执行的任务，一般为编译程序。与tasks.json的label相对应</span></span><br><span class="line">        }</span><br><span class="line">    ]</span><br><span class="line">}</span><br></pre></td></tr></tbody></table></figure>
+
+<h3 id="方法-2：-2"><a href="#方法-2：-2" class="headerlink" title="方法 2："></a>方法 2：</h3><p>菜单栏<code>运行</code>-<code>启动调试</code>-<code>C++(GDB/LLDB)</code>，自动生成一个<code>launch.json</code>文件，再根据需要修改相关配置。</p>
+<p>ps，不推荐该方法，原博主也遇到了没解决的问题，笔者也没深究，还是建议方法1。</p>
+<h2 id="配置用户设置settings-json"><a href="#配置用户设置settings-json" class="headerlink" title="配置用户设置settings.json"></a>配置用户设置settings.json</h2><figure class="highlight c++"><table><tbody><tr><td class="code"><pre><span class="line">{</span><br><span class="line">  <span class="string">"files.defaultLanguage"</span>: <span class="string">"cpp"</span>, <span class="comment">// ctrl+N新建文件后默认的语言</span></span><br><span class="line">  <span class="string">"editor.formatOnType"</span>: <span class="literal">true</span>, <span class="comment">// 输入时就进行格式化，默认触发字符较少，分号可以触发</span></span><br><span class="line">  <span class="string">"editor.snippetSuggestions"</span>: <span class="string">"top"</span>, <span class="comment">// snippets代码优先显示补全</span></span><br><span class="line">  <span class="string">"code-runner.runInTerminal"</span>: <span class="literal">true</span>, <span class="comment">// 设置成false会在“输出”中输出，无法输入</span></span><br><span class="line">  <span class="string">"code-runner.executorMap"</span>: {</span><br><span class="line">      <span class="string">"c"</span>: <span class="string">"cd $dir &amp;&amp; clang $fileName -o $fileNameWithoutExt.exe -Wall -g -Og -static-libgcc -fcolor-diagnostics --target=x86_64-w64-mingw -std=c11 &amp;&amp; $dir$fileNameWithoutExt"</span>,</span><br><span class="line">      <span class="string">"cpp"</span>: <span class="string">"cd $dir &amp;&amp; clang++ $fileName -o $fileNameWithoutExt.exe -Wall -g -Og -static-libgcc -fcolor-diagnostics --target=x86_64-w64-mingw -lglut32 -lglu32 -lopengl32 -std=c++17 &amp;&amp; $dir$fileNameWithoutExt"</span> </span><br><span class="line">  }, <span class="comment">// 设置code runner的命令行</span></span><br><span class="line">  <span class="string">"code-runner.saveFileBeforeRun"</span>: <span class="literal">true</span>, <span class="comment">// run code前保存</span></span><br><span class="line">  <span class="string">"code-runner.preserveFocus"</span>: <span class="literal">true</span>, <span class="comment">// 若为false，run code后光标会聚焦到终端上。如果需要频繁输入数据可设为false</span></span><br><span class="line">  <span class="string">"code-runner.clearPreviousOutput"</span>: <span class="literal">false</span>, <span class="comment">// 每次run code前清空属于code runner的终端消息</span></span><br><span class="line"></span><br><span class="line">  <span class="string">"C_Cpp.clang_format_sortIncludes"</span>: <span class="literal">true</span>, <span class="comment">// 格式化时调整include的顺序（按字母排序）</span></span><br><span class="line">  <span class="string">"C_Cpp.intelliSenseEngine"</span>: <span class="string">"Default"</span>, <span class="comment">// 可以为Default或Tag Parser，后者较老，功能较简单。具体差别参考cpptools扩展文档</span></span><br><span class="line">  <span class="string">"C_Cpp.errorSquiggles"</span>: <span class="string">"Disabled"</span>, <span class="comment">// 因为有clang的lint，所以关掉</span></span><br><span class="line">  <span class="string">"C_Cpp.autocomplete"</span>: <span class="string">"Disabled"</span>, <span class="comment">// 因为有clang的补全，所以关掉</span></span><br><span class="line"></span><br><span class="line">  <span class="string">"clang.cflags"</span>: [ <span class="comment">// 控制c语言静态检测的参数</span></span><br><span class="line">      <span class="string">"--target=x86_64-w64-mingw"</span>,</span><br><span class="line">      <span class="string">"-std=c11"</span>,</span><br><span class="line">      <span class="string">"-Wall"</span>,</span><br><span class="line">      <span class="string">"-I./include"</span>,</span><br><span class="line">      <span class="string">"-L./lib"</span></span><br><span class="line">  ],</span><br><span class="line">  <span class="string">"clang.cxxflags"</span>: [ <span class="comment">// 控制c++静态检测时的参数</span></span><br><span class="line">      <span class="string">"--target=x86_64-w64-mingw"</span>,</span><br><span class="line">      <span class="string">"-std=c++17"</span>,</span><br><span class="line">      <span class="string">"-Wall"</span>,</span><br><span class="line">      <span class="string">"-I./include"</span>,</span><br><span class="line">      <span class="string">"-L./lib"</span></span><br><span class="line">  ],</span><br><span class="line">  <span class="string">"clang.completion.enable"</span>:<span class="literal">true</span>, <span class="comment">// 效果效果比cpptools要好</span></span><br><span class="line">  <span class="string">"clang.diagnostic.delay"</span>:<span class="number">300</span></span><br><span class="line">}</span><br></pre></td></tr></tbody></table></figure>
+
+<p><strong>值得注意的是</strong>，之前我run code一直报错找不到一些glut函数定义，只有debug能跑。后来发现问题出在<code>code-runner.executorMap</code>这里。</p>
+<p>之前<code>tasks.json</code>中调试参数部分为：<br><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/blog_files/img/Pic-Github/OpenGLconfig/20210430124111.png"></p>
+<p>而<code>settings.json</code>的<code>code-runner.executorMap</code>部分需要与之对应：<br><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/blog_files/img/Pic-Github/OpenGLconfig/20210430124608.png"></p>
+<p>加上红框部分就能run code了。</p>
+<h2 id="迁移"><a href="#迁移" class="headerlink" title="迁移"></a>迁移</h2><p>至此VSCode配置结束，之后跑新的C++项目只需要将<code>.vscode</code>文件夹复制过去就行，如果要用到其他库，只需要对其中一些参数稍作修改。</p>
+<h1 id="测试"><a href="#测试" class="headerlink" title="测试"></a>测试</h1><p>最后，我们建个main.cpp来测试一下：</p>
+<figure class="highlight c++"><table><tbody><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;glut.h&gt;</span></span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">init</span><span class="params">()</span></span>;</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">display</span><span class="params">()</span></span>;</span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">(<span class="keyword">int</span> argc, <span class="keyword">char</span>* argv[])</span></span>{</span><br><span class="line">    <span class="built_in">glutInit</span>(&amp;argc, argv);</span><br><span class="line">    <span class="built_in">glutInitDisplayMode</span>(GLUT_RGB | GLUT_SINGLE);</span><br><span class="line">    <span class="built_in">glutInitWindowPosition</span>(<span class="number">800</span>, <span class="number">150</span>);</span><br><span class="line">    <span class="built_in">glutInitWindowSize</span>(<span class="number">600</span>, <span class="number">400</span>);</span><br><span class="line">    <span class="built_in">glutCreateWindow</span>(<span class="string">"OpenGL 3D View"</span>);</span><br><span class="line">    <span class="built_in">init</span>();</span><br><span class="line">    <span class="built_in">glutDisplayFunc</span>(display);</span><br><span class="line">    <span class="built_in">glutMainLoop</span>();</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">}</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">init</span><span class="params">()</span></span>{</span><br><span class="line">    <span class="built_in">glClearColor</span>(<span class="number">0.0</span>, <span class="number">0.0</span>, <span class="number">0.0</span>, <span class="number">0.0</span>);</span><br><span class="line">    <span class="built_in">glMatrixMode</span>(GL_PROJECTION);</span><br><span class="line">    <span class="built_in">glOrtho</span>(<span class="number">-5</span>, <span class="number">5</span>, <span class="number">-5</span>, <span class="number">5</span>, <span class="number">5</span>, <span class="number">15</span>);</span><br><span class="line">    <span class="built_in">glMatrixMode</span>(GL_MODELVIEW);</span><br><span class="line">    <span class="built_in">gluLookAt</span>(<span class="number">0</span>, <span class="number">0</span>, <span class="number">10</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">1</span>, <span class="number">0</span>);</span><br><span class="line">}</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">display</span><span class="params">()</span></span>{</span><br><span class="line">    <span class="built_in">glClear</span>(GL_COLOR_BUFFER_BIT);</span><br><span class="line">    <span class="built_in">glColor3f</span>(<span class="number">0</span>, <span class="number">1.0</span>, <span class="number">0</span>);</span><br><span class="line">    <span class="built_in">glutWireTeapot</span>(<span class="number">3</span>);</span><br><span class="line">    <span class="built_in">glFlush</span>();</span><br><span class="line">}</span><br></pre></td></tr></tbody></table></figure>
+<p>run code：</p>
+<p><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/blog_files/img/Pic-Github/OpenGLconfig/20210430121933.png"></p>
+<p>大功告成！<span class="github-emoji"><span>☀</span><img src="https://github.githubassets.com/images/icons/emoji/unicode/2600.png?v8" aria-hidden="true" onerror="this.parent.classList.add('github-emoji-fallback')"></span><span class="github-emoji"><span>🐱</span><img src="https://github.githubassets.com/images/icons/emoji/unicode/1f431.png?v8" aria-hidden="true" onerror="this.parent.classList.add('github-emoji-fallback')"></span>~</p>
+<h1 id="后记"><a href="#后记" class="headerlink" title="后记"></a>后记</h1><p>emm，没啥好说的啦，干的不错喵喵喵~</p>
+]]></content>
+      <categories>
+        <category>教程</category>
+      </categories>
+      <tags>
+        <tag>教程</tag>
+        <tag>OpenGl</tag>
+        <tag>VSCode</tag>
       </tags>
   </entry>
   <entry>
@@ -328,7 +469,6 @@
 ]]></content>
       <categories>
         <category>教程</category>
-        <category>Blog搭建</category>
       </categories>
       <tags>
         <tag>教程</tag>
@@ -336,145 +476,781 @@
       </tags>
   </entry>
   <entry>
-    <title>VSCode+Clang+MinGW+OpenGl配置教程</title>
-    <url>/VSCode-Clang-MinGW-OpenGl%E9%85%8D%E7%BD%AE%E6%95%99%E7%A8%8B/</url>
-    <content><![CDATA[<h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>这几天帮别人跑一个天空盒代码，需要用到OpenGl环境，配置过程掉坑比较多略为艰难，因此写个教程记录一下，免得以后换电脑配环境的时候又掉坑233。</p>
-<p>顺便吐槽一下，这位仁兄电脑是联想核显，据说因为木有GPU，跑不了OpenGl程序，多好的反面教材<span class="github-emoji"><span>😄</span><img src="https://github.githubassets.com/images/icons/emoji/unicode/1f604.png?v8" aria-hidden="true" onerror="this.parent.classList.add('github-emoji-fallback')"></span>~ 这里提醒诸君，搞计算机视觉的话，电脑还是独显比较好。</p>
-<p>其实很久以前笔者在CodeBlocks上配置过OpenGl环境，当时用的是袁学长提供的傻瓜教程，私以为so easy……In fact，光是环境配置就要了老命，果然配置教程这种东西要及时记录！</p>
-<p><strong>掉坑的核心：64位和32位一定要区分清楚，所有配置必须all32或all64，否则程序会出现<code>skipping imcompatible</code>的问题。</strong></p>
-<p><strong>——以下配置都是64bit！</strong></p>
-<p>老规矩，附上参考链接，向前辈致敬：</p>
+    <title>NUS入学需知</title>
+    <url>/NUS%E5%85%A5%E5%AD%A6%E9%9C%80%E7%9F%A5/</url>
+    <content><![CDATA[<h1 id="清单"><a href="#清单" class="headerlink" title="清单"></a>清单</h1><h2 id="步骤"><a href="#步骤" class="headerlink" title="步骤"></a>步骤</h2><p>收到offer后</p>
+<ol>
+<li><p>在 <a href="https://inetapps.nus.edu.sg/GDA2">https://inetapps.nus.edu.sg/GDA2</a> 完成<strong>在线答复</strong>。</p>
+</li>
+<li><p>你会收到 NUS Graduate School 的指示，请参考 Registrar’s Office Guideline 给的<a href="https://nus.edu.sg/registrar/docs/info/registration-guides/registration-guide-for-graduate-research-students.pdf">注册指南</a> 在截止日期前完成状态更新：</p>
+<p>完成海外旅行申报单<strong>Overseas Travel Declaration (OTD)</strong>(自2021.6起)</p>
+<ol>
+<li>对于新生：<br> 请用以下方式登录<a href="https://myaces.nus.edu.sg/OverseasTravelDecl/applicantLogin">OTD申请系统</a><ol>
+<li>申请号</li>
+<li>申请密码/PIN</li>
+<li>选择学生类型</li>
+</ol>
+</li>
+<li>对于老生：<br> 使用NUSNET ID登录</li>
+</ol>
+</li>
+<li><p>必须完成<strong>注册（part1）</strong> <a href="https://myregistration.nus.edu.sg/">https://myregistration.nus.edu.sg/</a> </p>
+<p>注册系统从<strong>2021-6-14</strong>开放，使用GDA2申请号和密码登录pre-registration系统。</p>
+<p>需要更新的资料和声明如下：</p>
+<ul>
+<li>学生行为守则Code of Student Conduct</li>
+<li>犯罪记录声明</li>
+<li>健康和support声明</li>
+<li>可接受的IT资源使用政策Acceptable Use Policy for IT Resources</li>
+<li>不端性行为惩罚</li>
+<li>NUS拒收电话政策(Do-Not-Call)</li>
+<li>NUS知识产权政策</li>
+<li>NUS学生隐私政策</li>
+<li>费用补贴(Fee Subsidy)申报</li>
+<li>承诺书(适用于奖学金获得者)</li>
+<li>解除债务</li>
+<li>医疗程序授权</li>
+<li>Appointment of Local Representative</li>
+</ul>
+</li>
+<li><p>入境申请(Entry Approval)：<a href="https://safetravel.ica.gov.sg/stpl/requirements-and-process">STO-STP网站</a></p>
+</li>
+<li><p>获得有效护照，雇佣护照(适用于part-time学生)，IPA信(如果有必要的话，部分国家又要求)。</p>
+<p>带上关键文件的原件，如成绩单、出生证明/身份证/护照等，以及录取信中列出的任何未完成的文件。</p>
+</li>
+<li><p>注册诊断英语考试Diagnostic English Test(DET)（如果offer里列出你需要参加的话）</p>
+<ol>
+<li>在线注册时间：2021.7.2-2021.7.8</li>
+<li>参加考试：2021.7.21(<a href="http://www.nus.edu.sg/celc/">地点</a>)</li>
+</ol>
+</li>
+<li><p>在每个新的学期前需要进行在线modules注册（新学期开始两周前开始module注册）。</p>
+<p>请关注系办公室(Department Office)通知。</p>
+<p>module(s)的选择需要和导师/部门讨论。</p>
+</li>
+<li><p>在新加坡国立大学健康中心(UHC)进行入学前体检(如果您没有在本国完成的话)(在注册前完成)</p>
+</li>
+<li><p>教授迎新讲座(Faculty’s Orientation Talk)(具体细节8月前会发邮件确认)。</p>
+</li>
+<li><p>参加适用于国际生的国际生迎新电子简报会(<a href="http://nus.edu.sg/osa/studentlife/international-students/briefing">OSA website</a>)</p>
+</li>
+<li><p>向系办公室(Department Office)报到完成**注册(part2)**：具体细节7月初会通知你。</p>
+<ul>
+<li>收(Collect)学生卡</li>
+<li>从office那里获得讲座时间表</li>
+<li>参加部门迎新讲座(Department’s Orientation Talk)(请和您的部门确认)</li>
+</ul>
+</li>
+<li><p>向导师报到。</p>
+<p>导师会对你的科研给出指导和更多的信息。（仅适用于有指定导师的学生）<a href="https://myregistration.nus.edu.sg/">https://myregistration.nus.edu.sg/</a></p>
+</li>
+</ol>
+<h2 id="NUS求学阶段有用的链接："><a href="#NUS求学阶段有用的链接：" class="headerlink" title="NUS求学阶段有用的链接："></a>NUS求学阶段有用的链接：</h2><ul>
+<li><p>RO 注册办公室(Registrar’s Office)</p>
+<p><a href="http://www.nus.edu.sg/registrar/">http://www.nus.edu.sg/registrar/</a></p>
+</li>
+<li><p>NUS研究生院(Graduate School)：</p>
+<p><a href="https://nusgs.nus.edu.sg/">https://nusgs.nus.edu.sg/</a></p>
+</li>
+<li><p>OGP 工程学院-研究生课程办公室(Faculty of Engineering – Office of Graduate Programmes)</p>
+<p><a href="https://www.eng.nus.edu.sg/graduate/">https://www.eng.nus.edu.sg/graduate/</a></p>
+</li>
+<li><p>NUS图书馆</p>
+<p><a href="http://libportal.nus.edu.sg/frontend/ms/central-library/about-central-library">http://libportal.nus.edu.sg/frontend/ms/central-library/about-central-library</a></p>
+</li>
+<li><p>OSA 学生事务办公室(Office of Student Affairs)</p>
+<p><a href="http://www.nus.edu.sg/osa/">http://www.nus.edu.sg/osa/</a></p>
+</li>
+<li><p>UHC 大学健康中心(University Health Centre)</p>
+<p>  <a href="http://www.nus.edu.sg/uhc/">http://www.nus.edu.sg/uhc/</a></p>
+</li>
+<li><p>大学健康中心(Graduate&amp;Non-Graduate保险计划)</p>
+<p> <a href="http://www.nus.edu.sg/uhc/services/billing-insurance/insurance-matters">http://www.nus.edu.sg/uhc/services/billing-insurance/insurance-matters</a></p>
+</li>
+<li><p>NUS校园地图</p>
+<p> <a href="http://map.nus.edu.sg/">http://map.nus.edu.sg/</a></p>
+</li>
+</ul>
+<h2 id="重要通知"><a href="#重要通知" class="headerlink" title="重要通知"></a>重要通知</h2><p>鉴于COVID-19的现状，学生需要检查：</p>
+<ol>
+<li>国际学生需要查看 <a href="https://www.moh.gov.sg/covid-19">卫生部Ministry of Health(MOH)网站</a> 上的”Measures which apply to Inbound Travellers”，规划如何入境。</li>
+<li>定期查看收件箱中NUS的邮件，关注最新动态。</li>
+<li>参考以下NUS网站:<ol>
+<li>应对COVID-19的其他措施 <a href="https://www.nus.edu.sg/registrar/academic-activities/registration/administrative-matters">RO注册办公室</a></li>
+<li><a href="https://emergency.nus.edu.sg/">OSHE</a></li>
+<li>关于保险：<a href="https://nus.edu.sg/uhc/general-health/billing-insurance/insurance-matters">大学健康中心UHC</a></li>
+</ol>
+</li>
+</ol>
+<h1 id="附件1-校历"><a href="#附件1-校历" class="headerlink" title="附件1 校历"></a>附件1 校历</h1><h2 id="总时间表"><a href="#总时间表" class="headerlink" title="总时间表"></a>总时间表</h2><p><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/blog_files/img/Pic-Github/OpenGLconfig/20210508001604.png"><br><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/blog_files/img/Pic-Github/OpenGLconfig/20210508002007.png"></p>
+<h2 id="活动时间表"><a href="#活动时间表" class="headerlink" title="活动时间表"></a>活动时间表</h2><p><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/blog_files/img/Pic-Github/OpenGLconfig/20210508092125.png"></p>
+<p><a href="http://www.nus.edu.sg/ModReg">http://www.nus.edu.sg/ModReg</a></p>
+<p><a href="http://www.nus.edu.sg/registrar/academic-activities/special-term">http://www.nus.edu.sg/registrar/academic-activities/special-term</a></p>
+<p><a href="http://www.nus.edu/sg/commencement">http://www.nus.edu/sg/commencement</a></p>
+<h2 id="MINDEF-营地训练（军训）【雨我无瓜】"><a href="#MINDEF-营地训练（军训）【雨我无瓜】" class="headerlink" title="MINDEF 营地训练（军训）【雨我无瓜】"></a>MINDEF 营地训练（军训）【雨我无瓜】</h2><p>针对来自SAF/SPF/SCDF的本科NSmen，学院跟国防部、内政部一起组织了ICT训练(In-Camp Training)，该训练仅在学校假期的一段特殊时间段内进行。</p>
+<p>ICT期间学校不会安排或进行任何强制性的学术项目。需要参加ICT的本科NSmen不会因为学术承诺而获得延期。</p>
+<p><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/blog_files/img/Pic-Github/OpenGLconfig/20210508093229.png"></p>
+<h1 id="附件2-针对MEng-EngD-PhD学生的课程及其他要求"><a href="#附件2-针对MEng-EngD-PhD学生的课程及其他要求" class="headerlink" title="附件2 针对MEng/EngD/PhD学生的课程及其他要求"></a>附件2 针对MEng/EngD/PhD学生的课程及其他要求</h1><p>以下内容仅列出与PhD相关部分</p>
+<h2 id="课程要求-研究生模块"><a href="#课程要求-研究生模块" class="headerlink" title="课程要求-研究生模块"></a>课程要求-研究生模块</h2><p>候选人需就其感兴趣的领域进行研究，并在考试的最长期限前提交论文。除了论文需求，候选人还需要参加规定数量的课程，这些课程是导师认为对候选人有用的。</p>
+<p>课程组成部分：</p>
+<ol>
+<li><p>模块学分(Modular Credits)：</p>
+<p>每个包括39课时的研究生模块(module)，都被分配了4个模块学分(MC)。</p>
+<figure class="highlight plain"><table><tbody><tr><td class="code"><pre><span class="line">Each graduate module of 39 lecture hours is to be assigned 4 modular credits (MC).</span><br></pre></td></tr></tbody></table></figure></li>
+<li><p>等级和绩点<br>字母等级对应绩点如下所示：</p>
 <table>
 <thead>
 <tr>
-<th>链接</th>
+<th align="left">Grade</th>
+<th align="left">Grade Point</th>
 </tr>
 </thead>
 <tbody><tr>
-<td>1. <a href="https://zhuanlan.zhihu.com/p/87864677">VSCode配置C/C++环境</a></td>
+<td align="left">A+</td>
+<td align="left">5.00</td>
 </tr>
 <tr>
-<td>2. <a href="https://anyway521.github.io/post/fb46ea0d.html">VSCode配置C/C++环境完整版(附OpenGL配置)</a></td>
+<td align="left">A</td>
+<td align="left">5.00</td>
 </tr>
 <tr>
-<td>3. <a href="https://blog.csdn.net/qq_41523096/article/details/104628484">20秒 一键配置 VSCode (Visual Studio Code) C/C++开发环境</a></td>
+<td align="left">A-</td>
+<td align="left">4.50</td>
 </tr>
 <tr>
-<td>4. <a href="https://my.oschina.net/u/4277479/blog/3525117">VS Code + MinGW + Clang + OpenGL (vscode 配置 opengl环境)</a></td>
+<td align="left">B+</td>
+<td align="left">4.00</td>
+</tr>
+<tr>
+<td align="left">B</td>
+<td align="left">3.50</td>
+</tr>
+<tr>
+<td align="left">B-</td>
+<td align="left">3.00</td>
+</tr>
+<tr>
+<td align="left">C+</td>
+<td align="left">2.50</td>
+</tr>
+<tr>
+<td align="left">C</td>
+<td align="left">2.00</td>
+</tr>
+<tr>
+<td align="left">D+</td>
+<td align="left">1.50</td>
+</tr>
+<tr>
+<td align="left">D</td>
+<td align="left">1.00</td>
+</tr>
+<tr>
+<td align="left">F(Fail)</td>
+<td align="left">0</td>
 </tr>
 </tbody></table>
-<h1 id="VSCode配置C-C-环境"><a href="#VSCode配置C-C-环境" class="headerlink" title="VSCode配置C/C++环境"></a>VSCode配置C/C++环境</h1><p>首先，如果你只需要一个在VSCode上的C/C++环境，其他类似OpenGL、OpenCV等等都不需求，那么强烈推荐<a href="https://blog.csdn.net/qq_41523096/article/details/104628484">C参考链接3</a>，全自动傻瓜配置，非常nice。</p>
-<p>另外，如果你还没有装VSCode或者想要卸载，推荐<a href="https://zhuanlan.zhihu.com/p/87864677">参考链接1</a>，里面有VSCode的安装教程，在此就不累述了。</p>
-<p>那么，正文开始。</p>
-<h2 id="1-安装Clang"><a href="#1-安装Clang" class="headerlink" title="1. 安装Clang"></a>1. 安装Clang</h2><p>根据维基百科的定义，Clang是一个编译器前端，采用LLVM（一款用来开发编译器前后端的软件）作为其后端。Clang作为GNU编译器套装（<code>GCC</code>）的替代品，支持GNU编译器的大多数编译设定。Clang支持C、C++、Objective-C和Objective-C++。简单来说，我们安装LLVM等同于安装配置Clang。</p>
-<ul>
-<li>下载地址：<a href="https://releases.llvm.org/download.html">LLVM</a></li>
-</ul>
-<p>以LLVM 11.1.0为例：</p>
-<p><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/blog_files/img/Pic-Github/OpenGLconfig/20210427120902.png"><br><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/blog_files/img/Pic-Github/OpenGLconfig/20210427121320.png"></p>
-<p>笔者的安装位置：<code>D:\Programfiles\LLVM</code>，安装过程中注意勾选：<code>添加环境变量</code></p>
-<p><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/blog_files/img/Pic-Github/OpenGLconfig/20210427121625.png"></p>
-<h2 id="2-安装MinGM-W64"><a href="#2-安装MinGM-W64" class="headerlink" title="2. 安装MinGM-W64"></a>2. 安装MinGM-W64</h2><p>首先我们需要大概了解一下MinGM是个啥。前述的Clang作为GCC的替代品，和GCC一样也是主要用在Unix系统下的，我们想在Windows系统中使用Clang，便需要借助MinGM (Minimalist GNU for Windows)的力量。</p>
-<p>MinGM简单来讲，就是Window上的GNU开发平台，等于说有了MinGM你不用装linux也可以在Windows上玩GNU。</p>
-<ul>
-<li>版本说明：<ul>
-<li><p>MinGM（mingm32）—32位；</p>
+<p><strong>Phd要求CAP必须&gt;=3.50</strong></p>
 </li>
-<li><p>MinGM-w64—32+64位【我用的是这个】</p>
-<p>下载地址：<a href="https://sourceforge.net/projects/mingw-w64/files/">MinGW-w64 - for 32 and 64 bit Window</a></p>
-<p><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/blog_files/img/Pic-Github/OpenGLconfig/20210428111555.png"></p>
-</li>
-</ul>
-</li>
-<li><strong>注意：</strong> MinGW是在线安装，但是由于某种不可抗力，安装过程缓慢到不能忍受，因此我最后用的是离线安装的方法。</li>
-</ul>
-<h3 id="离线安装方法"><a href="#离线安装方法" class="headerlink" title="离线安装方法"></a>离线安装方法</h3><ol>
-<li><p>下载X86_64-win32-seh：<br>下载地址：<a href="https://sourceforge.net/projects/mingw-w64/files/">MinGW-w64 - for 32 and 64 bit Windows</a></p>
-<p><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/blog_files/img/Pic-Github/OpenGLconfig/20210428111823.png"></p>
-</li>
-<li><p>解压、合并文件：将解压后<code>mingw64</code>文件夹中的所有文件直接复制到之前的LLVM安装目录<code>D:\Programfiles\LLVM</code>，系统会自动整合同名文件夹中的文件。</p>
-<p><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/blog_files/img/Pic-Github/OpenGLconfig/20210428112733.png"></p>
-</li>
-<li><p>输入<code>clang -v</code>和<code>gcc -v</code>进行测试，出现版本号则安装成功。</p>
-<p><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/blog_files/img/Pic-Github/OpenGLconfig/20210428130609.png"></p>
-<p>当前系统的环境变量为：</p>
-<p><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/blog_files/img/Pic-Github/OpenGLconfig/20210428131225.png"></p>
-</li>
-</ol>
-<h2 id="3-安装VSCode插件"><a href="#3-安装VSCode插件" class="headerlink" title="3. 安装VSCode插件"></a>3. 安装VSCode插件</h2><p>在VSCode左侧的<code>扩展</code>中搜索安装以下插件：</p>
-<p><em>ps，在此之前，建议通过重定向将插件储存位置从C盘改出来:<br><code>"D:\Program Files (x86)\Microsoft VS Code\Code.exe" --extensions-dir "D:\Program Files (x86)\Microsoft VS Code\extensions"</code></em></p>
-<p><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/blog_files/img/Pic-Github/OpenGLconfig/20210428132711.png"></p>
-<ul>
-<li><p>插件1：C/C++</p>
-<p><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/blog_files/img/Pic-Github/OpenGLconfig/20210428132109.png"></p>
-</li>
-<li><p>插件2：C/C++ Clang Command Adapter</p>
-<p><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/blog_files/img/Pic-Github/OpenGLconfig/20210428132325.png"></p>
-</li>
-<li><p>插件3：Code Runner</p>
-<p><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/blog_files/img/Pic-Github/OpenGLconfig/20210428132842.png"></p>
-</li>
-</ul>
-<h1 id="VSCode配置Gult环境"><a href="#VSCode配置Gult环境" class="headerlink" title="VSCode配置Gult环境"></a>VSCode配置Gult环境</h1><p>Gult是OpenGl需要的相关依赖，包括<code>glut.h</code>，<code>glut32.lib</code>，<code>glut32.dll</code>文件。</p>
-<p>值得注意的是，由于之前的C++环境是64位的，gult版本必须与之对应，即64位。</p>
+<li><p>学术警告、留校察看、退学与毕业 </p>
 <ol>
-<li><p>下载<code>glut.h</code>，<code>glut32.lib</code>，<code>glut32.dll</code>：</p>
-<p>下载地址：<a href="https://pan.baidu.com/s/1PN_0SxxKGJ-D_AZRDa4LDA">https://pan.baidu.com/s/1PN_0SxxKGJ-D_AZRDa4LDA</a> 提取码：sf1z </p>
+<li><p>关于继续学习(continuation)：</p>
+<ul>
+<li>在第一学期的学习中，CAP不得低于1.50；or，</li>
+<li>对于PhD学生： CAP不得连续两学期低于3.00；or， CPA不得连续三学期低于3.50。</li>
+</ul>
+<p>CAP不满足要求的学生会被建议退学。</p>
+<p>任一学期中，如果CAP低于毕业要求(PhD要求3.50以上)，学生会收到学术警告或者留校察看通知。此外，在资格考试(QE)、科研或者其他课程要求中表现不佳的学生同样可能会收到学术警告或者留校察看通知。</p>
 </li>
-<li><p>将gult文件放到相应目录下（LLVM安装路径）：</p>
+<li><p>关于毕业(Graduation)：</p>
+<p><strong>针对ECE的PhD学生</strong></p>
+<ul>
+<li>获得至少24 MCs（不包括博士研讨会(Doctoral Seminars)和研究生英语课程模块），这24个MCs必须是该学科或者相关科目的研究生水平，须经系里批准。MCs包括<strong>2个EE5000模块</strong>、<strong>2个EE6000模块</strong>，和<strong>2个无限制模块</strong>。<figure class="highlight plain"><table><tbody><tr><td class="code"><pre><span class="line">每个模块module (约39h的课时) 包括4个模块学分MC，即1模块=4MC。</span><br><span class="line">毕业需要完成24个MC，等于6个模块。</span><br><span class="line">这6个模块包括2个EE5000模块、2个EE6000模块、2个任意模块。</span><br></pre></td></tr></tbody></table></figure></li>
+<li>4 MCs(2x2) 的EE6990 Research Attachment需要获得令人满意的成绩。</li>
+<li>最好的6个模块(=24 MCs)的CAP&gt;=3.50.</li>
+<li>通过资格考试（Qualifying Examination, QE）。</li>
+<li>通过Phd论文和口头考核。</li>
+<li>在研究生英语课程（中等水平）中获得最低为C的等级。</li>
+<li>在ES5101 Technical Communication for Engineers（0 MC, graded）中获得最低为C的等级。</li>
+<li>在EG5911R Literacy Skills for Research中获得令人满意的成绩。</li>
+<li>在Doctoral Seminars中获得令人满意的成绩。</li>
+</ul>
 </li>
 </ol>
-<ul>
-<li><code>gult.h</code>放到目录：<code>D:\Programfiles\LLVM\include</code></li>
-<li><code>gult32.dll</code>放到目录：<code>D:\Programfiles\LLVM\bin</code></li>
-<li><code>gult32.lib</code>放到目录：<code>D:\Programfiles\LLVM\lib</code></li>
-</ul>
-<h1 id="VSCode配置文件"><a href="#VSCode配置文件" class="headerlink" title="VSCode配置文件"></a>VSCode配置文件</h1><p>在文件夹里新建<code>.vscode</code>，<code>include</code>和<code>lib</code>文件夹，<code>include</code>和<code>lib</code>现在先不用管，先专注<code>.vscode</code>文件夹，做VSCode下C/C++环境的基本配置。</p>
-<p>在<code>.vscode</code>文件夹里新建<code>c_cpp_properties.json</code>，<code>launch.json</code>，<code>settings.json</code>以及<code>tasks.json</code>。</p>
-<p><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/blog_files/img/Pic-Github/OpenGLconfig/20210430102555.png"></p>
-<h2 id="1-配置编译器：c-cpp-properties-json"><a href="#1-配置编译器：c-cpp-properties-json" class="headerlink" title="1. 配置编译器：c_cpp_properties.json"></a>1. 配置编译器：c_cpp_properties.json</h2><p>首先配置编译器路径。</p>
-<h3 id="方法-1："><a href="#方法-1：" class="headerlink" title="方法 1："></a>方法 1：</h3><figure class="highlight c++"><table><tbody><tr><td class="code"><pre><span class="line">{</span><br><span class="line">    <span class="string">"configurations"</span>: [</span><br><span class="line">        {</span><br><span class="line">            <span class="string">"name"</span>: <span class="string">"MinGW"</span>,</span><br><span class="line">            <span class="string">"intelliSenseMode"</span>: <span class="string">"clang-x64"</span>,</span><br><span class="line">            <span class="string">"compilerPath"</span>: <span class="string">"D:/Programfiles/LLVM/bin/g++.exe"</span>, <span class="comment">//之前安装的编译器的路径</span></span><br><span class="line">            <span class="string">"includePath"</span>: [</span><br><span class="line">                <span class="string">"${workspaceFolder}/**"</span>,</span><br><span class="line">                <span class="string">"${workspaceFolder}/include/*"</span>, <span class="comment">//当前文件夹下的include</span></span><br><span class="line">                <span class="string">"D:/Programfiles/LLVM/include/*"</span>, <span class="comment">//LLVM的include</span></span><br><span class="line">                <span class="string">"D:/Programfiles/LLVM/lib/gcc/x86_64-w64-mingw32/8.1.0/include/*"</span> <span class="comment">//mingw的include</span></span><br><span class="line">            ],</span><br><span class="line">            <span class="string">"defines"</span>: [],</span><br><span class="line">            <span class="string">"browse"</span>: {</span><br><span class="line">                <span class="string">"path"</span>: [</span><br><span class="line">                    <span class="string">"${workspaceFolder}"</span></span><br><span class="line">                ],</span><br><span class="line">                <span class="string">"limitSymbolsToIncludedHeaders"</span>: <span class="literal">true</span>,</span><br><span class="line">                <span class="string">"databaseFilename"</span>: <span class="string">""</span></span><br><span class="line">            },</span><br><span class="line">            <span class="string">"cStandard"</span>: <span class="string">"c11"</span>,</span><br><span class="line">            <span class="string">"cppStandard"</span>: <span class="string">"c++17"</span></span><br><span class="line">        }</span><br><span class="line">    ],</span><br><span class="line">    <span class="string">"version"</span>: <span class="number">4</span></span><br><span class="line">}</span><br></pre></td></tr></tbody></table></figure>
-<h3 id="方法-2："><a href="#方法-2：" class="headerlink" title="方法 2："></a>方法 2：</h3><p><a href="https://zhuanlan.zhihu.com/p/87864677">参考链接1</a>中<code>配置编译器</code>部分给出了另一种图形化的配置方式。</p>
-<p>简单来说就是不需要手动新建<code>.vscode</code>文件夹和<code>c_cpp_properties.json</code>文件，直接用<code>Ctrl+Shift+P</code>调出控制面板，输入<code>C/C++</code>选择<code>Edit Configurations(UI)</code>进入配置。</p>
-<ul>
-<li><p>修改编译器路径：D:/Programfiles/LLVM/bin/g++.exe</p>
 </li>
-<li><p>修改intelliSense：clang-x64</p>
+</ol>
+<p><em>注意：CAP = Cumulative Average Point累计绩点 = Sum(Grade Pt x MC)/Sum(MC)</em></p>
+<p>对于尚未达到最小毕业MC的学生而言，所有字母等级需要换算成CAP。</p>
+<p>而对于已达毕业MC的学生，the CAP is computed using the best modules equivalent to minimum number of modular credits(inclusive of foundation/core modules, where required)。评级为F的模块不获得任何MC。</p>
+<p>在计算完成课程需求的绩点时，CELC模块（比如，研究生英语课程）不被计入其中。</p>
+<p>所有课程一般会在周一至周五的晚上6:00-9:00进行。关于需要上啥课，Candidates需要和导师讨论并获得导师的批准。</p>
+<h2 id="研讨会-Seminar-要求"><a href="#研讨会-Seminar-要求" class="headerlink" title="研讨会(Seminar)要求"></a>研讨会(Seminar)要求</h2><p>所有研究型学生都需要参加研讨会。在你注册成一个NUS的学生后，请从你的Department/Division处获得关于这部分要求的更多信息。</p>
+<h2 id="博士资格考试"><a href="#博士资格考试" class="headerlink" title="博士资格考试"></a>博士资格考试</h2><p>除了课程要求，所有工程学院的博士候选人都需要参加并通过资格考试QE，该考试包括以下内容：</p>
+<ol>
+<li>综合资格考试；</li>
+<li>提交一份30-40页的关于正在进行的科研的研究报告；</li>
+<li>在至少3个成员（包括你的导师）组成的小组面前，完成有关你研究报告的口头答辩。</li>
+</ol>
+<p><strong>关于QE的时间：</strong></p>
+<p>对于全日制和非全日制的直博候选人，综合资格考试将在第一年内（自申请开始之日起？）进行，而口头资格考试需要在24个月（2年）内通过。</p>
+<p>未通过QE的候选人将被提名到研究生委员会，终止其资格（退学）。</p>
+<p><strong>针对获得NUS研究型奖学金的学生</strong><br>自通过口头资格考试之日起，学生可以每月额外获得$500的助学津贴。</p>
+<p>追加的款项将在奖学金申请的第四年/截止日期（取较早者）内发放。</p>
+<h2 id="论文提交"><a href="#论文提交" class="headerlink" title="论文提交"></a>论文提交</h2><p>对于PhD学生：within 4 years of your candidature to be in time for the degree to be conferred to you by 5 years.</p>
+<p>更详细的指导请参考：<a href="https://myportal.nus.edu.sg/studentportal/nusgs/gd/docs/Thesis%20Submission%20and%20Examination.pdf">https://myportal.nus.edu.sg/studentportal/nusgs/gd/docs/Thesis%20Submission%20and%20Examination.pdf</a></p>
+<h2 id="英语需求（针对需要参加DET考试的学生）"><a href="#英语需求（针对需要参加DET考试的学生）" class="headerlink" title="英语需求（针对需要参加DET考试的学生）"></a>英语需求（针对需要参加DET考试的学生）</h2><p>雨我无瓜~</p>
+<h2 id="EG5911R-Information-Literacy-Skills-for-Research"><a href="#EG5911R-Information-Literacy-Skills-for-Research" class="headerlink" title="EG5911R: Information Literacy Skills for Research"></a>EG5911R: Information Literacy Skills for Research</h2><p>自2013/14的第一学期起，PhD学生被要求注册这个模块。该模块需在第一学期进行。该模块为工程研究的学生提供如何高效查找期刊论文的背景知识。是有关剽窃问题和实验室安全的最好实践。</p>
+<p>该模块是完成毕业要求的一部分。它是0 MCs课程，使用令人满意的完成/不令人满意的完成（CS/SC）的标准来评分。学生需要获得CS。</p>
+<p>图书馆指导员仅提供一个上午的有关期刊搜索的讲座。</p>
+<p>对于PhD学生而言，该模块需要在口头资格考试前完成。</p>
+<h1 id="附件3-体检"><a href="#附件3-体检" class="headerlink" title="附件3 体检"></a>附件3 体检</h1><p>入学条件是健康且没有器官疾病，在入学前，所有学生都必须完成强制的预入学体检。</p>
+<h2 id="入学前体检"><a href="#入学前体检" class="headerlink" title="入学前体检"></a>入学前体检</h2><p>在入学前，所有研究生都必须经过下述的pre-enrolment体检：</p>
+<ul>
+<li><p>当地学生（略）</p>
+</li>
+<li><p>国际生</p>
+<p>除了NUS pre-enrolment体检，申请学生准证(Student’s Pass)还需要进行HIV检测。</p>
+<ul>
+<li>HIV检测和体检可以在原国家或者新加坡完成。原始的HIV检测和胸部X光检查报告，必须和用于学生准证的ICA体检报告一起，在发布后三个月内上交到移民与关卡局(Immigration &amp; Checkpoints Authorit, ICA)。 <strong>注意：体检报告、测试报告和X光报告都必须是英文版的。胸部X光报告上需要有学生的姓名、身份证号、出生日期等个人信息。</strong></li>
+<li>如果学生选择在UHC做NUS入学前体检和学生准证体检，在GST（消费税）后费用是$55(包括胸部X光合HIV检查)。请注意检查结果只会在5个工作日后给出。</li>
+<li>请带上 <a href="https://www.ica.gov.sg/docs/default-source/ica/forms/medical-examination-report.pdf">ICA学生准证体检表</a> 和 <a href="http://www.nus.edu.sg/uhc/docs/default-source/default-document-library/graduate.pdf?sfvrsn=7f37a850_2">入学前体检表</a>(包括第一部分的自我声明和第二部分的医生证明) 以供医生填写。请参考<a href="http://www.nus.edu.sg/uhc/services/medical-examination/pre-admission/pre-admission-medical-exam">UHC官网</a>的最新版表格，不要使用旧版。</li>
+</ul>
 </li>
 </ul>
-<p>配置完成后，自动新建了<code>.vscode</code>文件夹和<code>c_cpp_properties.json</code>文件，再在<code>c_cpp_properties</code>文件中修改include路径即可。</p>
-<h2 id="2-配置构建任务tasks-json"><a href="#2-配置构建任务tasks-json" class="headerlink" title="2. 配置构建任务tasks.json"></a>2. 配置构建任务tasks.json</h2><p><code>tasks.json</code>可以告诉VSCode如何编译程序。</p>
-<h3 id="方法-1：-1"><a href="#方法-1：-1" class="headerlink" title="方法 1："></a>方法 1：</h3><figure class="highlight c++"><table><tbody><tr><td class="code"><pre><span class="line">{</span><br><span class="line">{</span><br><span class="line">    <span class="string">"version"</span>: <span class="string">"2.0.0"</span>,</span><br><span class="line">    <span class="string">"tasks"</span>: [</span><br><span class="line">        {</span><br><span class="line">            <span class="string">"label"</span>: <span class="string">"Compile"</span>, <span class="comment">// 任务名称，与launch.json的preLaunchTask相对应</span></span><br><span class="line">            <span class="string">"command"</span>: <span class="string">"clang++"</span>,</span><br><span class="line">            <span class="string">"args"</span>: [ <span class="comment">//编译时的参数</span></span><br><span class="line">                <span class="string">"${file}"</span>,</span><br><span class="line">                <span class="string">"-o"</span>, <span class="comment">//指定输出文件名</span></span><br><span class="line">                <span class="string">"${fileDirname}/${fileBasenameNoExtension}.exe"</span>,</span><br><span class="line">                <span class="string">"-g"</span>, <span class="comment">//添加gdb调试选项</span></span><br><span class="line">                <span class="string">"-Wall"</span>,  <span class="comment">//开启额外警告</span></span><br><span class="line">                <span class="string">"-static-libgcc"</span>, <span class="comment">//静态链接libgcc</span></span><br><span class="line">                <span class="string">"--target=x86_64-w64-mingw"</span>,  <span class="comment">//clang编译器需要加上这条，因为它默认的target是msvc；如果用gcc或者linux要注释掉</span></span><br><span class="line">                <span class="string">"-std=c++17"</span>,</span><br><span class="line">                <span class="string">"-I${workspaceFolder}/include"</span>, <span class="comment">//添加工作路径下的include</span></span><br><span class="line">                <span class="string">"-L${workspaceFolder}/lib"</span>, <span class="comment">//添加工作路径下的lib</span></span><br><span class="line">                <span class="string">"-lglut32"</span>, <span class="comment">//使用glut</span></span><br><span class="line">                <span class="string">"-lglu32"</span>,  <span class="comment">//使用glut</span></span><br><span class="line">                <span class="string">"-lopengl32"</span>, <span class="comment">//使用opengl</span></span><br><span class="line">                <span class="string">"-lglad"</span>, <span class="comment">//使用glad+glfw，这里可以先注释掉</span></span><br><span class="line">                <span class="string">"-lglfw3"</span>,  <span class="comment">//使用glad+glfw，这里可以先注释掉 </span></span><br><span class="line">                <span class="string">"-lglfw3dll"</span>, <span class="comment">//使用glad+glfw，这里可以先注释掉</span></span><br><span class="line">                <span class="string">"-lgdi32"</span>,  <span class="comment">//使用glad+glfw，这里可以先注释掉</span></span><br><span class="line">            ],</span><br><span class="line">            <span class="string">"type"</span>: <span class="string">"shell"</span>,</span><br><span class="line">            <span class="string">"group"</span>: {</span><br><span class="line">                <span class="string">"kind"</span>: <span class="string">"build"</span>,</span><br><span class="line">                <span class="string">"isDefault"</span>: <span class="literal">true</span> <span class="comment">//表示快捷键Ctrl+Shift+B可以运行该任务</span></span><br><span class="line">            },</span><br><span class="line">            <span class="string">"presentation"</span>: {</span><br><span class="line">                <span class="string">"echo"</span>: <span class="literal">true</span>,</span><br><span class="line">                <span class="string">"reveal"</span>: <span class="string">"always"</span>, <span class="comment">// 执行任务时是否跳转到终端面板</span></span><br><span class="line">                <span class="string">"focus"</span>: <span class="literal">false</span>,</span><br><span class="line">                <span class="string">"panel"</span>: <span class="string">"shared"</span> <span class="comment">// 不同的文件的编译信息共享一个终端面板</span></span><br><span class="line">            },</span><br><span class="line">            <span class="string">"problemMatcher"</span>: []</span><br><span class="line">        }</span><br><span class="line">    ]</span><br><span class="line">}</span><br></pre></td></tr></tbody></table></figure>
-
-<h3 id="方法-2：-1"><a href="#方法-2：-1" class="headerlink" title="方法 2："></a>方法 2：</h3><p><a href="https://zhuanlan.zhihu.com/p/87864677">参考链接1</a>中<code>配置构建任务</code>部分给出了另一种图形化的配置方式。</p>
-<p>不需要手动新建<code>tasks.json</code>文件，直接用<code>Ctrl+Shift+P</code>调出控制面板，输入<code>tasks</code>选择<code>Tasks:Configure Default Build Task</code>，自动生成tasks.json文件，主要修改其中的<code>"args"</code>参数部分。</p>
-<h2 id="配置调试设置launch-json"><a href="#配置调试设置launch-json" class="headerlink" title="配置调试设置launch.json"></a>配置调试设置launch.json</h2><p><code>launch.json</code>用来配置调试的相关信息。</p>
-<h3 id="方法-1：-2"><a href="#方法-1：-2" class="headerlink" title="方法 1："></a>方法 1：</h3><figure class="highlight c++"><table><tbody><tr><td class="code"><pre><span class="line">{</span><br><span class="line">    <span class="string">"version"</span>: <span class="string">"0.2.0"</span>,</span><br><span class="line">    <span class="string">"configurations"</span>: [</span><br><span class="line">        {</span><br><span class="line">            <span class="string">"name"</span>: <span class="string">"(gdb) Launch"</span>, <span class="comment">// 配置名称，将会在启动配置的下拉菜单中显示</span></span><br><span class="line">            <span class="string">"type"</span>: <span class="string">"cppdbg"</span>, <span class="comment">// 配置类型，cppdbg对应cpptools提供的调试功能；可以认为此处只能是cppdbg</span></span><br><span class="line">            <span class="string">"request"</span>: <span class="string">"launch"</span>, <span class="comment">// 请求配置类型，可以为launch（启动）或attach（附加）</span></span><br><span class="line">            <span class="string">"program"</span>: <span class="string">"${fileDirname}/${fileBasenameNoExtension}.exe"</span>, <span class="comment">// 将要进行调试的程序的路径</span></span><br><span class="line">            <span class="string">"args"</span>: [], <span class="comment">// 程序调试时传递给程序的命令行参数，一般设为空即可</span></span><br><span class="line">            <span class="string">"stopAtEntry"</span>: <span class="literal">false</span>, <span class="comment">// 设为true时程序将暂停在程序入口处，相当于在main上打断点</span></span><br><span class="line">            <span class="string">"cwd"</span>: <span class="string">"${workspaceFolder}"</span>, <span class="comment">// 调试程序时的工作目录，此为工作区文件夹；改成${fileDirname}可变为文件所在目录</span></span><br><span class="line">            <span class="string">"environment"</span>: [], <span class="comment">// 环境变量</span></span><br><span class="line">            <span class="string">"externalConsole"</span>: <span class="literal">false</span>, <span class="comment">// 为true时使用单独的cmd窗口，与其它IDE一致；18年10月后设为false可调用VSC内置终端</span></span><br><span class="line">            <span class="string">"internalConsoleOptions"</span>: <span class="string">"neverOpen"</span>, <span class="comment">// 如果不设为neverOpen，调试时会跳到“调试控制台”选项卡，你应该不需要对gdb手动输命令吧？</span></span><br><span class="line">            <span class="string">"MIMode"</span>: <span class="string">"gdb"</span>, <span class="comment">// 指定连接的调试器，可以为gdb或lldb。但我没试过lldb</span></span><br><span class="line">            <span class="string">"miDebuggerPath"</span>: <span class="string">"gdb.exe"</span>, <span class="comment">// 调试器路径，Windows下后缀不能省略，Linux下则不要</span></span><br><span class="line">            <span class="string">"setupCommands"</span>: [</span><br><span class="line">                { <span class="comment">// 模板自带，好像可以更好地显示STL容器的内容，具体作用自行Google</span></span><br><span class="line">                    <span class="string">"description"</span>: <span class="string">"Enable pretty-printing for gdb"</span>,</span><br><span class="line">                    <span class="string">"text"</span>: <span class="string">"-enable-pretty-printing"</span>,</span><br><span class="line">                    <span class="string">"ignoreFailures"</span>: <span class="literal">false</span></span><br><span class="line">                }</span><br><span class="line">            ],</span><br><span class="line">            <span class="string">"preLaunchTask"</span>: <span class="string">"Compile"</span> <span class="comment">// 调试会话开始前执行的任务，一般为编译程序。与tasks.json的label相对应</span></span><br><span class="line">        }</span><br><span class="line">    ]</span><br><span class="line">}</span><br></pre></td></tr></tbody></table></figure>
-
-<h3 id="方法-2：-2"><a href="#方法-2：-2" class="headerlink" title="方法 2："></a>方法 2：</h3><p>菜单栏<code>运行</code>-<code>启动调试</code>-<code>C++(GDB/LLDB)</code>，自动生成一个<code>launch.json</code>文件，再根据需要修改相关配置。</p>
-<p>ps，不推荐该方法，原博主也遇到了没解决的问题，笔者也没深究，还是建议方法1。</p>
-<h2 id="配置用户设置settings-json"><a href="#配置用户设置settings-json" class="headerlink" title="配置用户设置settings.json"></a>配置用户设置settings.json</h2><figure class="highlight c++"><table><tbody><tr><td class="code"><pre><span class="line">{</span><br><span class="line">  <span class="string">"files.defaultLanguage"</span>: <span class="string">"cpp"</span>, <span class="comment">// ctrl+N新建文件后默认的语言</span></span><br><span class="line">  <span class="string">"editor.formatOnType"</span>: <span class="literal">true</span>, <span class="comment">// 输入时就进行格式化，默认触发字符较少，分号可以触发</span></span><br><span class="line">  <span class="string">"editor.snippetSuggestions"</span>: <span class="string">"top"</span>, <span class="comment">// snippets代码优先显示补全</span></span><br><span class="line">  <span class="string">"code-runner.runInTerminal"</span>: <span class="literal">true</span>, <span class="comment">// 设置成false会在“输出”中输出，无法输入</span></span><br><span class="line">  <span class="string">"code-runner.executorMap"</span>: {</span><br><span class="line">      <span class="string">"c"</span>: <span class="string">"cd $dir &amp;&amp; clang $fileName -o $fileNameWithoutExt.exe -Wall -g -Og -static-libgcc -fcolor-diagnostics --target=x86_64-w64-mingw -std=c11 &amp;&amp; $dir$fileNameWithoutExt"</span>,</span><br><span class="line">      <span class="string">"cpp"</span>: <span class="string">"cd $dir &amp;&amp; clang++ $fileName -o $fileNameWithoutExt.exe -Wall -g -Og -static-libgcc -fcolor-diagnostics --target=x86_64-w64-mingw -lglut32 -lglu32 -lopengl32 -std=c++17 &amp;&amp; $dir$fileNameWithoutExt"</span> </span><br><span class="line">  }, <span class="comment">// 设置code runner的命令行</span></span><br><span class="line">  <span class="string">"code-runner.saveFileBeforeRun"</span>: <span class="literal">true</span>, <span class="comment">// run code前保存</span></span><br><span class="line">  <span class="string">"code-runner.preserveFocus"</span>: <span class="literal">true</span>, <span class="comment">// 若为false，run code后光标会聚焦到终端上。如果需要频繁输入数据可设为false</span></span><br><span class="line">  <span class="string">"code-runner.clearPreviousOutput"</span>: <span class="literal">false</span>, <span class="comment">// 每次run code前清空属于code runner的终端消息</span></span><br><span class="line"></span><br><span class="line">  <span class="string">"C_Cpp.clang_format_sortIncludes"</span>: <span class="literal">true</span>, <span class="comment">// 格式化时调整include的顺序（按字母排序）</span></span><br><span class="line">  <span class="string">"C_Cpp.intelliSenseEngine"</span>: <span class="string">"Default"</span>, <span class="comment">// 可以为Default或Tag Parser，后者较老，功能较简单。具体差别参考cpptools扩展文档</span></span><br><span class="line">  <span class="string">"C_Cpp.errorSquiggles"</span>: <span class="string">"Disabled"</span>, <span class="comment">// 因为有clang的lint，所以关掉</span></span><br><span class="line">  <span class="string">"C_Cpp.autocomplete"</span>: <span class="string">"Disabled"</span>, <span class="comment">// 因为有clang的补全，所以关掉</span></span><br><span class="line"></span><br><span class="line">  <span class="string">"clang.cflags"</span>: [ <span class="comment">// 控制c语言静态检测的参数</span></span><br><span class="line">      <span class="string">"--target=x86_64-w64-mingw"</span>,</span><br><span class="line">      <span class="string">"-std=c11"</span>,</span><br><span class="line">      <span class="string">"-Wall"</span>,</span><br><span class="line">      <span class="string">"-I./include"</span>,</span><br><span class="line">      <span class="string">"-L./lib"</span></span><br><span class="line">  ],</span><br><span class="line">  <span class="string">"clang.cxxflags"</span>: [ <span class="comment">// 控制c++静态检测时的参数</span></span><br><span class="line">      <span class="string">"--target=x86_64-w64-mingw"</span>,</span><br><span class="line">      <span class="string">"-std=c++17"</span>,</span><br><span class="line">      <span class="string">"-Wall"</span>,</span><br><span class="line">      <span class="string">"-I./include"</span>,</span><br><span class="line">      <span class="string">"-L./lib"</span></span><br><span class="line">  ],</span><br><span class="line">  <span class="string">"clang.completion.enable"</span>:<span class="literal">true</span>, <span class="comment">// 效果效果比cpptools要好</span></span><br><span class="line">  <span class="string">"clang.diagnostic.delay"</span>:<span class="number">300</span></span><br><span class="line">}</span><br></pre></td></tr></tbody></table></figure>
-
-<p><strong>值得注意的是</strong>，之前我run code一直报错找不到一些glut函数定义，只有debug能跑。后来发现问题出在<code>code-runner.executorMap</code>这里。</p>
-<p>之前<code>tasks.json</code>中调试参数部分为：<br><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/blog_files/img/Pic-Github/OpenGLconfig/20210430124111.png"></p>
-<p>而<code>settings.json</code>的<code>code-runner.executorMap</code>部分需要与之对应：<br><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/blog_files/img/Pic-Github/OpenGLconfig/20210430124608.png"></p>
-<p>加上红框部分就能run code了。</p>
-<h2 id="迁移"><a href="#迁移" class="headerlink" title="迁移"></a>迁移</h2><p>至此VSCode配置结束，之后跑新的C++项目只需要将<code>.vscode</code>文件夹复制过去就行，如果要用到其他库，只需要对其中一些参数稍作修改。</p>
-<h1 id="测试"><a href="#测试" class="headerlink" title="测试"></a>测试</h1><p>最后，我们建个main.cpp来测试一下：</p>
-<figure class="highlight c++"><table><tbody><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;glut.h&gt;</span></span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">init</span><span class="params">()</span></span>;</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">display</span><span class="params">()</span></span>;</span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">(<span class="keyword">int</span> argc, <span class="keyword">char</span>* argv[])</span></span>{</span><br><span class="line">    <span class="built_in">glutInit</span>(&amp;argc, argv);</span><br><span class="line">    <span class="built_in">glutInitDisplayMode</span>(GLUT_RGB | GLUT_SINGLE);</span><br><span class="line">    <span class="built_in">glutInitWindowPosition</span>(<span class="number">800</span>, <span class="number">150</span>);</span><br><span class="line">    <span class="built_in">glutInitWindowSize</span>(<span class="number">600</span>, <span class="number">400</span>);</span><br><span class="line">    <span class="built_in">glutCreateWindow</span>(<span class="string">"OpenGL 3D View"</span>);</span><br><span class="line">    <span class="built_in">init</span>();</span><br><span class="line">    <span class="built_in">glutDisplayFunc</span>(display);</span><br><span class="line">    <span class="built_in">glutMainLoop</span>();</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">}</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">init</span><span class="params">()</span></span>{</span><br><span class="line">    <span class="built_in">glClearColor</span>(<span class="number">0.0</span>, <span class="number">0.0</span>, <span class="number">0.0</span>, <span class="number">0.0</span>);</span><br><span class="line">    <span class="built_in">glMatrixMode</span>(GL_PROJECTION);</span><br><span class="line">    <span class="built_in">glOrtho</span>(<span class="number">-5</span>, <span class="number">5</span>, <span class="number">-5</span>, <span class="number">5</span>, <span class="number">5</span>, <span class="number">15</span>);</span><br><span class="line">    <span class="built_in">glMatrixMode</span>(GL_MODELVIEW);</span><br><span class="line">    <span class="built_in">gluLookAt</span>(<span class="number">0</span>, <span class="number">0</span>, <span class="number">10</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">1</span>, <span class="number">0</span>);</span><br><span class="line">}</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">display</span><span class="params">()</span></span>{</span><br><span class="line">    <span class="built_in">glClear</span>(GL_COLOR_BUFFER_BIT);</span><br><span class="line">    <span class="built_in">glColor3f</span>(<span class="number">0</span>, <span class="number">1.0</span>, <span class="number">0</span>);</span><br><span class="line">    <span class="built_in">glutWireTeapot</span>(<span class="number">3</span>);</span><br><span class="line">    <span class="built_in">glFlush</span>();</span><br><span class="line">}</span><br></pre></td></tr></tbody></table></figure>
-<p>run code：</p>
-<p><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/blog_files/img/Pic-Github/OpenGLconfig/20210430121933.png"></p>
-<p>大功告成！<span class="github-emoji"><span>☀</span><img src="https://github.githubassets.com/images/icons/emoji/unicode/2600.png?v8" aria-hidden="true" onerror="this.parent.classList.add('github-emoji-fallback')"></span><span class="github-emoji"><span>🐱</span><img src="https://github.githubassets.com/images/icons/emoji/unicode/1f431.png?v8" aria-hidden="true" onerror="this.parent.classList.add('github-emoji-fallback')"></span>~</p>
-<h1 id="后记"><a href="#后记" class="headerlink" title="后记"></a>后记</h1><p>emm，没啥好说的啦，干的不错喵喵喵~</p>
+<p>选择在UHC进行学生准证体检的同学必须进行医疗预约，以便在ICA Off Site Enrolment (OSE)前至少3天上传体检报告。</p>
+<p>从2021.4起，学生可以在UHC进行预约。请参考<a href="http://www.nus.edu.sg/uhc/services/medical-examination/pre-admission/pre-admission-medical-exam">UHC官网</a>获取更多信息。</p>
+<p>针对入学前体检，请参考<a href="https://nus.edu.sg/registrar/docs/info/registration-guides/registration-guide-for-graduate-research-students.pdf">注册指南</a>（<em>此为旧版</em>）第四页。如果你计划在UHC做这个体检，请参考 <a href="http://www.nus.edu.sg/uhc/services/medical-examination/pre-admission/pre-admission-medical-exam-proces">http://www.nus.edu.sg/uhc/services/medical-examination/pre-admission/pre-admission-medical-exam-proces</a> 获得如何在线预约的相关指引。</p>
+<h2 id="申请学生准证的体检"><a href="#申请学生准证的体检" class="headerlink" title="申请学生准证的体检"></a>申请学生准证的体检</h2><p><strong>重要：只要在获得学生准证的In-Principal Approval(IPA)信后，才能进行旅行。</strong></p>
+<p>对于国际生，如果要申请学生准证，（尤其当你要在自己国家完成体检时）你必须下载并提交由医生认证的两个表格</p>
+<p>   <code>Admission Medical Examination Report for</code></p>
+<ul>
+<li><a href="https://www.nus.edu.sg/uhc/docs/default-source/default-document-library/graduate.pdf?sfvrsn=7f37a850_2">Graduate Students Form (UHC)</a>;</li>
+<li><a href="https://www.ica.gov.sg/docs/default-source/ica/forms/medical-examination-report.pdf">ICA Student Pass Medical Examination Form</a></li>
+</ul>
+<p>对于具有SOLAR状态，IPA(Pending Document Submission)或 IPA(Pending Issuance Fee)的学生，必须在OSE前至少3天在网上提交未完成的材料和/或支付必要的费用。</p>
+<p>体检包括以下内容：</p>
+<ul>
+<li>Physical检查</li>
+<li>Laboratory检查*</li>
+<li>胸部X光</li>
+<li>HIV测试（仅适用于国际生）</li>
+</ul>
+<p>*<em>注意：女生请在例假结束后至少5-7天后再来体检，因为月经会影响尿检结果。</em></p>
+<p>体检费用需要由学生自己负担。UHC的费用如下：</p>
+<ul>
+<li>标准体检（包括胸部X光和尿检）—$40.00</li>
+<li>标准体检与学生准证体检（国际生）—$55.00</li>
+</ul>
+<p>学生准证的签发将视体检的结果而定。那些被发现患有活动性肺结核或HIV感染的人将不能获得相关通行证，因此，他们必须自费返回各自的国家。</p>
+<h2 id="重要"><a href="#重要" class="headerlink" title="重要"></a>重要</h2><ol>
+<li><p>总结一下就是国际生要交俩表：</p>
+<ul>
+<li><p><a href="https://www.nus.edu.sg/uhc/docs/default-source/default-document-library/graduate.pdf">Graduate Students Form (UHC)</a></p>
+</li>
+<li><p><a href="https://www.ica.gov.sg/docs/default-source/ica/forms/medical-examination-report.pdf">ICA Student Pass Medical Examination Form</a>。</p>
+</li>
+</ul>
+<p>表1自己写part1。</p>
+<p>在当地国际旅行卫生保健中心体检就行，提前电话预约，准备相关资料，带上1000现金，空腹。</p>
+</li>
+<li><p>鉴于当前COVID-19的国际形势，学生需要关注:</p>
+<ol>
+<li>对于国际生，请参考<a href="https://www.moh.gov.sg/covid-19">Ministry of Health (MOH) 官网</a>上的“Measures which apply to Inbound Travelers”内容，规划前往新加坡的行程。</li>
+<li>定期检查邮箱中来自NUS的邮件以获得最新指示。</li>
+</ol>
+</li>
+<li><p><code>E:\留学\准备事宜\附件3-1.pdf</code> = <a href="https://www.nus.edu.sg/uhc/docs/default-source/default-document-library/graduate.pdf">Graduate Students Form (UHC)</a></p>
+</li>
+</ol>
+<h1 id="附件4-2021-2022学年学费"><a href="#附件4-2021-2022学年学费" class="headerlink" title="附件4 2021-2022学年学费"></a>附件4 2021-2022学年学费</h1><p>政府资助的硕博项目</p>
+<p>已更新，详情可见 <a href="https://www.nus.edu.sg/registrar/docs/info/administrative-policies-procedures/">https://www.nus.edu.sg/registrar/docs/info/administrative-policies-procedures/</a> =  <code>E:\留学\准备事宜\入学指南\2021-22学费.pdf</code>。</p>
+<p>|学 院|新加坡居民|新加坡永久居住者|有服务义务(3,7)的国际生/研究生助教奖学金项目|不在MOE资助范围内(1.2,4,5)的新加坡居民|不在MOE资助范围内的新加坡永久居住者和国际生|<br>|:–|:–|:–|:–|:–|<br>|工程学院|9500|14000|21400|38550|40600|</p>
+<p>注意事项：</p>
+<ol>
+<li><p>以上学费单位都是S$/y，由于需要逐年审查，因此可能有所调整。</p>
+<ol>
+<li><p>在2020/21学年入学的新加坡学生的授课型和研究型项目的剩余课程期间的学费计划将在2021年学年开始前审核。</p>
+</li>
+<li><p>在余下的课程期间，2020/21学年入学的新加坡永久居民(PR)和国际生(IS)的授课型和研究型项目的学费每年会分别增加1%和1.5%，capped at the dollar increase in AY2020.</p>
+</li>
+<li><p>自2019/20学年起，授课型学生如果延期毕业，在剩余的学期内需缴纳无资助的全款学费(无MOE版本)。</p>
+<p><a href="http://www.nus.edu.sg/registrar/prospective-students/graduate/scholarship">延毕参考链接</a></p>
+</li>
+<li><p>对于建筑系硕士balabala，雨我无瓜。</p>
+</li>
+</ol>
+</li>
+<li><p>对于新加坡居民和永久居民balabala，雨我无瓜。</p>
+</li>
+<li><p>国际生应支付应缴费用的现行消费税GST(当前为7%)，上述学费已包含了GST。</p>
+</li>
+<li><p>无MOE资助的学生需缴纳上列的无资助版学费（已包含GST）。</p>
+</li>
+<li><p>之前在硕博项目中享受过政府资助或政府机构（比如Ministries, Public Service Commission和Statutory Board）资助的学生，需要参考 <a href="http://nus.edu.sg/registrar/docs/info/administrative-policies-procedures/gd-eligibility-guidelines.pdf">Eligibility Guidelines for MOE Subsidy</a> = <code>E:\留学\准备事宜\入学指南\附件4-1.pdf</code>。不符合MOE资助的学生也不符合大多数奖学金要求。获取更多信息请参考<a href="http://www.nus.edu.sg/registrar/prospective-students/graduate/scholarship">Scholarships/Awards</a>。</p>
+</li>
+<li><p><a href="http://www.skillsfuture.sg/enhancedsubsidy">SkillsFuture Mid-Career Enhanced Subsidy</a>，针对40+新加坡居民，雨我无瓜。</p>
+</li>
+<li><p><a href="http://www.nus.edu.sg/registrar/prospective-students/graduate/service-obligation-(so)-scheme">服务义务方案</a></p>
+<p>服务义务包含在一些MOE资助项目中。基于工业需求，符合条件并签署了服务义务协议的国际生将减免学费。在服务义务下应支付的费用和教育部补贴的数额将反映在他们的<a href="http://www.nus.edu.sg/finance/NoticeonPaymentofFees.html">个人学生帐单</a>中。最终解释权贵学校所有。</p>
+<ol>
+<li>自2017/18学年起，获得MOE奖学金资助的国际生，如果有研究生助教奖学金项目(Graduate Assistantship Programme, GAP)要求—(包括NGSS、PGF、NUS研究型奖学金RS、TFA和SINGA)，则不需要签署服务协议。<strong>简言之，我奖学金的一部分属于NUS研究型奖学金，只需要做GAP项目，不用管服务协议。</strong></li>
+<li>自2018/19学年起，中国人民大学(RUC)工商管理硕士(MBA)和房地产理学硕士(MRE)双学位项目的新录取国际生不符合MOE，因此，不签署服务协议。</li>
+<li>学生如果违反协议需要付违约赔偿金(LD)，且每学年需要支付服务协议下的MOE资助总额，外加10%的复利。</li>
+</ol>
+</li>
+<li><p>雨我无瓜的学院的学费查找途径。</p>
+</li>
+<li><p><a href="http://www.nus.edu.sg/registrar/academic-activities/special-term/graduate-special-term">特殊学期</a><br> 特殊学期中，课程计划的阅读模块的费用需学生支付。</p>
+<p> 不过据说雨我无瓜。</p>
+</li>
+</ol>
+<h1 id="附件5-国际生须知"><a href="#附件5-国际生须知" class="headerlink" title="附件5 国际生须知"></a>附件5 国际生须知</h1><h2 id="离开你的国家前"><a href="#离开你的国家前" class="headerlink" title="离开你的国家前"></a>离开你的国家前</h2><h3 id="1-入境Immigration"><a href="#1-入境Immigration" class="headerlink" title="1. 入境Immigration"></a>1. 入境Immigration</h3><p>国际生如果想进入新加坡需要有效护照。对于全日制学生，学校会通过<code>学生准证在线申请和注册系统(Student Pass On-Line Application &amp; Registration, SOLAR)</code>为他们申请<code>学生准证(Student Pass, STP)</code>，该系统由<code>移民与关卡局(Immigration &amp; Checkpoints Authority, ICA)</code> 管理。如果学生接受了offer，我们会写信告诉他们如何完成最后的申请步骤。获得条件型offer(con offer)的学生需要在收到满足入学要求的确认后，才能开始申请学生准证。ICA会收取S$30的手续费。学生必须在提交<code>eForm 16</code>时通过信用卡或国际银行缴纳费用。如果没有付款，ICA将不处理该申请，申请将在SOLAR中继续等待。即使学生撤销申请，费用也不会退还。如果学生在提交了eForm 16、缴纳了申请费后发现姓名或者申请时期有误，需要重新申请并重新缴费。</p>
+<p>对于入境需要<code>entry visa</code>的一些国家的同学（具体细节请参考<a href="https://www.ica.gov.sg/visitor/visitor_entryvisa">移民与关卡局</a>）,学校也会通过SOLAR系统为他们申请visa cum student pass。如果申请通过，我们会给他们寄<code>In-Principle Approval信</code>(ICA出具)。入境时，该信需要和有效护照一起递交给移民与关卡局的执勤人员(Duty Officer)。</p>
+<p>在新加坡，国际生最快两周会收到<code>居留许可(Social Visit Pass)</code>。在这期间，学生在<code>注册办公室(Registrar's Office, RO)</code>注册并获得<code>学生注册卡(student registration card)</code>后，必须带着In-Principle Approval信去ICA，换取他的学生准证。ICA官员将在NUS帮助学生完成其学生准则申请手续（日期在serialised信中给出）。未能在指定日期前完成的同学，需要在线预约并前往ICA大楼完成他们的学生准证申请。</p>
+<p><strong>重要：只有通过<a href="https://safetravel.ica.gov.sg/stpl/requirements-and-process">STO-STP网站</a>获得<code>入境许可(Entry Approval)</code>以及用于申请学生准证STP的<code>In-Principal Approval(IPA)信</code>后，才能安排旅行。</strong></p>
+<p>有关STP和STP-IPA持有者的入境和逗留通知，请参考<a href="https://safetravel.ica.gov.sg/stpl/requirements-and-process">这里</a>。</p>
+<p>非全日制国际学生不符合学生准证的资格，必须持有有效的就业准证才能留在新加坡。</p>
+<h4 id="体检"><a href="#体检" class="headerlink" title="体检"></a>体检</h4><p>所有获得用于申请6个月以上学生准证/居留许可的IPA的学生，在获得证件前必须先通过体检。没有通过体检的人会被自费遣返。<strong>国际生需要在他们的国家完成体检。</strong> 国际生需要要求医师完成两份体检报告(<code>NUS入学体检表</code>和ICA体检表)，但是只需要做一次体检。详情请参考附件3.</p>
+<p>全日制研究生的配偶和/或子女(未婚且年龄在17岁以下)可以得到学校的资助，获得居留许可后留在新加坡。研究生须在大学注册并取得学生准证后才可提交申请。详情参考<a href="http://www.nus.edu.sg/registrar/administrative-policies-procedures/graduate/social-visit-pass-for-spouse-and-child-of-full-time-graduate-research-students">这里</a>。</p>
+<p>有关入境事宜的详情，可以参考<a href="http://www.ica.gov.sg/">移民与关卡局官网</a>。</p>
+<h3 id="2-入学"><a href="#2-入学" class="headerlink" title="2. 入学"></a>2. 入学</h3><p>请带上你的offer信，护照/身份证，学历证明(Education Certificates)和其他寄给你的必要文件（如果你在离开你的国家前收到他们的话）。</p>
+<p>根据学校电子邮件的要求，在规定时间内到报到地点完成报到。</p>
+<h3 id="3-资产"><a href="#3-资产" class="headerlink" title="3. 资产"></a>3. 资产</h3><p>在新加坡，新币(Singapore dollars, S$) 是当前使用的币种。1 dollars=100 cents。你带入新加坡的国际货币和旅行支票(traveller’s cheques)没有额度限制。你可以以<code>银行汇票(bank draft)</code>的形式带上一笔可观的钱，用于学费和住宿费用。大多数国际信用卡都是可以用的（比如American Express, Diners, Visa, MasterCard）。</p>
+<p>请准备足够的现金，以支付旅行、交通、临时住宿和来时的生活开销（比如餐饮）。如果你带了现金，但是不能在你的国家换成新币，你可以到<code>Changi机场</code>的银行兑换柜台进行兑换，该柜台向所有航班开放。或者，你可以去银行或者外币兑换处(licensed money changer)。有关生活费的预算，请参考后面的第5条。此外，你需要研究向新加坡银行转账的程序，购买旅行支票,如有需要，准备好信用卡。最好使用在新加坡有分行的银行开具的新币银行汇票。请注意，海外银行开具的银行汇票大约需要3周才能兑现。</p>
+<h3 id="4-私人物品"><a href="#4-私人物品" class="headerlink" title="4. 私人物品"></a>4. 私人物品</h3><ol>
+<li>带上一打护照大小的照片(35mm x 43mm)。</li>
+<li>非正式的轻便服装。值得一提的还是购物中心的衣服价格还算合理。</li>
+<li>照相机、吹风机、洗漱用品、闹钟、雨伞、浴巾和计算器。可以自己带也可以在这里买，价格相对便宜。<strong>新加坡电压：230 volts, 50 cycles。</strong></li>
+<li>请注意，违禁文献、管控药品、版权作品和音频(CSs/VCDs/DVDs)的复印版，一旦发现会被海关没收。电影、录像、磁带、书籍、报纸、杂志只有在获得有关部门的进口许可证或授权后才能进入。</li>
+</ol>
+<h3 id="5-生活费预算"><a href="#5-生活费预算" class="headerlink" title="5. 生活费预算"></a>5. 生活费预算</h3><p>除了学费，国际学生每月的开销预算如下：</p>
+<table>
+<thead>
+<tr>
+<th align="left">类别</th>
+<th align="left">开销</th>
+<th align="left">金额</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">住宿</td>
+<td align="left">校内(每学期)：<br>NUS研究生宿舍 PGPR/GDR/<a href="http://www.nus.edu.sg/ohs/properties/utown/units_gr.php">uTown</a> <br><br><a href="http://www.nus.edu.sg/osa/has/other-accommodation">校外</a>(每月)：<br>租屋租金<br>公寓租金</td>
+<td align="left">s$1980-6480（详情请参考<a href="http://www.nus.edu.sg/osa/has/graduate/hostel-rates">这里</a>）<br><br><br><br>S$500-800 <br>S$1800-2500</td>
+</tr>
+<tr>
+<td align="left">食品(每月)</td>
+<td align="left">学校食堂/美食街(Food Courts)<br>校外餐饮</td>
+<td align="left">S$250-400<br>S$400-800</td>
+</tr>
+<tr>
+<td align="left">书籍/材料(每月)</td>
+<td align="left">取决于所学课程</td>
+<td align="left">S$200-350</td>
+</tr>
+<tr>
+<td align="left">交通(每月)</td>
+<td align="left">公交/MRT</td>
+<td align="left">S$200-300</td>
+</tr>
+<tr>
+<td align="left">私人开销(每月)</td>
+<td align="left">洗漱化妆、衣服、生活用品、娱乐等</td>
+<td align="left">S$250-350</td>
+</tr>
+<tr>
+<td align="left">学生杂费(每学期)(含GST)</td>
+<td align="left">学生服务费SSF(Lab-Based)<br>健康服务费HSF</td>
+<td align="left">S$176.45(全日制)/132.15(非全日制)<br>S$67.95</td>
+</tr>
+</tbody></table>
+<h3 id="6-住宿"><a href="#6-住宿" class="headerlink" title="6. 住宿"></a>6. 住宿</h3><p>国际生可以考虑住在NUS研究生宿舍或者校外的私人住所。</p>
+<p>如果想申请NUS研究生宿舍，可以在<a href="http://nus.edu.sg/osa/has">这里</a>查看相关信息并完成在线注册。学生之后可以通过线上大学宿舍管理系统(UHMS)查看他们的申请结果。如果申请人在提交在线申请时遇到困难，可以在<a href="http://www.hosteladmission.nus.edu.sg/app/utils/login_form/redirect/ask">这里</a>提交你的问题。</p>
+<p>如果想找校外的私人住所，可以在<a href="http://nus.edu.sg/osa/has/other-accommodation">这里</a>获取一些有用的联系方式。</p>
+<p>如果你在住宿服务方面需要帮助，可以看看<a href="http://www.nus.edu.sg/osa/has">学生事务办公室网站</a>或者在<a href="http://www.hosteladmission.nus.edu.sg/app/utils/login_form/redirect/ask">这里</a>提交你的问题。</p>
+<h2 id="Arrival清单"><a href="#Arrival清单" class="headerlink" title="Arrival清单"></a>Arrival清单</h2><h3 id="1-海关申报表"><a href="#1-海关申报表" class="headerlink" title="1. 海关申报表"></a>1. 海关申报表</h3><p>完成<code>海关申报表(Customs Declaration form)</code>，你会在飞机上收到该表，请认真填写不要有遗漏。到达新加坡机场后，你要将该表和护照一起交给移民局官员(Immigration Officers)。</p>
+<h3 id="2-相关通知"><a href="#2-相关通知" class="headerlink" title="2. 相关通知"></a>2. 相关通知</h3><p>有关学生准证STP和STP-IPA持有者的入境和居留通知，请参考<a href="https://safetravel.ica.gov.sg/stpl/requirements-and-process">这里</a>获取详细信息。</p>
+<h2 id="前往NUS-Kent-Ridge"><a href="#前往NUS-Kent-Ridge" class="headerlink" title="前往NUS(Kent Ridge)"></a>前往NUS(Kent Ridge)</h2><h3 id="1-从Changi机场"><a href="#1-从Changi机场" class="headerlink" title="1. 从Changi机场"></a>1. 从Changi机场</h3><ul>
+<li><p>乘坐地铁(MRT)。</p>
+<p>从Changi Airport站出发，乘坐开往Joo Koon的列车（西线）。在Clementi MRT站下车。然后走到Clementi公交车换乘站，乘坐96路公交车前往校园。</p>
+<p><strong>注意：MRT规定乘客行李不能超过81cm x 58cm x30cm。</strong></p>
+</li>
+<li><p>乘坐出租车。</p>
+<p>车费大约S$30。如果从机场出发，需要额外收取S$3.5-5。从午夜到6 a.m.，需要加收计费表上50%的深夜附加费。高峰期和公共假期的附加费也是如此。更多细节请参考<a href="https://www.cdgtaxi.com.sg/web/corp/ride-with-us/fares">这里</a>。</p>
+</li>
+</ul>
+<h3 id="2-从公交总站-对于来自Malaysia的公交"><a href="#2-从公交总站-对于来自Malaysia的公交" class="headerlink" title="2. 从公交总站(对于来自Malaysia的公交)"></a>2. 从公交总站(对于来自Malaysia的公交)</h3><ul>
+<li><p>Golden Mile 购物中心(Beach Road)</p>
+<p>走到Victoria街(10min)，乘坐33路公交车前往校园。在Clementi路上的工程学院下车。</p>
+</li>
+<li><p>Ban San街</p>
+<p>走到Victoria街，乘坐33路公交车前往校园。在Clementi路上的工程学院下车。</p>
+<p>或者，走到Bugis MRT站，乘坐列车前往Clementi MRT站，然后在Clementi公交换乘点乘坐96路公交车前往校园。</p>
+</li>
+<li><p>Kallang Bahru / Lavender Street Junction</p>
+<p>走到Lavender MRT站，乘坐MRT前往Clementi MRT站，再乘坐96路公交车前往校园。</p>
+</li>
+</ul>
+<h3 id="3-从Railway站"><a href="#3-从Railway站" class="headerlink" title="3. 从Railway站"></a>3. 从Railway站</h3><p>从Woodlands Train Checkpoint乘坐911/913路公交车前往Woodlands MRT站，乘坐MRT前往Clementi MRT站，然后走到CLementi公交换乘点乘坐96路公交车前往校园。</p>
+<h3 id="4-从Mass-Rapid-Transit-MRT-站"><a href="#4-从Mass-Rapid-Transit-MRT-站" class="headerlink" title="4. 从Mass Rapid Transit(MRT)站"></a>4. 从Mass Rapid Transit(MRT)站</h3><p>从Clementi MRT站走到Clementi公交换乘点，然后坐96路公家车前往NUS。</p>
+<h2 id="抵达NUS"><a href="#抵达NUS" class="headerlink" title="抵达NUS"></a>抵达NUS</h2><ol>
+<li><p>按照计划入住您的住处或者亲友的家。</p>
+</li>
+<li><p>Register：在预定的时间和地点报到，领取<code>学生注册卡(Student Registration Card)</code>。</p>
+</li>
+<li><p>报到后，你需要在你的<code>居留许可Social Visit Pass</code>到期前至少4个工作日，前往一下任一地点申请<code>学生准证</code>。</p>
+<ul>
+<li><p>ICA booth</p>
+<ul>
+<li><p><strong>多功能体育馆1(Multi-Purpose Sports Hall 1, MPSH1)-临时</strong></p>
+</li>
+<li><p>为OSE(Off Site Enrolment)准备的文件清单如下:</p>
+<p><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/blog_files/img/Pic-Github/OpenGLconfig/20210515174608.png"></p>
+</li>
+</ul>
+</li>
+<li><p>Student’s Pass Issuance</p>
+<ul>
+<li>日期：2021 8.12&amp;13</li>
+<li>时间：9:00 am-12:30 pm；2:00 pm-5:00 pm（8.13下午4:30提前结束）</li>
+<li>地点Venue：MPSH1</li>
+</ul>
+</li>
+<li><p>ICA</p>
+<ul>
+<li>ICA大楼 4th Storey, 10 Kallang Road Singapore 208718</li>
+<li>电话：63916100</li>
+<li>网址：<a href="http://www.ica.gov.sg/">http://www.ica.gov.sg/</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ol>
+<table>
+<thead>
+<tr>
+<th align="left"></th>
+<th align="left">注意事项</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">1</td>
+<td align="left">如在2021.7.26-30在MPSH1-临时报到点报到，需要在OSE在线预约系统(Online Appointment Booking System for OSE)上提前预约日期和时间</td>
+</tr>
+<tr>
+<td align="left">2</td>
+<td align="left">在申请学生准证前，在SOLAR网站上完成付款并打印<a href="http://www.ica.gov.sg/page.aspx?pageid=325&amp;secid=182#formalities">收据</a>(<a href="https://eservices.ica.gov.sg/solar/index.xhtml)%E3%80%82%E5%B8%A6%E4%B8%8A%E6%94%B6%E6%8D%AE%E5%92%8C%E5%85%B6%E4%BB%96ICA%E8%A6%81%E6%B1%82%E7%9A%84%E6%96%87%E4%BB%B6%E3%80%81%E4%BB%A5%E5%8F%8A%E7%AC%A6%E5%90%88ICA%E7%85%A7%E7%89%87%E8%A6%81%E6%B1%82(https://www.ica.gov.sg/common/photo-guidelines)%E7%9A%84%E7%85%A7%E7%89%87">https://eservices.ica.gov.sg/solar/index.xhtml)。带上收据和其他ICA要求的文件、以及符合ICA照片要求(https://www.ica.gov.sg/common/photo-guidelines)的照片</a></td>
+</tr>
+<tr>
+<td align="left">3</td>
+<td align="left">学生没有在预约时间到达或者没有带<a href="https://www.ica.gov.sg/pass/studentpass/ihl">ICA要求的文件和收据</a>的会被拒绝</td>
+</tr>
+<tr>
+<td align="left">4</td>
+<td align="left">在OSE, MPSH1, 2021.7.26-30期间，也提供付费的摄影、复印、打印服务</td>
+</tr>
+<tr>
+<td align="left">5</td>
+<td align="left">错过预约的学生，或者没有按时取得体检报告，亦或是申请学生准证后计划离开新加坡的学生，建议通过<a href="https://icaeservices.ica.gov.sg/ibook/index.do">线上预约</a>在ICA总部申请他们的学生准证</td>
+</tr>
+<tr>
+<td align="left">6</td>
+<td align="left">ICA会登记申请人的虹膜图像，请不要佩戴有色、有图案、装饰作用的隐形眼镜。学生需要摘下眼镜，方可拍摄红膜图像</td>
+</tr>
+<tr>
+<td align="left">7</td>
+<td align="left">在前往ICA大楼前，需要在<a href="https://eservices.ica.gov.sg/solar/index.xhtml">ICA网站</a>上进行线上预约。你的护照将在一周内退回，此外还要带上你的IPA信(须有大学认可)</td>
+</tr>
+</tbody></table>
+<p>以下列出申请学生准证时需要提交的材料：</p>
+<ul>
+<li>在SOLAR上提交的eForm 16的打印版(要求签名并附上1张近期拍摄的护照大小的白底彩色照片)</li>
+<li>有效护照和居留许可(Social Visit Pass)</li>
+<li>离机/入境卡(Disembarkation/Embarkation Card)—进入新加坡时获得</li>
+<li>IPA信</li>
+<li>学生登记卡(Student Registration Card)</li>
+<li>ICA体检表 &amp; 实验室报告(包括X-光合HIV血检报告)</li>
+<li>学生准证的条款 &amp; 条件(Term &amp; Condition)的复印件</li>
+<li>费用<ul>
+<li>手续费：S$30</li>
+<li>发证费：S$60</li>
+<li>更换费 (遗失学生准证时补领)：S$100</li>
+<li>多次入境签证(Multiple-Entry Visa) (适用于需要签证的国民)：S$30</li>
+</ul>
+</li>
+</ul>
+<hr>
+<p>3.1 延长逗留时间</p>
+<p>如果你想在学生准证过期后再在新加坡待一小段时间(少于两周)，你可以在学生准证过期前，通过<code>Visitor Services Centre, ICA(4th Storey)</code>申请居留许可(Social Visit Pass)。你会被要求出示你已确定的机票来证明你的离境时间。</p>
+<p>如果你的居留许可到期了，你会被视为在新加坡非法居留，你需要缴纳罚款，否则会被起诉。</p>
+<hr>
+<p>3.2 注销Cancellation</p>
+<p>如果学生在学校的学习提前终止（比如退学或拒绝再入学），需要带上学生准证，在停止学业后7天内前往ICA办理注销手续。</p>
+<p>如果你关于学生准证或居留许可有任何疑问，请咨询学生事务办公室(Office of Student Affairs)的负责国际生服务(ISS)的工作人员，或者发邮件给<code>international@nus.edu.sg</code>。</p>
+<hr>
+<ol start="4">
+<li><p>在注册办公室(Registrar’s Office)报到后，需到系办公室(Department Office)报到。</p>
+<p>（不适用于Biomedical Eng, Civil &amp; Environmental Eng, and Industrial Systems Eng &amp; Management）</p>
+</li>
+<li><p>向你的导师报到，他可能会提供一些指导或者关于科研的信息。</p>
+</li>
+<li><p>在跟<code>导师/系里</code>讨论过你应该参加的课程类型后，在系办公室处拿<code>lectures时间表</code>。</p>
+</li>
+<li><p>在你选择的银行开户。详见下述的”其他事务”部分。</p>
+</li>
+<li><p>参加<code>Orientations</code>：</p>
+<ol>
+<li>工程学院副院长关于硕博项目的<code>Orientation Talk</code>（具体细节之后会邮件通知）。</li>
+<li>国际生Orientation（请关注学生事务办公室网站上的相关内容<a href="http://nus.edu.sg/osa/student-life/international-students/briefing%EF%BC%89%E3%80%82">http://nus.edu.sg/osa/student-life/international-students/briefing）。</a></li>
+<li>图书馆Orientation，熟悉学校的设备和服务。</li>
+</ol>
+</li>
+</ol>
+<h2 id="其他事务"><a href="#其他事务" class="headerlink" title="其他事务"></a>其他事务</h2><h3 id="1-保险"><a href="#1-保险" class="headerlink" title="1. 保险"></a>1. 保险</h3><p>研究生保险计划(Graduate Insurance Scheme)是所有全日制国际生都必须参加的。</p>
+<p><strong>COVID-19 保险</strong><br><a href="http://nus.edu.sg/uhc/docs/default-source/insurance/frequently-asked-questions-on-covid-19.pdf">保险范围</a></p>
+<h3 id="2-医疗服务"><a href="#2-医疗服务" class="headerlink" title="2. 医疗服务"></a>2. 医疗服务</h3><p>UHC(University Health Centre)的诊所提供医疗服务。此外，Government Polyclinic、Outpatient Dispensary也提供医疗服务。</p>
+<h3 id="3-大使馆-High-Commission登记"><a href="#3-大使馆-High-Commission登记" class="headerlink" title="3. 大使馆/High Commission登记"></a>3. 大使馆/High Commission登记</h3><p>抵达新加坡后，学生可以向其<code>驻新加坡大使馆/高级委员会</code>报到。在离家前，学生可以了解一下其驻新加坡大使馆/高级委员会提供的设施和服务的相关信息。</p>
+<h3 id="4-银行"><a href="#4-银行" class="headerlink" title="4. 银行"></a>4. 银行</h3><p>银行通常在周一至周五的8:30 am-4:30 pm; 周六的8:30 am-1:00pm营业。</p>
+<p>学校附近的银行(Clementi Branch)：</p>
+<ul>
+<li><p>Development Bank of Singapore (DBS)</p>
+<p> Blk 450, Clementi Avenue 3</p>
+<p> #01-293/295</p>
+<p> Singapore 120450</p>
+<p> Tel: (65) 1800-111 1111</p>
+</li>
+<li><p>United Overseas Bank (UOB)</p>
+<p> Blk 450, Clementi Avenue 3</p>
+<p> #01-287/289</p>
+<p> Singapore 120450</p>
+<p> Tel: (65) 1800-222 2121</p>
+</li>
+<li><p>Post Office Savings Bank (POSB)</p>
+<p> Blk 449, Clementi Avenue 3</p>
+<p> #01-243</p>
+<p> Singapore 120449</p>
+<p> Tel: (65) 6339 6666</p>
+</li>
+<li><p>Oversea-Chinese Banking     Corporation (OCBC)</p>
+<p> 3155 Commonwealth Avenue West</p>
+<p> #04-52/55</p>
+<p> The Clementi Mall</p>
+<p> Singapore 129588</p>
+<p> Tel: (65) 6530 5930</p>
+</li>
+</ul>
+<p>校内的ATMs分别位于</p>
+<ul>
+<li>Faculty of Arts &amp; Social Sciences (LT9附近)</li>
+<li>Faculty of Science (LT27和S16外面，Science Canteen附近)</li>
+<li>Yusof Ishak House (Level 3)</li>
+<li>National University Hospital</li>
+</ul>
+<h3 id="5-国际生服务ISS"><a href="#5-国际生服务ISS" class="headerlink" title="5. 国际生服务ISS"></a>5. 国际生服务ISS</h3><p>ISS部门的建立是为了监督国际生在大学的福利。有关入境immigration、财务、学业、社交、健康、招聘和其他事务，该部门能提供咨询和帮助。国际生的个人问题也能得到其关注。</p>
+<p>如果需要更多信息和帮助，可以联系他们：</p>
+<ul>
+<li>电话：(65) 6516 4817</li>
+<li>传真：(65) 6778 5902</li>
+<li>邮箱：<a href="mailto:international@nus.edu.sg">international@nus.edu.sg</a></li>
+</ul>
+<p>有关国际生迎新简报会、文化活动、离校简报会以及社会活动等项目的一般问题：</p>
+<ul>
+<li>Mr Alvin Wong </li>
+<li>邮箱：<a href="mailto:Alvin.wong@nus.edu.sg">Alvin.wong@nus.edu.sg</a></li>
+<li>地址：International Student Services, Office of Student Affairs (3rd Storey, Yusof Ishak House)<br>National University of Singapore<br>31 Lower Kent Ridge Road, Singapore 119078</li>
+<li>网站：<a href="http://www.nus.edu.sg/osa/">http://www.nus.edu.sg/osa/</a></li>
+<li>工作时间: <ul>
+<li>周一至周四 8.30 am – 6.00 pm</li>
+<li>周五 8.30 am –– 5.30 pm</li>
+<li>周末及季节日不工作</li>
+</ul>
+</li>
+</ul>
+<h2 id="出发前核对清单"><a href="#出发前核对清单" class="headerlink" title="出发前核对清单"></a>出发前核对清单</h2><h3 id="1-完成表格"><a href="#1-完成表格" class="headerlink" title="1. 完成表格"></a>1. 完成表格</h3><p>在规定的截止日期前，完成录取材料并把它交给注册办公室Registrar’s Office。</p>
+<h3 id="2-重要文件"><a href="#2-重要文件" class="headerlink" title="2. 重要文件"></a>2. 重要文件</h3><ul>
+<li>有效签证 &amp; 雇佣证明(仅适用于非全日制)</li>
+<li><strong>通过<a href="https://safetravel.ica.gov.sg/stpl/requirements-and-process">STO-STP网站</a>和IPA信(如果需要的话)获得入境许可(Entry Approval)</strong></li>
+<li>原始成绩单</li>
+<li>出生证明/护照</li>
+<li>offer信</li>
+<li>等</li>
+</ul>
+<h3 id="3-申请宿舍"><a href="#3-申请宿舍" class="headerlink" title="3. 申请宿舍"></a>3. 申请宿舍</h3><p>在线提交宿舍申请，收到OSA(住宅服务)发的有关分配结果的邮件。有关住宿的具体细节可以参考 <a href="http://www.nus.edu.sg/osa/has%E3%80%82">http://www.nus.edu.sg/osa/has。</a></p>
+<h3 id="4-工作日或周末后到达"><a href="#4-工作日或周末后到达" class="headerlink" title="4. 工作日或周末后到达"></a>4. 工作日或周末后到达</h3><p>如果你成功申请到了硕博生宿舍，请将你的预计到达日期和时间告知你所分配到的住处，并安排延迟入住(如果必要)。如果未能申请到宿舍，请提前安排好youth hostle, hotel或者亲友家之类的住所。</p>
+<h3 id="5-国际生Orientation"><a href="#5-国际生Orientation" class="headerlink" title="5. 国际生Orientation"></a>5. 国际生Orientation</h3><p>请注意，国际生可以参加<a href="http://nus.edu.sg/osa/student-life/international-students/briefing">OSA网站</a>上的国际生Orientation电子简报会。根据我们的经验，参加了该介绍会的学生，在后续的适应和居住方面会少些困难。</p>
+<h3 id="6-Visa需求-仅适用于ICA网站上所列出的国家"><a href="#6-Visa需求-仅适用于ICA网站上所列出的国家" class="headerlink" title="6. Visa需求(仅适用于ICA网站上所列出的国家)"></a>6. Visa需求(仅适用于<a href="http://www.ica.gov.sg/">ICA网站</a>上所列出的国家)</h3><p>如果你来自有visa需求的国家，需要通过SOLAR完成visa的线上申请，并打印Form 16。请与你的入境部门确认你是否需要申请出境visa。</p>
+<p><strong>提交form16后，如果审核通过，你会收到进入新加坡所需的IPA(In-Principal Approval)信。</strong></p>
+<h3 id="7-行程安排"><a href="#7-行程安排" class="headerlink" title="7. 行程安排"></a>7. 行程安排</h3><p>通过信誉良好的traval agency安排你的行程，在offer信中给出的规定日期抵达。</p>
+<p>如果有必要，填好并上交更改报到日期/时间的表格。</p>
+<h3 id="8-免疫检查-可选"><a href="#8-免疫检查-可选" class="headerlink" title="8. 免疫检查(可选)"></a>8. 免疫检查(可选)</h3><p>根据世界卫生组织WHO的规定，在新加坡旅行、居住需要接受防疫要求。你可能需要带上你的医疗记录、眼科处方、或药品信息的副本。</p>
+<h3 id="9-居家通知和检测制度"><a href="#9-居家通知和检测制度" class="headerlink" title="9. 居家通知和检测制度"></a>9. 居家通知和检测制度</h3><p>Stay-Home Notice and Testing Regime</p>
+<p>请参考<a href="https://safetravel.ica.gov.sg/stpl/requirements-and-process">这里</a>获得更多有关学生准证STP和STP-IPA持有者的入境许可及居家通知的相关信息。</p>
+<h3 id="10-体检"><a href="#10-体检" class="headerlink" title="10. 体检"></a>10. 体检</h3><p>申请学生准证和入学前体检都需要一份体检报告。该报告必须以英文形式完成。你可以选择在新加坡或者在本国完成体检。体检报告不得早于提交前三个月以上出具。（请参考附件3获取更多信息）</p>
+<h3 id="11-医保"><a href="#11-医保" class="headerlink" title="11. 医保"></a>11. 医保</h3><p>根据个人需要，在NUS就读期间，你可以参加额外的医疗保险。对于全日制学生而言，除非有其他医疗/保险计划的证明，否则必须参加NUS的<code>health insurance scheme</code>。更多详情请参考<a href="http://www.nus.edu.sg/uhc/services/billing-insurance/insurance-matters">这里</a>。</p>
+<h3 id="12-财务准备"><a href="#12-财务准备" class="headerlink" title="12. 财务准备"></a>12. 财务准备</h3><p>请准备好足够的金钱带去新加坡，包含旅行开销、临时居住和抵达后的生活费。（详情请参考page 2的Int’l Students for estimated cost）</p>
+<p>研究如何向新加坡银行转账的程序。如有需要，可以购买旅行支票(traveller’s cheques)、准备信用卡。最好选择在新加坡有分行的银行开具新加坡币的银行汇票(bank draft)。汇票上需要印有新加坡分行地址。请注意，向海外银行开出的银行汇票需要大约3周才能兑现。</p>
+<p><em>注意：(可选)你可能希望安排personal and credit references，这在租房和在银行开户等方面都很有用</em></p>
+<h3 id="重要-1"><a href="#重要-1" class="headerlink" title="重要"></a>重要</h3><ul>
+<li><p>更多国际生需注意的信息，请参考<a href="http://www.nus.edu.sg/registrar/academic-activities/registration/information-for-international-students">注册办公室网站</a></p>
+</li>
+<li><p>鉴于COVID-19，学生需要：</p>
+<ul>
+<li>查看<a href="https://www.moh.gov.sg/covid-19">卫生部(Ministry of Health, MOH)网站</a>上<code>Measures which apply to Inbound Travelers</code>内容，安排前往新加坡的行程。</li>
+<li>定期检查来自NUS的邮件以获得最新通知。</li>
+<li>参考以下NUS网站：<ul>
+<li>应对COVID-19的其他措施: <a href="https://www.nus.edu.sg/registrar/academic-activities/registration/administrative-matters">RO网站</a></li>
+<li><a href="https://emergency.nus.edu.sg/">OSHE网站</a></li>
+<li>关于保险: <a href="https://nus.edu.sg/uhc/general-health/billing-insurance/insurance-matters">UHC网站</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h1 id="附件6-更多有用信息"><a href="#附件6-更多有用信息" class="headerlink" title="附件6 更多有用信息"></a>附件6 更多有用信息</h1><h2 id="候选期Period-of-candidature"><a href="#候选期Period-of-candidature" class="headerlink" title="候选期Period of candidature"></a>候选期Period of candidature</h2><p>你的候选人资格于学期第一天(如，2021.8.2)或报到那天（二者取其晚）开始。MEng的候选期最长为3年。EngD或PhD的候选期最长为5年。你的论文提交时间不得晚于最长候选期。</p>
+<p>请注意，除非学校同意，否则学生不得同时作一个以上学位的候选人，也不得同时作NUS和其他学校或机构的候选人。</p>
+<h2 id="居住要求Residency-requirement"><a href="#居住要求Residency-requirement" class="headerlink" title="居住要求Residency requirement"></a>居住要求Residency requirement</h2><p>不在新加坡居住的候选人必须在候选期内完成居住要求，MEng和EngD/PhD的居住要求分别是6个月和18个月。</p>
+<h2 id="医保计划Medical-Insurance-Scheme"><a href="#医保计划Medical-Insurance-Scheme" class="headerlink" title="医保计划Medical Insurance Scheme"></a>医保计划Medical Insurance Scheme</h2><p>所有全日制的学生都必须参加团体医保计划，该计划可以帮他们支付由于住院/手术、意外而产生的医疗费用(部分或全部)。对于研究学者(research scholars)，我们将按学期从他们的津贴中扣除保险费。</p>
+<p>更多信息请参考<a href="http://www.nus.edu.sg/uhc/services/billing-insurance/insurance-matters">这里</a></p>
+<h2 id="私人电子设备"><a href="#私人电子设备" class="headerlink" title="私人电子设备"></a>私人电子设备</h2><p>建议学生带上一台可用的笔记本电脑到学校里使用。因为NUS大部分区域都覆盖免费Wi-Fi，因此电脑将会是有用的。有时，你的课程会要求你使用笔记本电脑并下载资料，以便上课时实操。当然你还需要带上一部手机。</p>
+<h2 id="手册和论文"><a href="#手册和论文" class="headerlink" title="手册和论文"></a>手册和论文</h2><p>建议你熟悉下列的候选期要求：</p>
+<ul>
+<li><a href="http://www.nus.edu.sg/registrar/administrative-policies-procedures/graduate/nus-statutes-and-regulations">NUS章程</a>(Statutes of the National University of Singapore)</li>
+<li>研究生手册，<a href="https://myportal.nus.edu.sg/studentportal/eng/gd/">下载链接</a></li>
+<li><a href="http://www.nus.edu.sg/registrar/administrative-policies-procedures/graduate/acceptance-record#IP">NUS知识产权政策</a>(NUS Intellectual Property Policy)</li>
+</ul>
+<h1 id="附件7-在线提交offer答复"><a href="#附件7-在线提交offer答复" class="headerlink" title="附件7 在线提交offer答复"></a>附件7 在线提交offer答复</h1><p>这部分已经搞过了，所以简写一下~</p>
+<p>在研究生招生系统中在线答复offer：<a href="https://inetapps.nus.edu.sg/GDA2">https://inetapps.nus.edu.sg/GDA2</a></p>
+<p><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/blog_files/img/Pic-Github/OpenGLconfig/20210519205448.png"></p>
+<p>有关研究生招生系统的更多细节请参考以下链接：<a href="https://nus.edu.sg/registrar/docs/info/academic-activities/registration/applicant-guide-for-graduate-admission-system.pdf">Applicant Guide For Graduate Admission System</a></p>
+<h1 id="附件8-奖学金"><a href="#附件8-奖学金" class="headerlink" title="附件8 奖学金"></a>附件8 奖学金</h1><p><em>仅适用于已获得的学生</em></p>
+<ul>
+<li>校长奖学金PRESIDENT’S GRADUATE SCHOLARSHIP</li>
+<li>NUS研究型奖学金NUS RESEARCH SCHOLARSHIP</li>
+<li>联邦奖学金COMMONWEALTH SCHOLARSHIP</li>
+</ul>
+<p>PhD学生奖学金期限最长为4年。奖学金有效期为1年，每半年/一年需延长一次。然而，奖学金随时可能由于表现不佳而暂停。</p>
+<p>2014/15年起，获得NUS研究型奖学金、校长奖学金、联邦奖学金及以下列出的其他财政资助的国际学生，需要满足奖学金条款与条件中所附的<strong>研究生助教计划GAP</strong>的要求。</p>
+<table>
+<thead>
+<tr>
+<th align="left">奖学金</th>
+<th align="left">条款与条件</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">NUS Research Scholarship (with GAP)</td>
+<td align="left"><a href="https://nusgs.nus.edu.sg/nus-research-scholarship-terms-conditions/">https://nusgs.nus.edu.sg/nus-research-scholarship-terms-conditions/</a></td>
+</tr>
+<tr>
+<td align="left">NUS Research Scholarship (GAP exempted)</td>
+<td align="left"><a href="https://nusgs.nus.edu.sg/nus-research-scholarship-terms-conditions-gap-exempted/">https://nusgs.nus.edu.sg/nus-research-scholarship-terms-conditions-gap-exempted/</a></td>
+</tr>
+<tr>
+<td align="left"><a href="https://nusgs.nus.edu.sg/nus-research-scholarship-terms-conditions-gap-exempted/President's">President’s</a> Graduate Fellowship (with GAP)</td>
+<td align="left"><a href="https://nusgs.nus.edu.sg/president-graduate-fellowships-terms-conditions/">https://nusgs.nus.edu.sg/president-graduate-fellowships-terms-conditions/</a></td>
+</tr>
+<tr>
+<td align="left">President’s Graduate Fellowship(GAP exempted)</td>
+<td align="left"><a href="https://nusgs.nus.edu.sg/president-graduate-fellowship-terms-conditions-gap-exempted/">https://nusgs.nus.edu.sg/president-graduate-fellowship-terms-conditions-gap-exempted/</a></td>
+</tr>
+<tr>
+<td align="left"><a href="https://nusgs.nus.edu.sg/president-graduate-fellowship-terms-conditions-gap-exempted/Commonwealth">Commonwealth</a> Scholarship</td>
+<td align="left"><a href="https://nusgs.nus.edu.sg/nus-tuition-fee-allowance-terms-conditions/">https://nusgs.nus.edu.sg/nus-tuition-fee-allowance-terms-conditions/</a></td>
+</tr>
+<tr>
+<td align="left">Tuition Fee Allowance (GAP exempted)</td>
+<td align="left"><a href="https://nusgs.nus.edu.sg/nus-tuition-fee-allowance-terms-conditions-gap-exempted/">https://nusgs.nus.edu.sg/nus-tuition-fee-allowance-terms-conditions-gap-exempted/</a></td>
+</tr>
+<tr>
+<td align="left"><a href="https://nusgs.nus.edu.sg/nus-tuition-fee-allowance-terms-conditions-gap-exempted/Tuition">Tuition</a> Fee Allowance</td>
+<td align="left"><a href="https://nusgs.nus.edu.sg/nus-tuition-fee-allowance-terms-conditions/">https://nusgs.nus.edu.sg/nus-tuition-fee-allowance-terms-conditions/</a></td>
+</tr>
+</tbody></table>
+<p>如果候选人目前有工作，其奖学金只有在他暂停从当前雇主处领取薪水后才开始发放。</p>
+<p>如果你在新加坡或马来西亚工作，在你注册前请提交一封信说明你最后一天的工资。这封信应该是你的雇主所写，或者是你给雇主的辞职信的副本。建议你在雇佣期的最后一天后再进行注册。否则，你会被认为是自费生，并被要求支付学费。</p>
+<p>如果你希望被录取到大学的全日制研究型项目，而你正在接受奖学金或奖金，亦或是你已经获得了scholarship/award for which you are bonded，你需要取得有关部门的批准并向我们提交相关证明文件。</p>
+<p>学生需要在新加坡的银行开户。不同的银行有不同的要求，也有不同类型的储蓄和支票账户。如果想获得更多信息，请浏览各自银行的网站。当你决定好在哪个银行开户时，请确保你带了足够的现金来支付费用。以下是你开户所需的文件：</p>
+<ul>
+<li>护照(原版和影印版)</li>
+<li>学生准证 或 STP-IPA信(In-Principle student’s pass approval letter)</li>
+<li>学生卡(如果有的话) 或者 来自NUS的录取通知(Offer Letter of Admission)</li>
+<li>最低限度的初始存款(具体多少取决于银行的要求)</li>
+</ul>
+<p>已获得奖学金的学生，需要在<a href="https://myedurec.nus.edu.sg/">Education Records System (EduRec)</a>更新你的信用银行账户信息，以避免延迟发放奖学金。</p>
+<p>有关银行开户的更多信息，请参考学生事务办公室网页: <a href="http://www.askstudentservice.nus.edu.sg/app/answers/detail/a_id/2042">http://www.askstudentservice.nus.edu.sg/app/answers/detail/a_id/2042</a></p>
+<p>如果你在规定的日期完成注册，你会在2021.8.31收到第一笔津贴。如果没有，你就只能再2021.9.18收到8月和9月份的津贴。建议国际生在收到津贴前带些钱(支付1-1.5个月的开销)。</p>
+<p>有关生活费的预算请参考附件5。</p>
+<h1 id="附录9-其他"><a href="#附录9-其他" class="headerlink" title="附录9 其他"></a>附录9 其他</h1><table>
+<thead>
+<tr>
+<th align="left">部门/项目办公室</th>
+<th align="left">位置</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">Office of Graduate Programmes, Faculty of Eng[1]</td>
+<td align="left">EA 06-16</td>
+</tr>
+<tr>
+<td align="left">Biomedical Eng[3]</td>
+<td align="left">E4 04-08</td>
+</tr>
+<tr>
+<td align="left">Chemical &amp; Biomolecular Eng[4]</td>
+<td align="left">E5 02-09</td>
+</tr>
+<tr>
+<td align="left">Civil &amp; Env Eng[2]</td>
+<td align="left">E1A 07-03</td>
+</tr>
+<tr>
+<td align="left">Electrical &amp; Computer Eng[3]</td>
+<td align="left">E4 05-45</td>
+</tr>
+<tr>
+<td align="left">Industrial Systems Eng &amp; Management[2]</td>
+<td align="left">E1A 06-25</td>
+</tr>
+<tr>
+<td align="left">Materials Science &amp; Eng[1]</td>
+<td align="left">EA 03-09</td>
+</tr>
+<tr>
+<td align="left">Mechanical Eng[1]</td>
+<td align="left">EA 07-08</td>
+</tr>
+</tbody></table>
+<ul>
+<li><p>University Health Centre[5]    </p>
+<ul>
+<li>UHC Clinic (medical examination)</li>
+</ul>
+</li>
+<li><p>Yusof Ishak House[6]</p>
+<ul>
+<li>Level 1: Student Service Centre (paying fees)</li>
+<li>Level 3: Office of Student Affairs (apply student pass)</li>
+</ul>
+</li>
+<li><p>E6 Techno Edge Canteen</p>
+</li>
+<li><p>EW1 Engineering Workshop 1</p>
+</li>
+<li><p>EW2 Engineering Workshop 2</p>
+</li>
+</ul>
+<p><strong>NUS Faculty of Engineering, 10 Kent Ridge Crescent</strong></p>
+<p><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/blog_files/img/Pic-Github/OpenGLconfig/20210520004227.png"></p>
+<p><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/blog_files/img/Pic-Github/OpenGLconfig/20210520004411.png"></p>
+<h2 id="地图"><a href="#地图" class="headerlink" title="地图"></a>地图</h2><p><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/blog_files/img/Pic-Github/OpenGLconfig/20210520004643.png"></p>
+<p><a href="http://www.nus.edu.sg/campusmap/">最新地图</a></p>
+<p><a href="http://www.nus.edu.sg/oca/Transport-and-Parking/Getting-around-NUS.html">校内班车 internal shuttle bus services</a></p>
 ]]></content>
       <categories>
-        <category>教程</category>
-        <category>VSCode</category>
+        <category>留学</category>
       </categories>
       <tags>
-        <tag>教程</tag>
-        <tag>OpenGl</tag>
-        <tag>VSCode</tag>
+        <tag>留学</tag>
+        <tag>NUS</tag>
       </tags>
   </entry>
 </search>
