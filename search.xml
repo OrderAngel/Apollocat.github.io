@@ -1,6 +1,144 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
+    <title>ubuntu18.04+VINS-MONO+RealsenseD453i 配置教程</title>
+    <url>/ubuntu18-04-VINS-MONO-RealsenseD453i-%E9%85%8D%E7%BD%AE%E6%95%99%E7%A8%8B/</url>
+    <content><![CDATA[<h1 id="VINS-MONO"><a href="#VINS-MONO" class="headerlink" title="VINS-MONO"></a>VINS-MONO</h1><p>主要参考链接：<br><a href="https://blog.csdn.net/github_53583003/article/details/111187288">Ubuntu18配置VINS-MONO</a></p>
+<p>初始配置：<br>ubuntu18.04+cmake+engine</p>
+<h2 id="ROS配置"><a href="#ROS配置" class="headerlink" title="ROS配置"></a>ROS配置</h2><p><a href="http://wiki.ros.org/melodic/Installation/Ubuntu">ROS官方安装教程</a></p>
+<p><em>前面的主要参考链接用的是16.04下的<code>kinetic</code>内核，20.04用的是<code>Neotic</code>内核，我用的是18.04下的<code>melodic</code>内核，所以使用官方教程</em></p>
+<h2 id="opencv配置"><a href="#opencv配置" class="headerlink" title="opencv配置"></a>opencv配置</h2><p>根据mono的建议，cv版本用的是<a href="https://github.com/opencv/opencv/releases/tag/3.3.1">opencv-3.3.1</a>和<a href="https://github.com/opencv/opencv_contrib/releases/tag/3.3.1">opencv-contrib-3.3.1</a></p>
+<p>location: <code>~/library/opencv-3.3.1</code></p>
+<p>后续根据<a href="https://blog.csdn.net/github_53583003/article/details/111187288">参考链接</a>完成编译。</p>
+<p>进行opencv的编译环境配置：</p>
+<figure class="highlight plain"><table><tbody><tr><td class="code"><pre><span class="line">sudo apt-get install build-essential libgtk2.0-dev libvtk6-dev libjpeg-dev libtiff4-dev libjasper-dev libopenexr-dev libtbb-dev</span><br></pre></td></tr></tbody></table></figure>
+<p><em>注意，opencv的依赖包虽然是参考SLAM十四讲，但是由于版本区别，有的包要装升级后的版本，比如书里是libvtk5-dev，而我们需要装6</em></p>
+<h2 id="安装Ceres库"><a href="#安装Ceres库" class="headerlink" title="安装Ceres库"></a>安装Ceres库</h2><p>Ceres solver 是谷歌开发的一款用于非线性优化的库，在谷歌的开源激光雷达slam项目cartographer中被大量使用</p>
+<p>首先，安装依赖</p>
+<figure class="highlight plain"><table><tbody><tr><td class="code"><pre><span class="line">sudo apt-get install liblapack-dev </span><br><span class="line">sudo apt-get install libsuitesparse-dev </span><br><span class="line">sudo apt-get install libcxsparse3.1.2</span><br><span class="line">sudo apt-get install libgflags-dev </span><br><span class="line">sudo apt-get install libgoogle-glog-dev libgtest-dev</span><br></pre></td></tr></tbody></table></figure>
+<p><em>如果有的包无法定位，可能是因为更换了版本名，<a href="https://packages.ubuntu.com/">https://packages.ubuntu.com/</a> <code>Search package directories</code>搜一下keyword，注意与当前ubuntu版本对应；也可以参考<a href="https://www.cnblogs.com/qilai/p/13654810.html">无法定位lib3.1.2</a>，我用的第二种方法</em></p>
+<p>然后，下载<a href="https://github.com/ceres-solver/ceres-solver/releases">Ceres</a></p>
+<p><em>我下的是cere2.0.0，解压后location: <code>~/library/ceres-solver-2.0.0</code></em></p>
+<p>进入目录下编译ceres:</p>
+<figure class="highlight plain"><table><tbody><tr><td class="code"><pre><span class="line">mkdir build</span><br><span class="line">cd build</span><br><span class="line">cmake ..</span><br><span class="line">sudo make install</span><br></pre></td></tr></tbody></table></figure>
+<h2 id="VINS-MONO编译"><a href="#VINS-MONO编译" class="headerlink" title="VINS-MONO编译"></a>VINS-MONO编译</h2><p>VINS-MONO，2017年港科老师开源的一个单目视觉惯导的实时SLAM方案，是视觉与IMU的经典融合，定位精度可以媲美OKVIS，在Linux上运行，并与ROS完全集成。</p>
+<p>该算法基于优化和滑动窗口的 VIO ，使用 IMU 预积分构建紧耦合框架，同时还有自动初始化，在线外参标定，重定位，闭环检测，以及全局位姿图优化功能。</p>
+<ul>
+<li>准备数据</li>
+</ul>
+<p>首先下载<a href="https://projects.asl.ethz.ch/datasets/doku.php?id=kmavvisualinertialdatasets#the_euroc_mav_dataset">EuRoC数据集</a>，该数据集是微型飞行器 (MAV) 上收集的视觉惯性数据集。数据集包含立体图像、同步 IMU 测量以及精确的运动和结构地面实况。</p>
+<p><em>我下的是<code>Machine Hall 01 (ROS bag)</code>用来测试，location: <code>~/DATA/VINS-MONO/MH_01_easy.bag</code></em></p>
+<p>此外还要下载<a href="https://github.com/HKUST-Aerial-Robotics/VINS-Mono">VINS-MONO代码</a>。</p>
+<ul>
+<li><p>创建ROS工作空间</p>
+<figure class="highlight plain"><table><tbody><tr><td class="code"><pre><span class="line">mkdir -p ~/catkin_ws/src              </span><br><span class="line">cd ~/catkin_ws/src</span><br><span class="line">catkin_init_workspace</span><br></pre></td></tr></tbody></table></figure></li>
+<li><p>编译VINS</p>
+</li>
+</ul>
+<p>将前面下载的Vins-mono的代码移动到<code>~/catkin_ws/src</code>文件夹下。</p>
+<p>编译：</p>
+<figure class="highlight plain"><table><tbody><tr><td class="code"><pre><span class="line">cd ~/catkin_ws</span><br><span class="line">catkin_make</span><br><span class="line">source ~/catkin_ws/devel/setup.bash</span><br></pre></td></tr></tbody></table></figure>
+<ul>
+<li>修改配置文件内容在VINS-Mono-master主工程目录下的config子目录中找到euroc文件夹，并打开其中的euroc_config.yaml文件，将其中结果输出保存路径修改为本地的绝对路径或相对路径<figure class="highlight plain"><table><tbody><tr><td class="code"><pre><span class="line">output_path: "/home/yj/HZL/VINS-MONO-REALSENSE/output/"</span><br><span class="line">pose_graph_save_path: "/home/yj/HZL/VINS-MONO-REALSENSE/output/pose_graph/"</span><br></pre></td></tr></tbody></table></figure></li>
+</ul>
+<ul>
+<li>修改source如果每次运行前需要都需要用source来指定文件位置未免太麻烦，可以直接在<code>.bashrc</code>中添加source<figure class="highlight plain"><table><tbody><tr><td class="code"><pre><span class="line">sudo  gedit ~/.bashrc</span><br></pre></td></tr></tbody></table></figure>
+在.bashrc中加上：<figure class="highlight plain"><table><tbody><tr><td class="code"><pre><span class="line">source ~/catkin_ws/devel/setup.bash</span><br></pre></td></tr></tbody></table></figure></li>
+</ul>
+<ul>
+<li>运行<ul>
+<li>1号终端启动ROS核心：<figure class="highlight plain"><table><tbody><tr><td class="code"><pre><span class="line">roscore</span><br></pre></td></tr></tbody></table></figure></li>
+<li>2号终端：<figure class="highlight plain"><table><tbody><tr><td class="code"><pre><span class="line">roslaunch vins_estimator euroc.launch</span><br></pre></td></tr></tbody></table></figure></li>
+<li>3号终端启动rviz软件<figure class="highlight plain"><table><tbody><tr><td class="code"><pre><span class="line">roslaunch vins_estimator vins_rviz.launch</span><br></pre></td></tr></tbody></table></figure></li>
+<li>4号终端输入数据：注意把数据包地址改成自己的<figure class="highlight plain"><table><tbody><tr><td class="code"><pre><span class="line">rosbag play /home/yj/DATA/VINS-MONO/MH_01_easy.bag </span><br></pre></td></tr></tbody></table></figure>
+<h1 id="使用Realsense-D453i运行VINS-MONO"><a href="#使用Realsense-D453i运行VINS-MONO" class="headerlink" title="使用Realsense D453i运行VINS-MONO"></a>使用Realsense D453i运行VINS-MONO</h1><a href="https://blog.csdn.net/weixin_44580210/article/details/89789416">参考链接</a></li>
+</ul>
+</li>
+</ul>
+<h2 id="安装librealsense-SDK-2-0"><a href="#安装librealsense-SDK-2-0" class="headerlink" title="安装librealsense SDK 2.0"></a>安装librealsense SDK 2.0</h2><p><a href="https://github.com/IntelRealSense/librealsense/releases/tag/v2.48.0">v2.48.0</a></p>
+<p><a href="https://github.com/IntelRealSense/librealsense/blob/master/doc/distribution_linux.md">官方指南</a></p>
+<p>librealsense SDK相当于相机的驱动，D435i是librealsense SDK 2.0；SDK的安装方式有两种，一是从源码编译安装，二是直接命令行安装，官方指南的公钥法用的2。</p>
+<p><em>我装的是librealsense SDK v2.48.0，支持18.04</em></p>
+<p>测试：</p>
+<figure class="highlight plain"><table><tbody><tr><td class="code"><pre><span class="line">realsense-viewer</span><br></pre></td></tr></tbody></table></figure>
+<p><em>注意：使用3.0的usb口</em></p>
+<h2 id="安装测试realsense相机对应的ROS包"><a href="#安装测试realsense相机对应的ROS包" class="headerlink" title="安装测试realsense相机对应的ROS包"></a>安装测试realsense相机对应的ROS包</h2><p><a href="https://github.com/IntelRealSense/realsense-ros">官方指南</a><br>（用的是指南里的realsense distribution方案）</p>
+<p>进入ros空间: </p>
+<figure class="highlight plain"><table><tbody><tr><td class="code"><pre><span class="line">cd ~/catkin_ws/src</span><br><span class="line">git clone https://github.com/IntelRealSense/realsense-ros.git</span><br><span class="line">cd realsense-ros/</span><br><span class="line">git checkout `git tag | sort -V | grep -P "^2.\d+\.\d+" | tail -1`</span><br></pre></td></tr></tbody></table></figure>
+<p>补一些依赖: </p>
+<figure class="highlight plain"><table><tbody><tr><td class="code"><pre><span class="line">mkdir -p ~/catkin_ws/src/realsense</span><br><span class="line">rosdep install --from-paths src --ignore-src -r -y    # 这步第二次安装的时候失败</span><br><span class="line">sudo apt purge ros-melodic-librealsense2</span><br></pre></td></tr></tbody></table></figure>
+<p>继续安装：</p>
+<figure class="highlight plain"><table><tbody><tr><td class="code"><pre><span class="line">cd ~/catkin_ws</span><br><span class="line">catkin_make clean</span><br><span class="line">catkin_make -DCATKIN_ENABLE_TESTING=False -DCMAKE_BUILD_TYPE=Release</span><br><span class="line">catkin_make install</span><br></pre></td></tr></tbody></table></figure>
+<ul>
+<li>出现报错，原因是缺少ddynamic_reconfigure，解决方案是从<a href="https://github.com/pal-robotics/ddynamic_reconfigure/tree/kinetic-devel">这里</a>将其下载，克隆到工作区<code>~/catkin_ws/src/</code>中</li>
+</ul>
+<p>改<code>.bashrc</code>：</p>
+<figure class="highlight plain"><table><tbody><tr><td class="code"><pre><span class="line">echo "source ~/catkin_ws/devel/setup.bash" &gt;&gt; ~/.bashrc</span><br><span class="line">source ~/.bashrc</span><br></pre></td></tr></tbody></table></figure>
+<p>运行rviz：</p>
+<ul>
+<li>1号终端启动ROS核心：<figure class="highlight plain"><table><tbody><tr><td class="code"><pre><span class="line">roscore</span><br></pre></td></tr></tbody></table></figure></li>
+<li>2号终端：<figure class="highlight plain"><table><tbody><tr><td class="code"><pre><span class="line">rosrun rviz rviz</span><br></pre></td></tr></tbody></table></figure>
+运行realsense：<figure class="highlight plain"><table><tbody><tr><td class="code"><pre><span class="line">roslaunch realsense2_camera rs_camera.launch filters:=pointcloud</span><br></pre></td></tr></tbody></table></figure>
+这时候应该无图像，需要在rviz中修改一些配置，当然配置有很多选择，对于新手来说有图就行orz，以下只是举个例子：</li>
+<li>把fixed frame改成<code>camera_...</code>，不能是<code>map</code>，Global Status由红色变绿</li>
+<li>Add -&gt; 上方点击 By topic -&gt; /depth_registered 下的 /points 下的/PointCloud2，这是针对上面命令中<code>filters:=pointcloud</code>部分选择的type</li>
+<li>Add -&gt; 上方点击 By topic -&gt; /color 下的 /image_raw 下的image</li>
+</ul>
+<h2 id="在D453i上运行VINS-MONO"><a href="#在D453i上运行VINS-MONO" class="headerlink" title="在D453i上运行VINS-MONO"></a>在D453i上运行VINS-MONO</h2><p>这里建议先把catkin_ws备份一下<br><a href="https://zhuanlan.zhihu.com/p/390933690">参考链接0</a><br><a href="https://blog.csdn.net/weixin_44580210/article/details/89789416">参考链接1</a><br><a href="https://blog.csdn.net/qq_41839222/article/details/86552367">参考链接2</a></p>
+<ol>
+<li>修改rs_camera.launch文件</li>
+</ol>
+<p>location：<code>~/catkin_ws/src/realsense-ros/realsense2_camera/launch</code></p>
+<ul>
+<li>修改unite_imu_method如下，这里是让IMU的角速度和加速度作为一个topic输出<figure class="highlight plain"><table><tbody><tr><td class="code"><pre><span class="line">&lt;arg name="unite_imu_method"      default="copy"/&gt;</span><br></pre></td></tr></tbody></table></figure></li>
+<li>修改enable_sync参数为true，这里是开启相机和IMU的同步<figure class="highlight plain"><table><tbody><tr><td class="code"><pre><span class="line">&lt;arg name="enable_sync"           default="true"/&gt;</span><br></pre></td></tr></tbody></table></figure></li>
+<li>打开陀螺仪和加速度计<figure class="highlight plain"><table><tbody><tr><td class="code"><pre><span class="line">&lt;arg name="enable_gyro"         default="true"/&gt;</span><br><span class="line">&lt;arg name="enable_accel"        default="true"/&gt;</span><br></pre></td></tr></tbody></table></figure></li>
+</ul>
+<ol start="2">
+<li>修改realsense_color_config.yaml文件</li>
+</ol>
+<p>location：<code>~/catkin_ws/src/VINS-Mono-master/config/realsense/realsense_color_config.yaml</code></p>
+<ul>
+<li>修改订阅的topic<figure class="highlight plain"><table><tbody><tr><td class="code"><pre><span class="line">imu_topic: "/camera/imu"</span><br><span class="line">image_topic: "/camera/color/image_raw"</span><br><span class="line">output_path: "/home/yj/HZL/VINS-MONO-REALSENSE/output/"  #自己的地址</span><br><span class="line"></span><br><span class="line">pose_graph_save_path: "/home/yj/HZL/VINS-MONO-REALSENSE/output/pose_graph/"</span><br></pre></td></tr></tbody></table></figure></li>
+<li>修改相机的内参<br><a href="https://zhuanlan.zhihu.com/p/390933690">指南</a><figure class="highlight plain"><table><tbody><tr><td class="code"><pre><span class="line">rostopic echo /camera/color/camera_info #查看内参命令</span><br></pre></td></tr></tbody></table></figure>
+<figure class="highlight plain"><table><tbody><tr><td class="code"><pre><span class="line">#camera calibration </span><br><span class="line">model_type: PINHOLE</span><br><span class="line">camera_name: camera</span><br><span class="line">image_width: 1280</span><br><span class="line">image_height: 720</span><br><span class="line">distortion_parameters:</span><br><span class="line">   k1: 0 #9.2615504465028850e-02</span><br><span class="line">   k2: 0 #-1.8082438825995681e-01</span><br><span class="line">   p1: 0 #-6.5484100374765971e-04</span><br><span class="line">   p2: 0 #-3.5829351558557421e-04</span><br><span class="line">projection_parameters:</span><br><span class="line">   fx: 9.194400024414062e+02 #6.0970550296798035e+02</span><br><span class="line">   fy: 9.189413452148438e+02 #6.0909579671294716e+02</span><br><span class="line">   cx: 6.383787841796875e+02 #3.1916667152289227e+02</span><br><span class="line">   cy: 3.5089337158203125e+02 #2.3558360480225772e+02</span><br></pre></td></tr></tbody></table></figure></li>
+<li>IMU到相机的变换矩阵，这里我根据注释的提示修改成2</li>
+</ul>
+<p>初始为0，选0的话，IMU和camera之间的外参矩阵建议使用Kalibr工具进行离线标定，也可以改成1或者2让估计器自己标定和优化。</p>
+<figure class="highlight plain"><table><tbody><tr><td class="code"><pre><span class="line"># Extrinsic parameter between IMU and Camera.</span><br><span class="line">estimate_extrinsic: 2   </span><br><span class="line">                # 0  Have an accurate extrinsic parameters. We will trust the following imu^R_cam, imu^T_cam, don't change it.</span><br><span class="line">                # 1  Have an initial guess about extrinsic parameters. We will optimize around your initial guess.</span><br><span class="line">                # 2  Don't know anything about extrinsic parameters. You don't need to give R,T. We will try to calibrate it. Do some rotation movement at beginning.                        </span><br><span class="line">                # If you choose 0 or 1, you should write down the following matrix.</span><br></pre></td></tr></tbody></table></figure>
+<ul>
+<li>IMU参数，这里我全部修改注释给的参数<figure class="highlight plain"><table><tbody><tr><td class="code"><pre><span class="line">#imu parameters       The more accurate parameters you provide, the better performance</span><br><span class="line">acc_n: 0.2          # accelerometer measurement noise standard deviation. #0.2</span><br><span class="line">gyr_n: 0.05         # gyroscope measurement noise standard deviation.     #0.05</span><br><span class="line">acc_w: 0.02         # accelerometer bias random work noise standard deviation.  #0.02</span><br><span class="line">gyr_w: 4.0e-5       # gyroscope bias random work noise standard deviation.     #4.0e-5</span><br><span class="line">g_norm: 9.80       # gravity magnitude</span><br></pre></td></tr></tbody></table></figure></li>
+<li>是否需要在线估计同步时差，根据上述博主的建议这里选择不需要<figure class="highlight plain"><table><tbody><tr><td class="code"><pre><span class="line">#unsynchronization parameters</span><br><span class="line">estimate_td: 0                      # online estimate time offset between camera and imu</span><br><span class="line">td: 0.000                           # initial value of time offset. unit: s. readed image clock + td = real image clock (IMU clock)</span><br></pre></td></tr></tbody></table></figure></li>
+<li>相机曝光改成全局曝光<figure class="highlight plain"><table><tbody><tr><td class="code"><pre><span class="line">#rolling shutter parameters</span><br><span class="line">rolling_shutter: 0                      # 0: global shutter camera, 1: rolling shutter camera</span><br><span class="line">rolling_shutter_tr: 0               # unit: s. rolling shutter read out time per frame (from data sheet). </span><br></pre></td></tr></tbody></table></figure></li>
+</ul>
+<ol start="3">
+<li>运行<figure class="highlight plain"><table><tbody><tr><td class="code"><pre><span class="line">roscore</span><br><span class="line">roslaunch realsense2_camera rs_camera.launch  #启动realsense驱动sdk，输出相应图像和IMU话题</span><br><span class="line">roslaunch vins_estimator realsense_color.launch #启动vins-mono，数据来源是相机</span><br><span class="line">roslaunch vins_estimator vins_rviz.launch #启动rviz界面</span><br></pre></td></tr></tbody></table></figure>
+在global option里把word改成camera_link</li>
+</ol>
+<h2 id="问题："><a href="#问题：" class="headerlink" title="问题："></a>问题：</h2><p>不显示特征点和轨迹，报错如下：</p>
+<figure class="highlight plain"><table><tbody><tr><td class="code"><pre><span class="line">[ INFO] [1629687186.636584239]: init begins</span><br><span class="line">[ INFO] [1629687186.672642097]: Loaded config_file: /home/yj/catkin_ws/src/VINS-Mono-master/feature_tracker/../config/realsense/realsense_color_config.yaml</span><br><span class="line">vocabulary_file/home/yj/catkin_ws/src/VINS-Mono-master/pose_graph/../support_files/brief_k10L6.bin</span><br><span class="line">result path /home/yj/HZL/VINS-MONO-REALSENSE/output//vins_result_no_loop.csv</span><br><span class="line">[ INFO] [1629687186.683639120]: ROW: 480.000000 COL: 640.000000 </span><br><span class="line">[ WARN] [1629687186.683652444]: have no prior about extrinsic param, calibrate extrinsic param</span><br><span class="line"></span><br><span class="line">[ INFO] [1629688187.806394607]: Synchronized sensors, fix time offset: 0</span><br><span class="line">[ WARN] [1629688187.806432117]: waiting for image and imu...</span><br><span class="line">vocabulary_file/home/yj/catkin_ws/src/VINS-Mono-master/pose_graph/../support_files/brief_k10L6.bin</span><br><span class="line">loop start load vocabulary</span><br><span class="line">BRIEF_PATTERN_FILE/home/yj/catkin_ws/src/VINS-Mono-master/pose_graph/../support_files/brief_pattern.yml</span><br><span class="line">no previous pose graph</span><br><span class="line">OpenCV Error: Assertion failed (_mask.empty() || (_mask.type() == CV_8UC1 &amp;&amp; _mask.sameSize(_image))) in goodFeaturesToTrack, file /build/opencv-L2vuMj/opencv-3.2.0+dfsg/modules/imgproc/src/featureselect.cpp, line 366</span><br><span class="line">terminate called after throwing an instance of 'cv::Exception'</span><br><span class="line">  what():  /build/opencv-L2vuMj/opencv-3.2.0+dfsg/modules/imgproc/src/featureselect.cpp:366: error: (-215) _mask.empty() || (_mask.type() == CV_8UC1 &amp;&amp; _mask.sameSize(_image)) in function goodFeaturesToTrack</span><br><span class="line"></span><br><span class="line">[feature_tracker-1] process has died [pid 1331, exit code -6, cmd /home/yj/catkin_ws/devel/lib/feature_tracker/feature_tracker __name:=feature_tracker __log:=/home/yj/.ros/log/8f26fcba-03bf-11ec-9c16-b07b250c6f90/feature_tracker-1.log].</span><br><span class="line">log file: /home/yj/.ros/log/8f26fcba-03bf-11ec-9c16-b07b250c6f90/feature_tracker-1*.log</span><br><span class="line"></span><br></pre></td></tr></tbody></table></figure>
+<p>解决策略：</p>
+<ul>
+<li><p>第一次跑的时候没配置opencv，现在补充配置opencv，按照《高翔SLAM》p108中的配置安装依赖包（这部分已补充在上文），以下是安装以上依赖时附带安装的依赖，仅作为记录，不作为参考：</p>
+<figure class="highlight plain"><table><tbody><tr><td class="code"><pre><span class="line">sudo apt-get install build-essential libopenmpi1.6 libvtk5.8 mpi-default-dev</span><br></pre></td></tr></tbody></table></figure></li>
+<li><p>还是不显示，参考<a href="https://github.com/HKUST-Aerial-Robotics/VINS-Mono/issues/26">链接</a>，发现是相机参数未同步的原因：</p>
+<p><strong>最终解决方案</strong>：除了要在上述的<code>realsense_color_config.yaml</code>中修改相机参数，还需要在<code>/home/yj/catkin_ws/src/VINS-Mono-master/config/euroc/euroc_config.yaml</code>文件中修改<code>#camera calibration</code></p>
+<p>我的problem还有，在<code>realsense_color_config.yaml</code>中只修改了<code>distortion_parameters</code>和<code>projection_parameters</code>，而未修改分辨率<code>(image_width: 1280, image_height: 720)</code></p>
+<ul>
+<li>查看相机内参指令(不同相机内参是不一样的)：</li>
+</ul>
+  <figure class="highlight plain"><table><tbody><tr><td class="code"><pre><span class="line">roscore</span><br><span class="line">roslaunch realsense2_camera rs_camera.launch  #打开相机节点</span><br><span class="line">rostopic echo /camera/color/camera_info   #查看相机内参</span><br></pre></td></tr></tbody></table></figure></li>
+</ul>
+]]></content>
+      <categories>
+        <category>教程</category>
+      </categories>
+      <tags>
+        <tag>教程</tag>
+        <tag>SLAM</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>健身清单</title>
     <url>/%E5%81%A5%E8%BA%AB%E6%B8%85%E5%8D%95/</url>
     <content><![CDATA[<p>背：拉，胸：推+宽于肩<br>史密斯：直背-肩，平躺：胸，45度，胳膊？</p>
@@ -975,196 +1113,10 @@
 </ol>
 ]]></content>
       <categories>
-        <category>科研</category>
+        <category>学习</category>
       </categories>
       <tags>
-        <tag>科研</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>行前准备</title>
-    <url>/%E8%A1%8C%E5%89%8D%E5%87%86%E5%A4%87/</url>
-    <content><![CDATA[<h1 id="行李"><a href="#行李" class="headerlink" title="行李"></a>行李</h1><h2 id="衣物"><a href="#衣物" class="headerlink" title="衣物"></a>衣物</h2><ul>
-<li>夏装<ul>
-<li>短袖*10 </li>
-<li>短裤*5    </li>
-<li>短裙*2    </li>
-<li>裙子*2    </li>
-<li>防晒衣*2  </li>
-</ul>
-</li>
-<li>春秋<ul>
-<li>厚外套</li>
-<li>薄外套    </li>
-<li>长裤*4</li>
-<li>卫衣*2</li>
-</ul>
-</li>
-<li>运动<ul>
-<li>运动套装（上衣、短裤、长裤、内衣）</li>
-<li>泳衣套装  </li>
-</ul>
-</li>
-<li>正装<ul>
-<li>衬衣*2</li>
-<li>外套*1</li>
-<li>西裤*1 </li>
-</ul>
-</li>
-<li>其他<ul>
-<li>内衣<ul>
-<li>深色*3</li>
-<li>浅色*4</li>
-</ul>
-</li>
-<li>内裤*7</li>
-<li>居家服*3</li>
-<li>袜子*8</li>
-</ul>
-</li>
-<li>鞋子<ul>
-<li>运动鞋*1 </li>
-<li>小白鞋*1 </li>
-<li>凉鞋*4 </li>
-<li>拖鞋*2</li>
-</ul>
-</li>
-</ul>
-<h2 id="电子产品"><a href="#电子产品" class="headerlink" title="电子产品"></a>电子产品</h2><ul>
-<li>大件<ul>
-<li>手机    </li>
-<li>电脑    </li>
-<li>ipad    </li>
-<li>kindle   </li>
-<li>录音笔</li>
-<li>除湿器</li>
-</ul>
-</li>
-<li>配件<ul>
-<li>充电宝*1</li>
-<li>耳机<ul>
-<li>红色大耳机</li>
-<li>粉色蓝牙耳机</li>
-<li>手机耳机</li>
-<li>电脑耳机*2</li>
-<li>转换头</li>
-</ul>
-</li>
-<li>充电线<ul>
-<li>苹果线+头</li>
-<li>华为线+头 *2</li>
-<li>方型接口线</li>
-<li>录音笔转换头</li>
-</ul>
-</li>
-<li>u盘*2</li>
-<li>移动硬盘<ul>
-<li>2+1</li>
-</ul>
-</li>
-<li>转换插头*2</li>
-<li>插座*1    </li>
-<li>路由器</li>
-<li>鼠标</li>
-<li>键盘（看情况）</li>
-</ul>
-</li>
-</ul>
-<h2 id="箱包"><a href="#箱包" class="headerlink" title="箱包"></a>箱包</h2><ul>
-<li>箱子<ul>
-<li>28寸行李箱</li>
-<li>20寸行李箱</li>
-</ul>
-</li>
-<li>包<ul>
-<li>双肩书包    </li>
-<li>休闲斜跨    </li>
-<li>小包  </li>
-<li>洗漱包  </li>
-</ul>
-</li>
-</ul>
-<h2 id="日用品"><a href="#日用品" class="headerlink" title="日用品"></a>日用品</h2><ul>
-<li>床上用品<ul>
-<li>小毯子  【1】</li>
-<li>小枕头  【1】</li>
-<li>面包猫和面包兔兔</li>
-</ul>
-</li>
-<li>洗漱用品<ul>
-<li>洗发水、护发素（小件）  【0/1】</li>
-<li>牙膏牙刷？</li>
-<li>毛巾</li>
-<li>洁面乳</li>
-<li>补水</li>
-<li>擦脸油</li>
-</ul>
-</li>
-<li>化妆品<ul>
-<li>唇釉</li>
-<li>唇膏</li>
-<li>口红</li>
-<li>眉笔</li>
-<li>防晒喷雾</li>
-<li>防晒霜  【0/1】</li>
-</ul>
-</li>
-</ul>
-<h2 id="个人证件"><a href="#个人证件" class="headerlink" title="个人证件"></a>个人证件</h2><ul>
-<li>入境需要<ul>
-<li>护照（原件 + 扫描件 + 复印件3）</li>
-<li>IPA letter（电子版 + 打印件3）</li>
-<li>offer（电子版 + 打印件3）</li>
-<li>EA（电子版 + 打印件3）</li>
-<li>eform16（电子版 + 打印件3）</li>
-<li>核酸检测预约二维码</li>
-</ul>
-</li>
-<li>入学需要<ul>
-<li>托福成绩单（原件 + 电子版 + 复印件3）</li>
-<li>GRE成绩单（电子版+打印件3）</li>
-<li>ICA体检报告（原件+扫描版++打印版2）</li>
-<li>入学前体检报告（原件+扫描版++打印版2）</li>
-<li>毕业证（原件+扫描版+复印件2+副本3）</li>
-<li>学位证（原件+扫描版+复印件2+副本3）</li>
-<li>成绩单（原件+扫描版+复印件2+副本3）</li>
-</ul>
-</li>
-<li>其他<ul>
-<li>国内身份证（原件 + 扫描件 + 复印件3）</li>
-<li>疫苗接种证明（扫描件 + 公证书2）</li>
-<li>户口本（扫描件+复印件）</li>
-<li>2寸照片10</li>
-</ul>
-</li>
-</ul>
-<h2 id="防疫用品"><a href="#防疫用品" class="headerlink" title="防疫用品"></a>防疫用品</h2><ul>
-<li>飞机上<ul>
-<li>防护服</li>
-</ul>
-</li>
-<li>日常<ul>
-<li>口罩</li>
-<li>免洗洗手液  【0/1】</li>
-<li>酒精棉布</li>
-</ul>
-</li>
-</ul>
-<h2 id="药品"><a href="#药品" class="headerlink" title="药品"></a>药品</h2><h1 id="抵达新加坡后购买"><a href="#抵达新加坡后购买" class="headerlink" title="抵达新加坡后购买"></a>抵达新加坡后购买</h1><h2 id="新生大礼包"><a href="#新生大礼包" class="headerlink" title="新生大礼包"></a>新生大礼包</h2><h2 id="日用品-1"><a href="#日用品-1" class="headerlink" title="日用品"></a>日用品</h2><ul>
-<li>床单*1</li>
-<li>夏凉被*1</li>
-<li>枕套*2</li>
-</ul>
-<h2 id="其他"><a href="#其他" class="headerlink" title="其他"></a>其他</h2><ol>
-<li>运动包（去了买）</li>
-</ol>
-]]></content>
-      <categories>
-        <category>留学</category>
-      </categories>
-      <tags>
-        <tag>留学</tag>
-        <tag>NUS</tag>
+        <tag>学习</tag>
       </tags>
   </entry>
   <entry>
