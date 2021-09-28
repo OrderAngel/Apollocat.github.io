@@ -190,6 +190,7 @@
 <li><p>错误率：</p>
 <p>对于估计的标签计算分错的样本数量/总样本；</p>
 <p>这个操作对测试集和验证集分别搞一遍</p>
+<h2 id="结果"><a href="#结果" class="headerlink" title="结果"></a>结果</h2><p><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/study/paper/20210928161328.png"></p>
 </li>
 </ul>
 <h1 id="高斯朴素贝叶斯"><a href="#高斯朴素贝叶斯" class="headerlink" title="高斯朴素贝叶斯"></a>高斯朴素贝叶斯</h1><h2 id="题目"><a href="#题目" class="headerlink" title="题目"></a>题目</h2><p>在数据处理部分的<strong>log转换数据</strong>上拟合一个高斯朴素贝叶斯分类器。</p>
@@ -203,6 +204,7 @@
 <p>因为#class=2，λ的ML估计可以用二项的N1/N；</p>
 <p>eta是给定class=j时，特征的pdf=N(μ_ML,σ^2_ML)</p>
 <p>和上一题类似，还是要先获得eta矩阵，矩阵中的每个元素(i,j)对应给定j类别时，第i维特征的条件概率。该值由ML估计的正态分布得到。</p>
+<h2 id="结果-1"><a href="#结果-1" class="headerlink" title="结果"></a>结果</h2><p><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/study/paper/20210928161435.png"></p>
 <h1 id="逻辑回归"><a href="#逻辑回归" class="headerlink" title="逻辑回归"></a>逻辑回归</h1><p>##题目<br>对于<strong>log转换数据</strong>，拟合一个l2正则的逻辑回归模型（牛顿方法+l2正则+从l2正则中排除偏移项）。</p>
 <p>对于每个正则参数值λ={1,2,…,9,10,15,20,…95,100}，在训练集上拟合逻辑回归模型，并在测试集上计算它的错误率。</p>
 <p>报告至少需要包含以下内容：</p>
@@ -249,6 +251,7 @@
 <p>end</p>
 <p>计算错误率</p>
 <p>画图</p>
+<h2 id="结果-2"><a href="#结果-2" class="headerlink" title="结果"></a>结果</h2><p><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/study/paper/20210928161533.png"></p>
 <h1 id="k最近邻居"><a href="#k最近邻居" class="headerlink" title="k最近邻居"></a>k最近邻居</h1><h2 id="题目-1"><a href="#题目-1" class="headerlink" title="题目"></a>题目</h2><p>在<strong>log转换数据</strong>上，实现KNN分类器。用欧式距离来测量邻居之间的距离。</p>
 <p>对于每个K={1, 2, …9,10,15,20,…95,100}，计算训练和测试的错误率。</p>
 <p>报告至少需要包含以下内容：</p>
@@ -262,6 +265,7 @@
 <p>对于每一个新样本，根据不同的K，得到距离该样本最近的K个训练点，对比其中类0和类1的比例，将新样本的标签预测为占比大的那个类。</p>
 <p>训练集上的测试或许可以有一些tricky，因为生产的距离矩阵是对称的，且对角线值为0。</p>
 <p>训练集：dist—3065<em>3065<br>测试集：dist—1536</em>3065</p>
+<h2 id="结果-3"><a href="#结果-3" class="headerlink" title="结果"></a>结果</h2><p><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/study/paper/20210928161622.png"></p>
  
       <!-- reward -->
       

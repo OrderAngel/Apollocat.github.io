@@ -89,6 +89,7 @@
 <li><p>错误率：</p>
 <p>对于估计的标签计算分错的样本数量/总样本；</p>
 <p>这个操作对测试集和验证集分别搞一遍</p>
+<h2 id="结果"><a href="#结果" class="headerlink" title="结果"></a>结果</h2><p><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/study/paper/20210928161328.png"></p>
 </li>
 </ul>
 <h1 id="高斯朴素贝叶斯"><a href="#高斯朴素贝叶斯" class="headerlink" title="高斯朴素贝叶斯"></a>高斯朴素贝叶斯</h1><h2 id="题目"><a href="#题目" class="headerlink" title="题目"></a>题目</h2><p>在数据处理部分的<strong>log转换数据</strong>上拟合一个高斯朴素贝叶斯分类器。</p>
@@ -102,6 +103,7 @@
 <p>因为#class=2，λ的ML估计可以用二项的N1/N；</p>
 <p>eta是给定class=j时，特征的pdf=N(μ_ML,σ^2_ML)</p>
 <p>和上一题类似，还是要先获得eta矩阵，矩阵中的每个元素(i,j)对应给定j类别时，第i维特征的条件概率。该值由ML估计的正态分布得到。</p>
+<h2 id="结果-1"><a href="#结果-1" class="headerlink" title="结果"></a>结果</h2><p><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/study/paper/20210928161435.png"></p>
 <h1 id="逻辑回归"><a href="#逻辑回归" class="headerlink" title="逻辑回归"></a>逻辑回归</h1><p>##题目<br>对于<strong>log转换数据</strong>，拟合一个l2正则的逻辑回归模型（牛顿方法+l2正则+从l2正则中排除偏移项）。</p>
 <p>对于每个正则参数值λ={1,2,…,9,10,15,20,…95,100}，在训练集上拟合逻辑回归模型，并在测试集上计算它的错误率。</p>
 <p>报告至少需要包含以下内容：</p>
@@ -148,6 +150,7 @@
 <p>end</p>
 <p>计算错误率</p>
 <p>画图</p>
+<h2 id="结果-2"><a href="#结果-2" class="headerlink" title="结果"></a>结果</h2><p><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/study/paper/20210928161533.png"></p>
 <h1 id="k最近邻居"><a href="#k最近邻居" class="headerlink" title="k最近邻居"></a>k最近邻居</h1><h2 id="题目-1"><a href="#题目-1" class="headerlink" title="题目"></a>题目</h2><p>在<strong>log转换数据</strong>上，实现KNN分类器。用欧式距离来测量邻居之间的距离。</p>
 <p>对于每个K={1, 2, …9,10,15,20,…95,100}，计算训练和测试的错误率。</p>
 <p>报告至少需要包含以下内容：</p>
@@ -161,6 +164,7 @@
 <p>对于每一个新样本，根据不同的K，得到距离该样本最近的K个训练点，对比其中类0和类1的比例，将新样本的标签预测为占比大的那个类。</p>
 <p>训练集上的测试或许可以有一些tricky，因为生产的距离矩阵是对称的，且对角线值为0。</p>
 <p>训练集：dist—3065<em>3065<br>测试集：dist—1536</em>3065</p>
+<h2 id="结果-3"><a href="#结果-3" class="headerlink" title="结果"></a>结果</h2><p><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/study/paper/20210928161622.png"></p>
 ]]></content>
       <categories>
         <category>project</category>
@@ -1861,321 +1865,6 @@
       </tags>
   </entry>
   <entry>
-    <title>论文笔记：paying more attention to attention</title>
-    <url>/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0%EF%BC%9Apaying-more-attention-to-attention/</url>
-    <content><![CDATA[<h2 id="Paying-more-attention-to-attention-improving-the-performance-of-convolutional-neural-networks-via-attention-transfer"><a href="#Paying-more-attention-to-attention-improving-the-performance-of-convolutional-neural-networks-via-attention-transfer" class="headerlink" title="Paying more attention to attention: improving the performance of convolutional neural networks via attention transfer"></a>Paying more attention to attention: improving the performance of convolutional neural networks via attention transfer</h2><h1 id="前置知识"><a href="#前置知识" class="headerlink" title="前置知识"></a>前置知识</h1><h2 id="1）-NLP："><a href="#1）-NLP：" class="headerlink" title="1） NLP："></a>1） NLP：</h2><p>自然语言处理</p>
-<h2 id="2）-encoder-decoder："><a href="#2）-encoder-decoder：" class="headerlink" title="2） encoder-decoder："></a>2） encoder-decoder：</h2><p>   编码器：现实问题转化为数学问题；</p>
-<p>   解码器：求解数学问题，并转化为现实世界的解决方案；</p>
-<p>   <img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/study/SLAM/20210912005008.png"></p>
-<ul>
-<li>主要应用：文字-文字；音频-文字；图片-文字</li>
-<li>主要问题：中间向量长度必须固定，导致输入信息过长时会丢失部分信息。</li>
-<li>解决方案：attention机制，中间向量被编码成了一个向量的序列：</li>
-</ul>
-<pre><code>![](https://raw.githubusercontent.com/OrderAngel/Picture/main/study/SLAM/20210912005634.png)
-</code></pre>
-<h2 id="3）-seq2seq："><a href="#3）-seq2seq：" class="headerlink" title="3） seq2seq："></a>3） seq2seq：</h2><p>encoder-decoder的一种。输入一个序列，输出另一个序列；这两个序列的长度都可变</p>
-<h2 id="4）-attention"><a href="#4）-attention" class="headerlink" title="4） attention"></a>4） attention</h2><p>   attention最早是2014年neural machine translation中提出的，该文章在seq2seq中引入attention，将attention分为soft attention和hard attention两种。</p>
-<p>   <a href="https://www.bilibili.com/video/BV1Wi4y1b7NS">李宏毅 attention based model</a></p>
-<p>   <a href="https://www.zhihu.com/question/68482809">参考</a></p>
-<p>   <a href="https://zhuanlan.zhihu.com/p/91839581">一文看懂 Attention（本质原理+3大优点+5大类型）</a></p>
-<p>   在人类的视觉系统中，attention机制是将有限的注意力集中在重点信息上，从而节省资源，快速获得最有效的信息。</p>
-<p>   在AI领域，attention最早在cv里用，后来伴随着BERT和GPT的优秀在NLP领域大放异彩。</p>
-<ul>
-<li><p>优点：</p>
-<ul>
-<li>参数少</li>
-<li>速度快</li>
-<li>效果好</li>
-</ul>
-</li>
-<li><p>原理：</p>
-<p> <img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/study/SLAM/20210912105322.png"></p>
-<p> 第一步：query和key计算相似度得到权值</p>
-<p> 第二步：将权值归一化得到可用的权重</p>
-<p> 第三步：将权重和value加权求和</p>
-</li>
-<li><p>类型：</p>
-<p> <img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/study/paper/20210912105629.png"></p>
-<p> 值得一提的是其中的<code>CNN+Attention</code>：</p>
-<p> 首先我们先分析一下CNN：CNN的卷积操作可以提取重要特征，attention差不多也是这种思想，但是CNN的卷积感受野是局部的，需要叠很多层去扩大视野。此外，CNN中的max pooling直接提取数值最大的特征，有点像hard attention的直接选中某特征。</p>
-<p> 将Attention机制引入CNN：（以2016年的<a href="https://zhuanlan.zhihu.com/p/48254913">ABCNN</a>为例和attention pooling）</p>
-<ol>
-<li><p>在卷积操作前做attention。比如attention-based BCNN-1，这个任务是文本蕴含任务需要处理两段文本，同时对两段输入的序列向量做attention，计算出特征向量，再拼接到原始向量中，作为卷积层的输入（等于卷积层的输入多了一些两段input的attention信息）</p>
-</li>
-<li><p>在卷积操作后做attention。</p>
-<p>比如在ABCNN-2中，对两段文本的卷积层的输出做attention，作为pooling层的输入。</p>
-</li>
-<li><p>在pooling层做attention来取代max pooling。</p>
-<p>比如attention pooling，首先用LSTM学习到一个比较好的句向量作为query，然后用CNN学习到一个特征矩阵key，再用query对key计算权重，进行attention，得到最后的句向量。</p>
-</li>
-</ol>
-<ul>
-<li>attention在CNN上的应用主要分为两种：spatial attention和channel attention。</li>
-</ul>
-<p> <code>纯attention</code>：比如attention is all you need里面的transformer，用的是self-attention</p>
-</li>
-</ul>
-<h2 id="5）-CNN"><a href="#5）-CNN" class="headerlink" title="5） CNN"></a>5） CNN</h2><p>   <a href="https://zhuanlan.zhihu.com/p/251068800">CNN卷积核与通道讲解</a></p>
-<h2 id="6）-transformer"><a href="#6）-transformer" class="headerlink" title="6） transformer"></a>6） transformer</h2><p>   encoder-decoder结构.</p>
-<p>   由于RNN不能做并行，而CNN只能部分的提特征(除非叠很多层)，故使用self-attention来替代RNN。</p>
-<p>   transformer，在原先的seq2seq中加入attention机制</p>
-<p>   以前用seq2seq的地方都可以用transformer来替代。</p>
-<p>   transformer进阶：使用multi-head self-attention；universal transformer…</p>
-<p>   transformer也不是只能用在文字上，cv上也可以，比如self-attention GAN</p>
-<p>   <a href="https://www.bilibili.com/video/av56239558">李宏毅-Transformer</a></p>
-<p>   <a href="https://www.bilibili.com/video/BV19t411S74Z">【Transformer】Attention Is All You Need</a></p>
-<h2 id="7）-知识蒸馏"><a href="#7）-知识蒸馏" class="headerlink" title="7） 知识蒸馏"></a>7） 知识蒸馏</h2><p><a href="https://www.bilibili.com/s/video/BV1s7411h7K2">神经网络知识蒸馏 Knowledge Distillation</a></p>
-<p>步骤：</p>
-<ol>
-<li>采用传统的方式训练一个教师网络</li>
-<li>建立学生网络模型，模型的输出采用传统的softmax函数，拟合目标为one-hot形式的训练集输出，输出和目标之间的距离记为loss1</li>
-<li>将训练完成的教师网络的softmax分类器加入温度参数，作为具有相同温度参数softmax分类器的学生网络的拟合目标，将教师与学生网络的温度版softmax分类器之间的距离记为loss2</li>
-<li>引入参数$\alpha$，将训练的损失函数设为$loss1*(1-\alpha)+loss2*\alpha$，训练网络</li>
-</ol>
-<p><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/study/paper/20210913144723.png"></p>
-<p>  <img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/study/paper/20210913144841.png"> 其中CE为交叉熵。</p>
-<p>可见t与平缓程度相关，增大t可以放大教师网络的暗知识；$\alpha$与学生网络训练时参考教师网络蒸馏来的知识的比重有关，该值越大，越依赖教师网络的暗知识。</p>
-<h2 id="8）spatial-attention-和-channel-attention"><a href="#8）spatial-attention-和-channel-attention" class="headerlink" title="8）spatial attention 和 channel attention"></a>8）spatial attention 和 channel attention</h2><p><a href="https://blog.csdn.net/u014134327/article/details/109669042">Spatial Attention和Channel Attention的个人理解</a></p>
-<p><a href="https://blog.csdn.net/weixin_42560055/article/details/85225111">参考2</a></p>
-<p>attention机制本质上是学习一个权重分布，再拿这个权重分布施加在原来的特征图上，简单来讲：</p>
-<p>(1) 这个加权可以是保留所有分量均做加权—soft attention；也可以是在分布中以某种采样策略选取部分分量—hard attention；</p>
-<p>(2) 这个加权可以作用在空间尺度上，给不同的区域加权—spatial attention；也可以作用在channel尺度上，给不同的通道特征加权—channel attention；还可以给特征图上每个元素加权；</p>
-<p>(3) 这个加权可以作用在不同时刻历史特征上，如machine translation</p>
-<h2 id="9）迁移学习Transfer-learning"><a href="#9）迁移学习Transfer-learning" class="headerlink" title="9）迁移学习Transfer learning"></a>9）迁移学习Transfer learning</h2><p>知识蒸馏被广泛应用于模型压缩和迁移学习中，常见的迁移学习方式就是在一个大的数据集上先做预训练，然后使用预训练得到的参数在一个小的数据集上做微调（两个数据集往往领域不同或者任务不同）</p>
-<p>例如：在联邦广告中，先通过大量曝光和点击数据进行 CTR 建模（大的数据集），然后通过知识蒸馏，将这部分信息迁移到 CVR 模型中（小的数据集）</p>
-<h2 id="10）关于DL里面各种classifier线性层的称谓："><a href="#10）关于DL里面各种classifier线性层的称谓：" class="headerlink" title="10）关于DL里面各种classifier线性层的称谓："></a>10）关于DL里面各种classifier线性层的称谓：</h2><ul>
-<li>linear：线性层。没有隐层的单层结构。</li>
-<li>dense：密集层。可以指单层linear也可以指多层线性层的堆叠，可以没有隐层也可以有，隐层一般大于2。</li>
-<li>MLP：多层感知机。多层linear的堆叠，有隐层。</li>
-<li>FC：全连接层。单层多层均可，是对linear classifer的一种笼统称谓。<h2 id="11）top-1和top-5"><a href="#11）top-1和top-5" class="headerlink" title="11）top-1和top-5"></a>11）top-1和top-5</h2></li>
-</ul>
-<p>top-1：预测结果中排名第一的类别与实际结果相符的准确率；</p>
-<p>top-5：预测结果中排名前五的类别包含实际结果的准确率。</p>
-<h2 id="12）反向传播算法"><a href="#12）反向传播算法" class="headerlink" title="12）反向传播算法"></a>12）反向传播算法</h2><p>反向传播算法由两个阶段组成：激励传播+权重更新</p>
-<ul>
-<li>激励传播（每次迭代的传播阶段分两步）：<ul>
-<li>前向传播：将训练输入送入网络以获得激励响应</li>
-<li>反向传播：将激励响应同输入所对应的目标输出求差。以获得输出层和隐藏层的响应误差</li>
-</ul>
-</li>
-<li>权重更新<ul>
-<li>先将输入激励和误差响应相乘，获得权重的梯度</li>
-<li>再将这个梯度乘上一个比例（训练因子）并取反后加到权重上<h2 id="13）正则化"><a href="#13）正则化" class="headerlink" title="13）正则化"></a>13）正则化</h2><a href="https://daimajiaoliu.com/daima/56a4f0d1f3c8808">深度学习下的正则化</a></li>
-</ul>
-</li>
-</ul>
-<p>我们需要通过最小化误差来拟合训练数据。正则化是解决高方差问题的方案之一，也是减小过拟合的方法。</p>
-<ul>
-<li>l0、l1、l2、l无穷: 限制模型的学习能力<ul>
-<li>l2正则化：倾向于使网络的权值接近0，使得前一层神经元对后一层神经元的影响降低，实质上是对权值做线性衰减。</li>
-</ul>
-</li>
-<li>其他方法：<ul>
-<li>dropout：在训练过程中，对于每个神经元，概率p保持其为激活状态，概括1-p直接关闭。由于每个神经元都可能会被丢弃，模型训练的时候，模型不会给任何神经元过大的参数</li>
-<li>early-stopping<h2 id="14）批正则化Batch-Normalization"><a href="#14）批正则化Batch-Normalization" class="headerlink" title="14）批正则化Batch Normalization"></a>14）批正则化Batch Normalization</h2></li>
-</ul>
-</li>
-</ul>
-<p>对数据做批正则化，使得数据满足均值为0，方差为1的正态分布，可以缓解CNN等训练中梯度消失或梯度爆炸的现象，加快模型的训练速度。</p>
-<h2 id="15）automatic-differentiation自动微分"><a href="#15）automatic-differentiation自动微分" class="headerlink" title="15）automatic differentiation自动微分"></a>15）automatic differentiation自动微分</h2><p>现代dl系统（比如MXNet，TensorFlow等）都用到了自动微分技术。</p>
-<p>自动微分是一种可以借由计算机程序计算一个函数的导数。</p>
-<p>自动微分认为，所有数值计算归根结底是一系列有限的可微算子的组合，它是一种介于符号微分和数值微分的方法，本质上是一种图计算。</p>
-<h2 id="16）ZCA白化"><a href="#16）ZCA白化" class="headerlink" title="16）ZCA白化"></a>16）ZCA白化</h2><p>白化是一种重要的数据预处理过程，目的是降低输入数据的冗余性，白化后的数据：</p>
-<ul>
-<li>特征间的相关性较低</li>
-<li>所有特征具有相同的方差</li>
-</ul>
-<p>白化处理分为PCA白化和ZCA白化。前者用于保证数据各维度的方差为1，可以降维也可以去相关；后者保证数据各维度的方差相同，主要用于去相关，且尽量使白化后的数据接近原始输入数据。</p>
-<ul>
-<li><p>PCA白化：使用PCA求出特征向量，然后把数据X映射到新的特征空间，以去除特征之间的相关性。</p>
-</li>
-<li><p>ZCA白化，把PCA白化的结果又变换到原来的坐标系下。</p>
-</li>
-</ul>
-<h2 id="17）WRN：Wide-residual-networks"><a href="#17）WRN：Wide-residual-networks" class="headerlink" title="17）WRN：Wide residual networks"></a>17）WRN：Wide residual networks</h2><p>WRN-16-1，0.2M：表示深度16，宽度1，参数量0.2M</p>
-<h2 id="18）seed：随机种子"><a href="#18）seed：随机种子" class="headerlink" title="18）seed：随机种子"></a>18）seed：随机种子</h2><p><a href="https://blog.csdn.net/qq_41375609/article/details/99327074">参考</a></p>
-<h2 id="19）CUB数据集："><a href="#19）CUB数据集：" class="headerlink" title="19）CUB数据集："></a>19）CUB数据集：</h2><p>Caltech-UCSD Birds-200-2011，FGCV中广泛使用的数据集，包括鸟类的200个子类别的11788张图像，其中5994张用于训练，5794张用于测试。每张图像的注释包括：1 subcategory label, 15 Part Locations, 312 Binary Attributes, 1 Bounding Box。</p>
-<p><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/study/paper/20210913172708.png"></p>
-<p>需要注意，此数据集的图像与ImageNet中的图像重叠，在使用ImageNet预训练网络时需要小心，因为CUB的测试集可能与原始网络的训练集重叠。</p>
-<h2 id="20）Fine-Grained-Visual-Categorization"><a href="#20）Fine-Grained-Visual-Categorization" class="headerlink" title="20）Fine-Grained Visual Categorization"></a>20）Fine-Grained Visual Categorization</h2><p>细粒度视觉分类FGCV，即识别细分类的任务，一般需要同时使用全局图像信息与局部图像信息精准识别图像子类别。</p>
-<h2 id="21）MIT-indoor-scene-classification数据集："><a href="#21）MIT-indoor-scene-classification数据集：" class="headerlink" title="21）MIT indoor scene classification数据集："></a>21）MIT indoor scene classification数据集：</h2><p>包括67个室内类别，共15620张图像。</p>
-<p><a href="https://raw.githubusercontent.com/OrderAngel/Picture/main/study/paper/20210913173104.png"></a></p>
-<h2 id="22）ImageNet数据集"><a href="#22）ImageNet数据集" class="headerlink" title="22）ImageNet数据集"></a>22）ImageNet数据集</h2><p>ImageNet 是根据 WordNet 层次结构组织的图像数据集。WordNet 中的每个有意义的概念，可能由多个单词或单词短语描述，称为同义词集或 synset。</p>
-<p>ImageNet 有大约 100 K 个同义词集，平均每个同义词集约有 1,000 个人工注释图像。 ImageNet 仅存储对图像的引用，而图像存储在互联网上的原始位置。在深度学习论文中，ImageNet-1K 是指作为 ImageNet 的大规模视觉识别挑战（ ILSVRC ）的一部分发布的数据集，用于将数据集分类为 1,000 个类别。</p>
-<p>简而言之，就是一个巨大的图像数据集！</p>
-<h1 id="0-摘要"><a href="#0-摘要" class="headerlink" title="0. 摘要"></a>0. 摘要</h1><p>本文是attention在知识蒸馏中的应用，即，如何定义CNN中的attention，使得学生网络可以通过mimic教师网络的attention maps来提高自己的性能。</p>
-<p>为此，本文提出了几种transfer attention的方法，实验证实这些方法在多种数据集和CNN结构中<strong>都</strong>表现良好。</p>
-<h1 id="1-介绍"><a href="#1-介绍" class="headerlink" title="1. 介绍"></a>1. 介绍</h1><p>作为人类，attention在visual experience中很关键，同时也与感知密切相关。</p>
-<p>在AI方面，artificial attention mechanisms比较流行。</p>
-<p>有一种假设是：存在non-attentional perception processes和attentional perception processes。前者可以在观察场景的过程中获取高层次的信息，将这些信息与其他思维过程相关联，可以帮助控制attention processes——将注意力集中于场景中的特定区域。从另一个角度来讲，不同的观察者（教师网络）会拥有不同的知识和不同目标，针对同一个场景，不同的attentional strategies看到的东西也会不一样。这是本文的启发点：人工视觉中的注意力有何不同？我们能否利用注意力信息来提高CNN的性能？更具体来讲，一个教师网络是否可以通过向另一个学生网络提供”它将注意力集中在哪里”的信息，来提高学生网络的性能？</p>
-<p>为了解决上述问题，我们首先需要明确的点是：在一个给定的CNN中，注意力机制是如何定义的。我们可以认为注意力是一组spatial maps，这组maps试图encode on网络在做出输出决定时最关注的那些输入区；此外，这组maps可以根据网络的各个层来定义，以便它们能够同时capture低、中、高层的representation information。<strong>更具体来讲，我们定义了两类spatial attention maps：activation-based和gradient-based，然后探索了这两种注意力地图是如何在不同的数据集和网络结构中变化的，并说明了这两种注意力地图确实包含了一些有用信息（这些信息可以显著提高CNN性能）。为此，我们还提出了几种新颖的方法来将注意力从教室网络transfer到学生网络上，来提高后者的性能。</strong></p>
-<ul>
-<li>【换言之，本文首先定义了两种空间注意力地图，然后论证两种空间注意力地图都对提高CNN性能有帮助，然后提出了几种在知识蒸馏中transfer attention from teacher to students的办法】</li>
-</ul>
-<p>本文的贡献：</p>
-<ul>
-<li>我们认为注意力是一种将知识从一个网络转移到另一个网络的机制</li>
-<li>我们提出了使用activation-based和gradient-based 空间注意力地图</li>
-<li>我们通过实验表明，我们的方法在各种数据集和深度网络架构上都有显著的改进，包括残差和非残差网络</li>
-<li>我们发现activation-based attention transfer比full-activation transfer有更好的改善，并且可以与知识蒸馏相结合</li>
-</ul>
-<h1 id="2-相关工作"><a href="#2-相关工作" class="headerlink" title="2. 相关工作"></a>2. 相关工作</h1><h1 id="3-attention-transfer"><a href="#3-attention-transfer" class="headerlink" title="3. attention transfer"></a>3. attention transfer</h1><h2 id="3-1-activation-based-attention-transfer"><a href="#3-1-activation-based-attention-transfer" class="headerlink" title="3.1 activation-based attention transfer"></a>3.1 activation-based attention transfer</h2><p>考虑一个CNN层和对应的激活张量<img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/study/paper/20210912231918.png">，C个通道（特征面），每个特征面维度是H x W。activation-based 映射函数F将该3d激活张量作为输入，输出一个2维的spatial attention  map：</p>
-<p><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/study/paper/20210912232300.png"></p>
-<p>在定义这个空间注意力映射函数F之前，我们需要认可一个潜在的假设：hidden neuron activation（给定输入时网络预测出的结果）的绝对值可以用于指示该神经元的重要性。因此，我们可以通过计算A的绝对值在通道维度上统计结果来构建spatial attention map。</p>
-<p><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/study/paper/20210912233056.png"></p>
-<p>具体来讲，本文使用以下spatial attention maps：</p>
-<ul>
-<li>绝对值求和：<img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/study/paper/20210912233315.png"></li>
-<li>绝对值指数求和：<img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/study/paper/20210912233336.png"></li>
-<li>绝对值指数求最大值：<img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/study/paper/20210912233351.png"></li>
-</ul>
-<p>我们可视化了多个数据集上的多种网络，包括ImageNet分类和定位，COCO目标检测，人脸识别，以及fine-grained识别。我们主要关注没有顶层dense linear layer的现代结构，比如Network-In-Network，ResNet和Inception，这些网络都是流线型的卷积结构。此外，我们还使用不同的框架，在相同结构、宽度和深度的网络上，通过训练得到了不同的性能。</p>
-<p>我们发现，隐层激活的统计信息不但与图像层面上的预测目标具有空间相关性，而且相关性与准确度正相关，即准确度高的网络，相关性也高，更强大的网络有更尖锐的注意力。</p>
-<p><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/study/paper/20210912235644.png"></p>
-<p>此外，attention maps针对不同的网络层关注不同的部分。在前面的层，神经元的激活水平对低层次的梯度点来说很高（？）；在中间层，激活水平对最具辨识度的区域（比如眼睛、鼻子、轮廓）来说比较高；而在顶层则反映了完整的物体。例如，为人脸识别而训练的网络的中层注意图在眼睛、鼻子和嘴唇周围会有较高的激活，而顶层的激活将对应于全脸。</p>
-<p><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/study/paper/20210913014806.png"></p>
-<p>对于上面说的不同的注意力映射函数，有一些属性上的小差别：</p>
-<ul>
-<li>与<img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/study/paper/20210913015113.png">相比，<img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/study/paper/20210913015139.png">对有更高激活的神经元的空间位置有更大权重，比如，对最具辨识度的部分设置了更大的权重（p越大，对高激活区域的关注度越高）；</li>
-<li>此外，在同一个空间位置的所有神经元激活中，<img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/study/paper/20210913015823.png">只会考虑其中之一来为该空间位置设置权重；相反，<img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/study/paper/20210913015933.png">更倾向于多个神经元高激活的区域（？？？）。</li>
-</ul>
-<p>为了进一步说明这些函数的区别，我们可视化了3个性能不同的网络：Network-In-Network (62% top-1 val accuracy), ResNet-34 (73% top-1 val accuracy) and ResNet-101 (77.3% top-1 val accuracy)，每个网络取最后一个下采样前的activation maps，上图左边是中间层，右边是顶层平均池化前的激活图。顶层地图略模糊，因为其原始分辨率只有7*7，很明显，具有辨识度的区域有更高的激活级别。比如，狼的脸。当p减小时，可以看到形状细节消失了。</p>
-<p>在attention transfer中，给定教师网络的spatial attention maps（该map使用上面的attention映射函数计算得到），我们的目标是训练一个学生网络，该网络不只能做正确的预测，还要有和教师相似的attention maps。通常，可以在每一层上计算attention maps的transfer losses。比如，在ResNet中，根据教师和学生的深度考虑以下两种情况：</p>
-<ul>
-<li>相同深度：在每个残差块后做attention transfer；</li>
-<li>不同深度：在每个残差块组后做attention transfer。（如图）</li>
-</ul>
-<p><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/study/paper/20210913022058.png"></p>
-<p>类似的情况也可以应用于其他网络结构（比如NIN，一组是指一个3 × 3,1 × 1,1 × 1的卷积块）。</p>
-<h3 id="损失函数："><a href="#损失函数：" class="headerlink" title="损失函数："></a>损失函数：</h3><p>我们假设转移损失被置于相同空间分辨率的学生和教师的注意力图之间，但如果需要，attention maps可以插值以匹配它们的形状（？？？）。</p>
-<p>学生网络j-th激活图的向量表示：<img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/study/paper/20210913091853.png"></p>
-<p>教师网络j-th激活图的向量表示：<img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/study/paper/20210913091931.png"></p>
-<p>损失函数定义为：<img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/study/paper/20210913023100.png"></p>
-<p>其中W是权重，<img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/study/paper/20210913023219.png">是标准交叉熵【前面那部分可以理解为likelihood，后面那部分是教师网络给的先验知识？？】</p>
-<p>attention transfer也可以和知识蒸馏相结合，损失函数定义为：<img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/study/paper/20210913023825.png"></p>
-<h1 id="3-2-Gradient-based-attention-transfer"><a href="#3-2-Gradient-based-attention-transfer" class="headerlink" title="3.2 Gradient-based attention transfer"></a>3.2 Gradient-based attention transfer</h1><p>我们将注意力定义为输入的梯度。这里输入的梯度可以看做输入敏感地图，输入空间位置对应的注意力编码了输出预测对该输入位置变化的灵敏度（比方说，如果一个像素的小变化可以对网络的输出造成较大的影响，我们就可以合理假设网络“paying attention to”那个像素）。下式定义了教师和学生的输入损失的梯度：</p>
-<p><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/study/paper/20210913093505.png"></p>
-<p>然后，为了让学生的gradient attention与教师的更接近，我们最小化二者的距离：</p>
-<p><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/study/paper/20210913100632.png"></p>
-<p>因为WT和x都是给定的，我们求上式关于Ws的导数：[??????????????]</p>
-<p><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/study/paper/20210913100826.png"></p>
-<p>所以，为了做一次更新，我们需要先做一个前向传播和反向传播来得到Js和JT（？？？），计算第二部分那个二范数误差，然后再做一次传播。第二次传播与这里的前向传播相似，包括二阶混合偏导数。上述计算类似于D&amp;L的双反向传播技术。此外，它可以在支持automatic differentiation的框架里实现，而在具有复杂图的现代框架中也可以实现。除了正向传播外，第二次反向传播的代价与第一次反向的代价差不多。<br>所以，为了做一次更新，我们需要先做一个前向传播和反向传播来得到Js和JT（？？？），计算第二部分那个二范数误差，然后再做一次传播。第二次传播与这里的前向传播相似，包括二阶混合偏导数。上述计算类似于D&amp;L的双反向传播技术。此外，它可以在支持automatic differentiation的框架里实现，而在具有复杂图的现代框架中也可以实现。除了正向传播外，第二次反向传播的代价与第一次反向的代价差不多。（？？？？？？）</p>
-<p>我们还提出了要使gradient attention map上水平翻转不变。为了做到这点，我们将原图和水平翻转后的图像都做传播，反向传播并翻转gradient attention maps。在得到的attentions和输出的二范数损失，再做第二次BP：</p>
-<p><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/study/paper/20210913104353.png"></p>
-<p>这与Cohen &amp;Welling(2016)的Group Equivariant CNN方法相似，但并不是硬性约束。我们实验发现，这对训练有正则化作用。</p>
-<p>值得注意的是，在本文中我们只考虑输入层的梯度，但是一般情况下，可能需要在更高层的网络中考虑attention transfer和对称约束。</p>
-<h1 id="4-实验"><a href="#4-实验" class="headerlink" title="4. 实验"></a>4. 实验</h1><p>我们在多种图像分类数据集上作做attention transfer。第一部分中，我们在CIFAR数据集上做activation-based attention transfer和gradient-based attention transfer的实验；在第二部分中，我们在更大的数据集上做activation-based attention transfer的实验。</p>
-<p>对于activation-based attention transfer，我们使用相比于AlexNet或者VGG而言性能更好的NIN和ResNet-based结构（Wide Residual Network），在Scenes，CUB和ImageNet数据集上，我们使用ResNet-18和ResNet-34进行实验。</p>
-<p>对于gradient-based attention transfer，由于需要复杂的自动微分，我们将实验限制在没有批正则化的NIN网络和CIFAR数据集上。</p>
-<h2 id="4-1-CIFAR实验"><a href="#4-1-CIFAR实验" class="headerlink" title="4.1 CIFAR实验"></a>4.1 CIFAR实验</h2><p>CIFAR数据集，包含60000张彩色图片，分为10个类型，图片大小为32*32。</p>
-<p><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/study/paper/20210913140826.png"></p>
-<p>下采样后，顶层的activations的分辨率会更小，因此看上去并没有很多的空间留给attention transfer。但有趣的是，即便在这种情况下，attention transfer依然可以提高所有cases的性能。我们使用水平翻转和随机剪裁来做数据增强，并且所有的网络都进行了批正则化。我们发现ZCA whitening对有效的准确率有负面影响，因此为了更简单的meanst normalization而省略了它。</p>
-<p>我们将ResNet transfer的知识蒸馏的温度t提高到4(温度越高，概率分布越平滑)，使用 $\alpha=0.9$。</p>
-<h3 id="4-1-1-Activation-based-attention-transfer"><a href="#4-1-1-Activation-based-attention-transfer" class="headerlink" title="4.1.1 Activation-based attention transfer"></a>4.1.1 Activation-based attention transfer</h3><p>在CIFAR-10数据集上，多种网络的attention transfer（使用<img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/study/paper/20210913145430.png">注意力地图）结果如表所示：</p>
-<p><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/study/paper/20210913145517.png"></p>
-<ul>
-<li>教师网络与学生网络具有相同的深度：WRN-16-1/WRN-16-2</li>
-<li>教授网络与学生网络具有不同的深度：WRN-16-1/WRN-40-1; WRN-16-2/WRN-40-2</li>
-</ul>
-<p>表中数据单位是<code>Percentage error</code>，是使用不同的随机seed跑了5次后的平均分类错误率，AT都有显著提升(对比原students)，当AT+KD时，网络效果最好【！但是单纯的AT好像没有KD效果好】。</p>
-<p>F-ActT是full-activation transfer</p>
-<p>为了验证在WRN transfer中每组有至少一个activation-based attention transfer是否重要，我们分别在组1、组2和组3中训练了每个网络只有一个转移损失的三个网络，并与用所有三个损失训练的网络进行比较。相应的结果是8.11、7.96、7.97（单独的损失）和综合损失的7.93（使用WRN16-2/WRN-16-1作为教师/学生对）。每项损失都提供了某种程度的额外注意力转移。【<strong>这个步骤是为了验证每个group的AT都是有一些作用的</strong>】</p>
-<p>我们还探索了使用WRN-16-1和WRN16-2对时哪种注意力映射函数表现最好，结果如下表所示：</p>
-<p><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/study/paper/20210913154439.png"></p>
-<p>有趣的是，基于总和的函数效果非常相似，而且比基于最大值的函数更好【<strong>why？</strong>】。从现在起，我们将使用注意力映射函数F2的平方之和。至于公式2中的参数β，它通常变化在0.1左右，因为我们设置为：$10^3/attention map上的元素数量和每层的batch size$ 。在结合AT和KD的情况下，为了简化学习较难的例子，我们在transfer的过程中衰减了它。</p>
-<h3 id="4-1-2-Activation-based-AT-对比-Transfering-full-activation"><a href="#4-1-2-Activation-based-AT-对比-Transfering-full-activation" class="headerlink" title="4.1.2 Activation-based AT 对比 Transfering full activation"></a>4.1.2 Activation-based AT 对比 Transfering full activation</h3><p>为了检查从full-activation转移信息是否比从attention map转移信息更有利，我们实验了FitNets-style hints，直接在全激活层上使用l2损失，用1×1卷积层来匹配张量形状，发现相比其他transfer，这种方法对学生baseline的改进是最小的（见表1的F-ActT列）。</p>
-<p>对于相同宽度不同深度的网络，我们尝试直接回归到激活，没有1×1卷积。我们还在转移损失之前使用l2正则化，并在训练期间衰减β，因为这些都能提供更好的性能。如图所示，我们发现，AT和全激活转移一样，都大大加快了收敛速度，但AT相比full-activation transfer对准确率的提高效果更好。由此可见，attention maps相比于full activation，携带了更多的对transfer比较重要的信息。</p>
-<p><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/study/paper/20210913160555.png"></p>
-<ul>
-<li>bold line是测试结果，dashed line是训练结果，可以看到在WRN-16-2—WRN-16-1的transfer中，AT和F-ActT收敛都挺快，但是AT最终的结果略好一些。</li>
-</ul>
-<h3 id="4-1-3-Gradient-based-attention-transfer"><a href="#4-1-3-Gradient-based-attention-transfer" class="headerlink" title="4.1.3 Gradient-based attention transfer"></a>4.1.3 Gradient-based attention transfer</h3><p>为了简单起见，我们在这些实验中使用了thin Network-in-Network模型，并且没有做批量正则化中的随机剪裁，只是进行了水平翻转的数据增强【因为梯度求导啥的比较难算】。我们也只使用确定性的算法和固定种子的采样，所以实验结果来自单次运行的实验【前面是5次的平均】。我们发现，在这种设置下，网络已经很难适应训练数据了，所以即使在基线实验中也要关闭权重衰减。</p>
-<p>在未来，我们计划使用批量归一化来探索师生对的gradient-based attention，因为到目前为止还不清楚批量归一化在gradient-based attention transfer中的第二个反向传播步骤中应该如何表现（例如，不知道它是有助于批量归一化参数，or is a separate forward propagation with fixed parameters needed【？？？】）。</p>
-<p>我们探索了以下方法：</p>
-<ul>
-<li>最小化输入梯度的l2范数，即双重反向传播方法【双反向传播正则化使Jacobian 矩阵偏小】 </li>
-<li>gradient attention map的对称范数（公式Lsym）</li>
-<li>学生-老师gradient-based attention transfer（不加对称约束的gradient版本）</li>
-<li>学生-老师activation-based attention transfer</li>
-</ul>
-<p>各种方法的结果显示在下表中：</p>
-<p><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/study/paper/20210913163920.png"></p>
-<p>有趣的是，仅仅最小化梯度的l2准则就已经很好了。另外，对称norm也是表现最好的注意力准则之一，我们计划将来在其他数据集上也进行研究。我们还观察到，与activation-based AT类似，使用gradient-based AT也会使性能提高。我们还在相同的训练条件下用activation-based AT训练了一个网络，结果在所有方法中表现最好。<strong>我们应该注意到，没有批量规范化的学生NIN的结构与教师网络略有不同，它在池化层之前没有ReLU激活，这导致没有批量规范化的性能更好</strong>。因此，为了达到activation-based AT的最佳性能，我们必须训练一个新的教师，在池化层之前没有ReLU激活，并且在卷积层的输出上有AT损失。【结果呢？】</p>
-<h2 id="4-2-Large-input-image-network"><a href="#4-2-Large-input-image-network" class="headerlink" title="4.2 Large input image network"></a>4.2 Large input image network</h2><p>在本节中，我们在输入图像大小为224 × 224的ImageNet网络上进行了隐层activation-based transfer的实验。据推测，在这类网络中，注意力更为重要，因为注意力地图的空间分辨率更高。</p>
-<h3 id="4-2-1-transfer-learning"><a href="#4-2-1-transfer-learning" class="headerlink" title="4.2.1 transfer learning"></a>4.2.1 transfer learning</h3><p>【微调就是预训练一个网络，然后在新的数据集上微调】<br>为了了解attention transfer在微调中的作用，我们选择了两个数据集。Caltech-UCSD Birds-200-2011 fine-grained classification（CUB）和MIT室内场景分类（Scenes），两者都包含大约5K的图像训练图像。我们采用ResNet-18和ResNet-34在ImageNet上进行预训练，并在这两个数据集上进行了微调。在CUB上，我们裁剪边界框，在一个维度上重新缩放到256，然后采取随机裁剪。微调时，固定批量正则层，冻结第一组残余块。然后，我们把经过微调的ResNet-34网络作为在ImageNet上预训练的ResNet-18的老师，使用最后两组的F2sum attention loss 【第一组被冻结了】。</p>
-<p><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/study/paper/20210913174040.png"></p>
-<p>如表所示，在这两种情况下，attention transfer都提供了明显的改进，缩小了ResNet-18和ResNet-34在准确性上的差距。在Scenes上，AT的效果和KD一样好，而在CUB上，AT的效果要好得多，我们推测这是因为中间注意力对细粒度识别的重要性。此外，经过微调后，学生的注意力图确实与教师的注意力图更加相似。【对于细粒度的重要性可不可以有别的验证方式？？？至少也像下面这样给个图吧orz】</p>
-<p><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/study/paper/20210913174420.png"></p>
-<ul>
-<li>顶层activation attention map：列1是微调前的（会有分类错误），列2是学生网络，列3是AT后的，列4是教师网络，效果理论上该越来越好。比如行1就越来越接近室内的场景结构【可以用线框模型画一下图！attention map能不能用到室内场景场景建模上，即使是分类错误的预训练模型，也感觉可以得到结构信息！！！】</li>
-</ul>
-<h3 id="4-2-2-ImageNet"><a href="#4-2-2-ImageNet" class="headerlink" title="4.2.2 ImageNet"></a>4.2.2 ImageNet</h3><p>为了在ImageNet上展示activation-based AT，我们把ResNet-18作为学生，把ResNet-34作为老师，并试图提高ResNet-18的准确性。</p>
-<p>我们在最后两组残余块中增加了两个损失，并使用F2sum。我们也没有时间调整任何超参数，并阻止它们进行微调。尽管如此，带有AT的ResNet-18取得了1.1% top-1和0.8% top-5的较好validation accuracy，<strong>我们计划用所有的4组残余块的损失来进阶我们的论文</strong>。</p>
-<p><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/study/paper/20210913180258.png"></p>
-<p><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/study/paper/20210913180400.png"></p>
-<ul>
-<li>solid lines代表top-5 validation error，dashed lines代表top-5 training error。只用了AT损失，没用KD。</li>
-</ul>
-<p>我们没能用KD在ImageNet上取得积极的结果。在ResNet-18-ResNet-34师生对中，它实际上损害了与CIFAR上相同的超参数的收敛性【？】。如果教师和学生有不同的架构/深度，KD就很难发挥作用（我们在CIFAR上观察到同样的情况）【why？？？】，因此我们尝试使用相同的架构和深度来transfer attention【不知道是不是笔误，但是AT没用相同的深度吧？，还是说KD必须深度相同，但是AT不用？应该是笔误，深度相同结构也相同还迁移个啥！】。</p>
-<p>在CIFAR上，AT和KD在这种情况下都工作得很好，并且提高了收敛性和最终的准确性，但在ImageNet上，KD的收敛速度明显较慢（由于缺乏计算资源，我们没有训练到最后）。我们在文献中也找不到FitNets、KD或类似方法在ImageNet上的应用。鉴于此，我们可以认为提出的基于激活的AT是第一个在ImageNet上成功应用的知识转移方法。【为啥那俩用不了？？？】</p>
-<h1 id="5-总结"><a href="#5-总结" class="headerlink" title="5. 总结"></a>5. 总结</h1><p>我们提出了几种（2种）将注意力从一个网络转移到另一个网络的方法，并对几个图像识别数据集进行了实验结果。有趣的是，在空间信息更重要的情况下（例如目标检测或弱监督定位）attentio transfer是如何工作的，这也是我们<strong>计划在未来探索的问题</strong>。</p>
-<p>总的来说，我们认为我们的方法将有助于知识蒸馏的进一步发展，也有助于卷积神经网络的普遍理解。</p>
-<h1 id="6-问题"><a href="#6-问题" class="headerlink" title="6. 问题"></a>6. 问题</h1><ol>
-<li><p>这两种注意力地图有啥区别</p>
-</li>
-<li><p>知识蒸馏是迁移学习的一种，attention在transfer learning中的其他应用</p>
-</li>
-<li><p>数据集ImageNet等</p>
-</li>
-<li><p>beita是什么</p>
-</li>
-<li><p>教师网络给学生网络注意力地图不是已经是知识蒸馏了吗？为何还可以与知识蒸馏相结合重新定义损失函数？</p>
-<p>solution：文章刚出炉那会，AT还不属于知识蒸馏的方法，文中的KD指的就是开山的那篇soft-target辅助hard-target一起训练的文章；</p>
-</li>
-<li><p>水平翻转不变性有啥作用？对于训练有正则化作用？？</p>
-<p>此处的水平翻转是数据增广的一种方案，数据增广可以减少过拟合</p>
-<p>不过，为什么只做水平翻转？？？</p>
-<p>因为有的动物图片翻转后就是倒着的了，没有实际意义；但是对于人脸这种具有对称结构的情况来说，只做左右翻转没有太大意义，无对称结构的图还有有用的！</p>
-<p>除了水平翻转，或许还可以部分置黑</p>
-</li>
-<li><p>如何在更高层的网络中考虑attention transfer</p>
-</li>
-<li><p>文章中的attention蒸馏适用于教师模型和学生模型整体结构类似的情况</p>
-</li>
-<li><p> 本文的ATLoss可以与RKD、PKT、SP、VID等用来学习网络最终输出蒸馏的方式结合使用，仿佛：AT和PKT结合会产生不错的效果</p>
-</li>
-<li><p>可以介绍一下其他知识蒸馏的方法，再说结合使用的好处</p>
-</li>
-<li><p>文章是分类，能否在目标检测中使用</p>
-</li>
-<li><p>从第一个实验的结果来看，层数更高AT效果更好，wider的话KD效果更好，但是也有结合后效果不好的，文章没有专门对比KD和AT，也没有对结合后效果不好的情况专门做讨论。</p>
-</li>
-<li><p>使用批量归一化来探索师生对的gradient-based attention</p>
-</li>
-<li><p>symmetry norm在其他数据集上的表现</p>
-</li>
-<li><p>l1正则化也行：文章只说了也行，但确实没做实验，未来可以探索一下</p>
-</li>
-<li><p>查一下作者对gradient和symmetry的探索</p>
-</li>
-<li><p>白化不好，但没实验</p>
-</li>
-<li><p>4.2.2是不是笔误，因为网络结构相同可以理解，但是深度肯定要不同啊。</p>
-</li>
-<li><p>如果网络结构不同，怎么知识蒸馏？为什么结构不同不行？</p>
-</li>
-</ol>
-]]></content>
-      <categories>
-        <category>科研</category>
-      </categories>
-      <tags>
-        <tag>科研</tag>
-        <tag>论文阅读</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>NUS入学需知</title>
     <url>/NUS%E5%85%A5%E5%AD%A6%E9%9C%80%E7%9F%A5/</url>
     <content><![CDATA[<h1 id="目录"><a href="#目录" class="headerlink" title="目录"></a>目录</h1><ul>
@@ -3077,6 +2766,321 @@
       <tags>
         <tag>留学</tag>
         <tag>NUS</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>论文笔记：paying more attention to attention</title>
+    <url>/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0%EF%BC%9Apaying-more-attention-to-attention/</url>
+    <content><![CDATA[<h2 id="Paying-more-attention-to-attention-improving-the-performance-of-convolutional-neural-networks-via-attention-transfer"><a href="#Paying-more-attention-to-attention-improving-the-performance-of-convolutional-neural-networks-via-attention-transfer" class="headerlink" title="Paying more attention to attention: improving the performance of convolutional neural networks via attention transfer"></a>Paying more attention to attention: improving the performance of convolutional neural networks via attention transfer</h2><h1 id="前置知识"><a href="#前置知识" class="headerlink" title="前置知识"></a>前置知识</h1><h2 id="1）-NLP："><a href="#1）-NLP：" class="headerlink" title="1） NLP："></a>1） NLP：</h2><p>自然语言处理</p>
+<h2 id="2）-encoder-decoder："><a href="#2）-encoder-decoder：" class="headerlink" title="2） encoder-decoder："></a>2） encoder-decoder：</h2><p>   编码器：现实问题转化为数学问题；</p>
+<p>   解码器：求解数学问题，并转化为现实世界的解决方案；</p>
+<p>   <img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/study/SLAM/20210912005008.png"></p>
+<ul>
+<li>主要应用：文字-文字；音频-文字；图片-文字</li>
+<li>主要问题：中间向量长度必须固定，导致输入信息过长时会丢失部分信息。</li>
+<li>解决方案：attention机制，中间向量被编码成了一个向量的序列：</li>
+</ul>
+<pre><code>![](https://raw.githubusercontent.com/OrderAngel/Picture/main/study/SLAM/20210912005634.png)
+</code></pre>
+<h2 id="3）-seq2seq："><a href="#3）-seq2seq：" class="headerlink" title="3） seq2seq："></a>3） seq2seq：</h2><p>encoder-decoder的一种。输入一个序列，输出另一个序列；这两个序列的长度都可变</p>
+<h2 id="4）-attention"><a href="#4）-attention" class="headerlink" title="4） attention"></a>4） attention</h2><p>   attention最早是2014年neural machine translation中提出的，该文章在seq2seq中引入attention，将attention分为soft attention和hard attention两种。</p>
+<p>   <a href="https://www.bilibili.com/video/BV1Wi4y1b7NS">李宏毅 attention based model</a></p>
+<p>   <a href="https://www.zhihu.com/question/68482809">参考</a></p>
+<p>   <a href="https://zhuanlan.zhihu.com/p/91839581">一文看懂 Attention（本质原理+3大优点+5大类型）</a></p>
+<p>   在人类的视觉系统中，attention机制是将有限的注意力集中在重点信息上，从而节省资源，快速获得最有效的信息。</p>
+<p>   在AI领域，attention最早在cv里用，后来伴随着BERT和GPT的优秀在NLP领域大放异彩。</p>
+<ul>
+<li><p>优点：</p>
+<ul>
+<li>参数少</li>
+<li>速度快</li>
+<li>效果好</li>
+</ul>
+</li>
+<li><p>原理：</p>
+<p> <img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/study/SLAM/20210912105322.png"></p>
+<p> 第一步：query和key计算相似度得到权值</p>
+<p> 第二步：将权值归一化得到可用的权重</p>
+<p> 第三步：将权重和value加权求和</p>
+</li>
+<li><p>类型：</p>
+<p> <img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/study/paper/20210912105629.png"></p>
+<p> 值得一提的是其中的<code>CNN+Attention</code>：</p>
+<p> 首先我们先分析一下CNN：CNN的卷积操作可以提取重要特征，attention差不多也是这种思想，但是CNN的卷积感受野是局部的，需要叠很多层去扩大视野。此外，CNN中的max pooling直接提取数值最大的特征，有点像hard attention的直接选中某特征。</p>
+<p> 将Attention机制引入CNN：（以2016年的<a href="https://zhuanlan.zhihu.com/p/48254913">ABCNN</a>为例和attention pooling）</p>
+<ol>
+<li><p>在卷积操作前做attention。比如attention-based BCNN-1，这个任务是文本蕴含任务需要处理两段文本，同时对两段输入的序列向量做attention，计算出特征向量，再拼接到原始向量中，作为卷积层的输入（等于卷积层的输入多了一些两段input的attention信息）</p>
+</li>
+<li><p>在卷积操作后做attention。</p>
+<p>比如在ABCNN-2中，对两段文本的卷积层的输出做attention，作为pooling层的输入。</p>
+</li>
+<li><p>在pooling层做attention来取代max pooling。</p>
+<p>比如attention pooling，首先用LSTM学习到一个比较好的句向量作为query，然后用CNN学习到一个特征矩阵key，再用query对key计算权重，进行attention，得到最后的句向量。</p>
+</li>
+</ol>
+<ul>
+<li>attention在CNN上的应用主要分为两种：spatial attention和channel attention。</li>
+</ul>
+<p> <code>纯attention</code>：比如attention is all you need里面的transformer，用的是self-attention</p>
+</li>
+</ul>
+<h2 id="5）-CNN"><a href="#5）-CNN" class="headerlink" title="5） CNN"></a>5） CNN</h2><p>   <a href="https://zhuanlan.zhihu.com/p/251068800">CNN卷积核与通道讲解</a></p>
+<h2 id="6）-transformer"><a href="#6）-transformer" class="headerlink" title="6） transformer"></a>6） transformer</h2><p>   encoder-decoder结构.</p>
+<p>   由于RNN不能做并行，而CNN只能部分的提特征(除非叠很多层)，故使用self-attention来替代RNN。</p>
+<p>   transformer，在原先的seq2seq中加入attention机制</p>
+<p>   以前用seq2seq的地方都可以用transformer来替代。</p>
+<p>   transformer进阶：使用multi-head self-attention；universal transformer…</p>
+<p>   transformer也不是只能用在文字上，cv上也可以，比如self-attention GAN</p>
+<p>   <a href="https://www.bilibili.com/video/av56239558">李宏毅-Transformer</a></p>
+<p>   <a href="https://www.bilibili.com/video/BV19t411S74Z">【Transformer】Attention Is All You Need</a></p>
+<h2 id="7）-知识蒸馏"><a href="#7）-知识蒸馏" class="headerlink" title="7） 知识蒸馏"></a>7） 知识蒸馏</h2><p><a href="https://www.bilibili.com/s/video/BV1s7411h7K2">神经网络知识蒸馏 Knowledge Distillation</a></p>
+<p>步骤：</p>
+<ol>
+<li>采用传统的方式训练一个教师网络</li>
+<li>建立学生网络模型，模型的输出采用传统的softmax函数，拟合目标为one-hot形式的训练集输出，输出和目标之间的距离记为loss1</li>
+<li>将训练完成的教师网络的softmax分类器加入温度参数，作为具有相同温度参数softmax分类器的学生网络的拟合目标，将教师与学生网络的温度版softmax分类器之间的距离记为loss2</li>
+<li>引入参数$\alpha$，将训练的损失函数设为$loss1*(1-\alpha)+loss2*\alpha$，训练网络</li>
+</ol>
+<p><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/study/paper/20210913144723.png"></p>
+<p>  <img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/study/paper/20210913144841.png"> 其中CE为交叉熵。</p>
+<p>可见t与平缓程度相关，增大t可以放大教师网络的暗知识；$\alpha$与学生网络训练时参考教师网络蒸馏来的知识的比重有关，该值越大，越依赖教师网络的暗知识。</p>
+<h2 id="8）spatial-attention-和-channel-attention"><a href="#8）spatial-attention-和-channel-attention" class="headerlink" title="8）spatial attention 和 channel attention"></a>8）spatial attention 和 channel attention</h2><p><a href="https://blog.csdn.net/u014134327/article/details/109669042">Spatial Attention和Channel Attention的个人理解</a></p>
+<p><a href="https://blog.csdn.net/weixin_42560055/article/details/85225111">参考2</a></p>
+<p>attention机制本质上是学习一个权重分布，再拿这个权重分布施加在原来的特征图上，简单来讲：</p>
+<p>(1) 这个加权可以是保留所有分量均做加权—soft attention；也可以是在分布中以某种采样策略选取部分分量—hard attention；</p>
+<p>(2) 这个加权可以作用在空间尺度上，给不同的区域加权—spatial attention；也可以作用在channel尺度上，给不同的通道特征加权—channel attention；还可以给特征图上每个元素加权；</p>
+<p>(3) 这个加权可以作用在不同时刻历史特征上，如machine translation</p>
+<h2 id="9）迁移学习Transfer-learning"><a href="#9）迁移学习Transfer-learning" class="headerlink" title="9）迁移学习Transfer learning"></a>9）迁移学习Transfer learning</h2><p>知识蒸馏被广泛应用于模型压缩和迁移学习中，常见的迁移学习方式就是在一个大的数据集上先做预训练，然后使用预训练得到的参数在一个小的数据集上做微调（两个数据集往往领域不同或者任务不同）</p>
+<p>例如：在联邦广告中，先通过大量曝光和点击数据进行 CTR 建模（大的数据集），然后通过知识蒸馏，将这部分信息迁移到 CVR 模型中（小的数据集）</p>
+<h2 id="10）关于DL里面各种classifier线性层的称谓："><a href="#10）关于DL里面各种classifier线性层的称谓：" class="headerlink" title="10）关于DL里面各种classifier线性层的称谓："></a>10）关于DL里面各种classifier线性层的称谓：</h2><ul>
+<li>linear：线性层。没有隐层的单层结构。</li>
+<li>dense：密集层。可以指单层linear也可以指多层线性层的堆叠，可以没有隐层也可以有，隐层一般大于2。</li>
+<li>MLP：多层感知机。多层linear的堆叠，有隐层。</li>
+<li>FC：全连接层。单层多层均可，是对linear classifer的一种笼统称谓。<h2 id="11）top-1和top-5"><a href="#11）top-1和top-5" class="headerlink" title="11）top-1和top-5"></a>11）top-1和top-5</h2></li>
+</ul>
+<p>top-1：预测结果中排名第一的类别与实际结果相符的准确率；</p>
+<p>top-5：预测结果中排名前五的类别包含实际结果的准确率。</p>
+<h2 id="12）反向传播算法"><a href="#12）反向传播算法" class="headerlink" title="12）反向传播算法"></a>12）反向传播算法</h2><p>反向传播算法由两个阶段组成：激励传播+权重更新</p>
+<ul>
+<li>激励传播（每次迭代的传播阶段分两步）：<ul>
+<li>前向传播：将训练输入送入网络以获得激励响应</li>
+<li>反向传播：将激励响应同输入所对应的目标输出求差。以获得输出层和隐藏层的响应误差</li>
+</ul>
+</li>
+<li>权重更新<ul>
+<li>先将输入激励和误差响应相乘，获得权重的梯度</li>
+<li>再将这个梯度乘上一个比例（训练因子）并取反后加到权重上<h2 id="13）正则化"><a href="#13）正则化" class="headerlink" title="13）正则化"></a>13）正则化</h2><a href="https://daimajiaoliu.com/daima/56a4f0d1f3c8808">深度学习下的正则化</a></li>
+</ul>
+</li>
+</ul>
+<p>我们需要通过最小化误差来拟合训练数据。正则化是解决高方差问题的方案之一，也是减小过拟合的方法。</p>
+<ul>
+<li>l0、l1、l2、l无穷: 限制模型的学习能力<ul>
+<li>l2正则化：倾向于使网络的权值接近0，使得前一层神经元对后一层神经元的影响降低，实质上是对权值做线性衰减。</li>
+</ul>
+</li>
+<li>其他方法：<ul>
+<li>dropout：在训练过程中，对于每个神经元，概率p保持其为激活状态，概括1-p直接关闭。由于每个神经元都可能会被丢弃，模型训练的时候，模型不会给任何神经元过大的参数</li>
+<li>early-stopping<h2 id="14）批正则化Batch-Normalization"><a href="#14）批正则化Batch-Normalization" class="headerlink" title="14）批正则化Batch Normalization"></a>14）批正则化Batch Normalization</h2></li>
+</ul>
+</li>
+</ul>
+<p>对数据做批正则化，使得数据满足均值为0，方差为1的正态分布，可以缓解CNN等训练中梯度消失或梯度爆炸的现象，加快模型的训练速度。</p>
+<h2 id="15）automatic-differentiation自动微分"><a href="#15）automatic-differentiation自动微分" class="headerlink" title="15）automatic differentiation自动微分"></a>15）automatic differentiation自动微分</h2><p>现代dl系统（比如MXNet，TensorFlow等）都用到了自动微分技术。</p>
+<p>自动微分是一种可以借由计算机程序计算一个函数的导数。</p>
+<p>自动微分认为，所有数值计算归根结底是一系列有限的可微算子的组合，它是一种介于符号微分和数值微分的方法，本质上是一种图计算。</p>
+<h2 id="16）ZCA白化"><a href="#16）ZCA白化" class="headerlink" title="16）ZCA白化"></a>16）ZCA白化</h2><p>白化是一种重要的数据预处理过程，目的是降低输入数据的冗余性，白化后的数据：</p>
+<ul>
+<li>特征间的相关性较低</li>
+<li>所有特征具有相同的方差</li>
+</ul>
+<p>白化处理分为PCA白化和ZCA白化。前者用于保证数据各维度的方差为1，可以降维也可以去相关；后者保证数据各维度的方差相同，主要用于去相关，且尽量使白化后的数据接近原始输入数据。</p>
+<ul>
+<li><p>PCA白化：使用PCA求出特征向量，然后把数据X映射到新的特征空间，以去除特征之间的相关性。</p>
+</li>
+<li><p>ZCA白化，把PCA白化的结果又变换到原来的坐标系下。</p>
+</li>
+</ul>
+<h2 id="17）WRN：Wide-residual-networks"><a href="#17）WRN：Wide-residual-networks" class="headerlink" title="17）WRN：Wide residual networks"></a>17）WRN：Wide residual networks</h2><p>WRN-16-1，0.2M：表示深度16，宽度1，参数量0.2M</p>
+<h2 id="18）seed：随机种子"><a href="#18）seed：随机种子" class="headerlink" title="18）seed：随机种子"></a>18）seed：随机种子</h2><p><a href="https://blog.csdn.net/qq_41375609/article/details/99327074">参考</a></p>
+<h2 id="19）CUB数据集："><a href="#19）CUB数据集：" class="headerlink" title="19）CUB数据集："></a>19）CUB数据集：</h2><p>Caltech-UCSD Birds-200-2011，FGCV中广泛使用的数据集，包括鸟类的200个子类别的11788张图像，其中5994张用于训练，5794张用于测试。每张图像的注释包括：1 subcategory label, 15 Part Locations, 312 Binary Attributes, 1 Bounding Box。</p>
+<p><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/study/paper/20210913172708.png"></p>
+<p>需要注意，此数据集的图像与ImageNet中的图像重叠，在使用ImageNet预训练网络时需要小心，因为CUB的测试集可能与原始网络的训练集重叠。</p>
+<h2 id="20）Fine-Grained-Visual-Categorization"><a href="#20）Fine-Grained-Visual-Categorization" class="headerlink" title="20）Fine-Grained Visual Categorization"></a>20）Fine-Grained Visual Categorization</h2><p>细粒度视觉分类FGCV，即识别细分类的任务，一般需要同时使用全局图像信息与局部图像信息精准识别图像子类别。</p>
+<h2 id="21）MIT-indoor-scene-classification数据集："><a href="#21）MIT-indoor-scene-classification数据集：" class="headerlink" title="21）MIT indoor scene classification数据集："></a>21）MIT indoor scene classification数据集：</h2><p>包括67个室内类别，共15620张图像。</p>
+<p><a href="https://raw.githubusercontent.com/OrderAngel/Picture/main/study/paper/20210913173104.png"></a></p>
+<h2 id="22）ImageNet数据集"><a href="#22）ImageNet数据集" class="headerlink" title="22）ImageNet数据集"></a>22）ImageNet数据集</h2><p>ImageNet 是根据 WordNet 层次结构组织的图像数据集。WordNet 中的每个有意义的概念，可能由多个单词或单词短语描述，称为同义词集或 synset。</p>
+<p>ImageNet 有大约 100 K 个同义词集，平均每个同义词集约有 1,000 个人工注释图像。 ImageNet 仅存储对图像的引用，而图像存储在互联网上的原始位置。在深度学习论文中，ImageNet-1K 是指作为 ImageNet 的大规模视觉识别挑战（ ILSVRC ）的一部分发布的数据集，用于将数据集分类为 1,000 个类别。</p>
+<p>简而言之，就是一个巨大的图像数据集！</p>
+<h1 id="0-摘要"><a href="#0-摘要" class="headerlink" title="0. 摘要"></a>0. 摘要</h1><p>本文是attention在知识蒸馏中的应用，即，如何定义CNN中的attention，使得学生网络可以通过mimic教师网络的attention maps来提高自己的性能。</p>
+<p>为此，本文提出了几种transfer attention的方法，实验证实这些方法在多种数据集和CNN结构中<strong>都</strong>表现良好。</p>
+<h1 id="1-介绍"><a href="#1-介绍" class="headerlink" title="1. 介绍"></a>1. 介绍</h1><p>作为人类，attention在visual experience中很关键，同时也与感知密切相关。</p>
+<p>在AI方面，artificial attention mechanisms比较流行。</p>
+<p>有一种假设是：存在non-attentional perception processes和attentional perception processes。前者可以在观察场景的过程中获取高层次的信息，将这些信息与其他思维过程相关联，可以帮助控制attention processes——将注意力集中于场景中的特定区域。从另一个角度来讲，不同的观察者（教师网络）会拥有不同的知识和不同目标，针对同一个场景，不同的attentional strategies看到的东西也会不一样。这是本文的启发点：人工视觉中的注意力有何不同？我们能否利用注意力信息来提高CNN的性能？更具体来讲，一个教师网络是否可以通过向另一个学生网络提供”它将注意力集中在哪里”的信息，来提高学生网络的性能？</p>
+<p>为了解决上述问题，我们首先需要明确的点是：在一个给定的CNN中，注意力机制是如何定义的。我们可以认为注意力是一组spatial maps，这组maps试图encode on网络在做出输出决定时最关注的那些输入区；此外，这组maps可以根据网络的各个层来定义，以便它们能够同时capture低、中、高层的representation information。<strong>更具体来讲，我们定义了两类spatial attention maps：activation-based和gradient-based，然后探索了这两种注意力地图是如何在不同的数据集和网络结构中变化的，并说明了这两种注意力地图确实包含了一些有用信息（这些信息可以显著提高CNN性能）。为此，我们还提出了几种新颖的方法来将注意力从教室网络transfer到学生网络上，来提高后者的性能。</strong></p>
+<ul>
+<li>【换言之，本文首先定义了两种空间注意力地图，然后论证两种空间注意力地图都对提高CNN性能有帮助，然后提出了几种在知识蒸馏中transfer attention from teacher to students的办法】</li>
+</ul>
+<p>本文的贡献：</p>
+<ul>
+<li>我们认为注意力是一种将知识从一个网络转移到另一个网络的机制</li>
+<li>我们提出了使用activation-based和gradient-based 空间注意力地图</li>
+<li>我们通过实验表明，我们的方法在各种数据集和深度网络架构上都有显著的改进，包括残差和非残差网络</li>
+<li>我们发现activation-based attention transfer比full-activation transfer有更好的改善，并且可以与知识蒸馏相结合</li>
+</ul>
+<h1 id="2-相关工作"><a href="#2-相关工作" class="headerlink" title="2. 相关工作"></a>2. 相关工作</h1><h1 id="3-attention-transfer"><a href="#3-attention-transfer" class="headerlink" title="3. attention transfer"></a>3. attention transfer</h1><h2 id="3-1-activation-based-attention-transfer"><a href="#3-1-activation-based-attention-transfer" class="headerlink" title="3.1 activation-based attention transfer"></a>3.1 activation-based attention transfer</h2><p>考虑一个CNN层和对应的激活张量<img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/study/paper/20210912231918.png">，C个通道（特征面），每个特征面维度是H x W。activation-based 映射函数F将该3d激活张量作为输入，输出一个2维的spatial attention  map：</p>
+<p><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/study/paper/20210912232300.png"></p>
+<p>在定义这个空间注意力映射函数F之前，我们需要认可一个潜在的假设：hidden neuron activation（给定输入时网络预测出的结果）的绝对值可以用于指示该神经元的重要性。因此，我们可以通过计算A的绝对值在通道维度上统计结果来构建spatial attention map。</p>
+<p><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/study/paper/20210912233056.png"></p>
+<p>具体来讲，本文使用以下spatial attention maps：</p>
+<ul>
+<li>绝对值求和：<img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/study/paper/20210912233315.png"></li>
+<li>绝对值指数求和：<img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/study/paper/20210912233336.png"></li>
+<li>绝对值指数求最大值：<img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/study/paper/20210912233351.png"></li>
+</ul>
+<p>我们可视化了多个数据集上的多种网络，包括ImageNet分类和定位，COCO目标检测，人脸识别，以及fine-grained识别。我们主要关注没有顶层dense linear layer的现代结构，比如Network-In-Network，ResNet和Inception，这些网络都是流线型的卷积结构。此外，我们还使用不同的框架，在相同结构、宽度和深度的网络上，通过训练得到了不同的性能。</p>
+<p>我们发现，隐层激活的统计信息不但与图像层面上的预测目标具有空间相关性，而且相关性与准确度正相关，即准确度高的网络，相关性也高，更强大的网络有更尖锐的注意力。</p>
+<p><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/study/paper/20210912235644.png"></p>
+<p>此外，attention maps针对不同的网络层关注不同的部分。在前面的层，神经元的激活水平对低层次的梯度点来说很高（？）；在中间层，激活水平对最具辨识度的区域（比如眼睛、鼻子、轮廓）来说比较高；而在顶层则反映了完整的物体。例如，为人脸识别而训练的网络的中层注意图在眼睛、鼻子和嘴唇周围会有较高的激活，而顶层的激活将对应于全脸。</p>
+<p><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/study/paper/20210913014806.png"></p>
+<p>对于上面说的不同的注意力映射函数，有一些属性上的小差别：</p>
+<ul>
+<li>与<img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/study/paper/20210913015113.png">相比，<img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/study/paper/20210913015139.png">对有更高激活的神经元的空间位置有更大权重，比如，对最具辨识度的部分设置了更大的权重（p越大，对高激活区域的关注度越高）；</li>
+<li>此外，在同一个空间位置的所有神经元激活中，<img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/study/paper/20210913015823.png">只会考虑其中之一来为该空间位置设置权重；相反，<img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/study/paper/20210913015933.png">更倾向于多个神经元高激活的区域（？？？）。</li>
+</ul>
+<p>为了进一步说明这些函数的区别，我们可视化了3个性能不同的网络：Network-In-Network (62% top-1 val accuracy), ResNet-34 (73% top-1 val accuracy) and ResNet-101 (77.3% top-1 val accuracy)，每个网络取最后一个下采样前的activation maps，上图左边是中间层，右边是顶层平均池化前的激活图。顶层地图略模糊，因为其原始分辨率只有7*7，很明显，具有辨识度的区域有更高的激活级别。比如，狼的脸。当p减小时，可以看到形状细节消失了。</p>
+<p>在attention transfer中，给定教师网络的spatial attention maps（该map使用上面的attention映射函数计算得到），我们的目标是训练一个学生网络，该网络不只能做正确的预测，还要有和教师相似的attention maps。通常，可以在每一层上计算attention maps的transfer losses。比如，在ResNet中，根据教师和学生的深度考虑以下两种情况：</p>
+<ul>
+<li>相同深度：在每个残差块后做attention transfer；</li>
+<li>不同深度：在每个残差块组后做attention transfer。（如图）</li>
+</ul>
+<p><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/study/paper/20210913022058.png"></p>
+<p>类似的情况也可以应用于其他网络结构（比如NIN，一组是指一个3 × 3,1 × 1,1 × 1的卷积块）。</p>
+<h3 id="损失函数："><a href="#损失函数：" class="headerlink" title="损失函数："></a>损失函数：</h3><p>我们假设转移损失被置于相同空间分辨率的学生和教师的注意力图之间，但如果需要，attention maps可以插值以匹配它们的形状（？？？）。</p>
+<p>学生网络j-th激活图的向量表示：<img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/study/paper/20210913091853.png"></p>
+<p>教师网络j-th激活图的向量表示：<img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/study/paper/20210913091931.png"></p>
+<p>损失函数定义为：<img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/study/paper/20210913023100.png"></p>
+<p>其中W是权重，<img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/study/paper/20210913023219.png">是标准交叉熵【前面那部分可以理解为likelihood，后面那部分是教师网络给的先验知识？？】</p>
+<p>attention transfer也可以和知识蒸馏相结合，损失函数定义为：<img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/study/paper/20210913023825.png"></p>
+<h1 id="3-2-Gradient-based-attention-transfer"><a href="#3-2-Gradient-based-attention-transfer" class="headerlink" title="3.2 Gradient-based attention transfer"></a>3.2 Gradient-based attention transfer</h1><p>我们将注意力定义为输入的梯度。这里输入的梯度可以看做输入敏感地图，输入空间位置对应的注意力编码了输出预测对该输入位置变化的灵敏度（比方说，如果一个像素的小变化可以对网络的输出造成较大的影响，我们就可以合理假设网络“paying attention to”那个像素）。下式定义了教师和学生的输入损失的梯度：</p>
+<p><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/study/paper/20210913093505.png"></p>
+<p>然后，为了让学生的gradient attention与教师的更接近，我们最小化二者的距离：</p>
+<p><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/study/paper/20210913100632.png"></p>
+<p>因为WT和x都是给定的，我们求上式关于Ws的导数：[??????????????]</p>
+<p><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/study/paper/20210913100826.png"></p>
+<p>所以，为了做一次更新，我们需要先做一个前向传播和反向传播来得到Js和JT（？？？），计算第二部分那个二范数误差，然后再做一次传播。第二次传播与这里的前向传播相似，包括二阶混合偏导数。上述计算类似于D&amp;L的双反向传播技术。此外，它可以在支持automatic differentiation的框架里实现，而在具有复杂图的现代框架中也可以实现。除了正向传播外，第二次反向传播的代价与第一次反向的代价差不多。<br>所以，为了做一次更新，我们需要先做一个前向传播和反向传播来得到Js和JT（？？？），计算第二部分那个二范数误差，然后再做一次传播。第二次传播与这里的前向传播相似，包括二阶混合偏导数。上述计算类似于D&amp;L的双反向传播技术。此外，它可以在支持automatic differentiation的框架里实现，而在具有复杂图的现代框架中也可以实现。除了正向传播外，第二次反向传播的代价与第一次反向的代价差不多。（？？？？？？）</p>
+<p>我们还提出了要使gradient attention map上水平翻转不变。为了做到这点，我们将原图和水平翻转后的图像都做传播，反向传播并翻转gradient attention maps。在得到的attentions和输出的二范数损失，再做第二次BP：</p>
+<p><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/study/paper/20210913104353.png"></p>
+<p>这与Cohen &amp;Welling(2016)的Group Equivariant CNN方法相似，但并不是硬性约束。我们实验发现，这对训练有正则化作用。</p>
+<p>值得注意的是，在本文中我们只考虑输入层的梯度，但是一般情况下，可能需要在更高层的网络中考虑attention transfer和对称约束。</p>
+<h1 id="4-实验"><a href="#4-实验" class="headerlink" title="4. 实验"></a>4. 实验</h1><p>我们在多种图像分类数据集上作做attention transfer。第一部分中，我们在CIFAR数据集上做activation-based attention transfer和gradient-based attention transfer的实验；在第二部分中，我们在更大的数据集上做activation-based attention transfer的实验。</p>
+<p>对于activation-based attention transfer，我们使用相比于AlexNet或者VGG而言性能更好的NIN和ResNet-based结构（Wide Residual Network），在Scenes，CUB和ImageNet数据集上，我们使用ResNet-18和ResNet-34进行实验。</p>
+<p>对于gradient-based attention transfer，由于需要复杂的自动微分，我们将实验限制在没有批正则化的NIN网络和CIFAR数据集上。</p>
+<h2 id="4-1-CIFAR实验"><a href="#4-1-CIFAR实验" class="headerlink" title="4.1 CIFAR实验"></a>4.1 CIFAR实验</h2><p>CIFAR数据集，包含60000张彩色图片，分为10个类型，图片大小为32*32。</p>
+<p><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/study/paper/20210913140826.png"></p>
+<p>下采样后，顶层的activations的分辨率会更小，因此看上去并没有很多的空间留给attention transfer。但有趣的是，即便在这种情况下，attention transfer依然可以提高所有cases的性能。我们使用水平翻转和随机剪裁来做数据增强，并且所有的网络都进行了批正则化。我们发现ZCA whitening对有效的准确率有负面影响，因此为了更简单的meanst normalization而省略了它。</p>
+<p>我们将ResNet transfer的知识蒸馏的温度t提高到4(温度越高，概率分布越平滑)，使用 $\alpha=0.9$。</p>
+<h3 id="4-1-1-Activation-based-attention-transfer"><a href="#4-1-1-Activation-based-attention-transfer" class="headerlink" title="4.1.1 Activation-based attention transfer"></a>4.1.1 Activation-based attention transfer</h3><p>在CIFAR-10数据集上，多种网络的attention transfer（使用<img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/study/paper/20210913145430.png">注意力地图）结果如表所示：</p>
+<p><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/study/paper/20210913145517.png"></p>
+<ul>
+<li>教师网络与学生网络具有相同的深度：WRN-16-1/WRN-16-2</li>
+<li>教授网络与学生网络具有不同的深度：WRN-16-1/WRN-40-1; WRN-16-2/WRN-40-2</li>
+</ul>
+<p>表中数据单位是<code>Percentage error</code>，是使用不同的随机seed跑了5次后的平均分类错误率，AT都有显著提升(对比原students)，当AT+KD时，网络效果最好【！但是单纯的AT好像没有KD效果好】。</p>
+<p>F-ActT是full-activation transfer</p>
+<p>为了验证在WRN transfer中每组有至少一个activation-based attention transfer是否重要，我们分别在组1、组2和组3中训练了每个网络只有一个转移损失的三个网络，并与用所有三个损失训练的网络进行比较。相应的结果是8.11、7.96、7.97（单独的损失）和综合损失的7.93（使用WRN16-2/WRN-16-1作为教师/学生对）。每项损失都提供了某种程度的额外注意力转移。【<strong>这个步骤是为了验证每个group的AT都是有一些作用的</strong>】</p>
+<p>我们还探索了使用WRN-16-1和WRN16-2对时哪种注意力映射函数表现最好，结果如下表所示：</p>
+<p><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/study/paper/20210913154439.png"></p>
+<p>有趣的是，基于总和的函数效果非常相似，而且比基于最大值的函数更好【<strong>why？</strong>】。从现在起，我们将使用注意力映射函数F2的平方之和。至于公式2中的参数β，它通常变化在0.1左右，因为我们设置为：$10^3/attention map上的元素数量和每层的batch size$ 。在结合AT和KD的情况下，为了简化学习较难的例子，我们在transfer的过程中衰减了它。</p>
+<h3 id="4-1-2-Activation-based-AT-对比-Transfering-full-activation"><a href="#4-1-2-Activation-based-AT-对比-Transfering-full-activation" class="headerlink" title="4.1.2 Activation-based AT 对比 Transfering full activation"></a>4.1.2 Activation-based AT 对比 Transfering full activation</h3><p>为了检查从full-activation转移信息是否比从attention map转移信息更有利，我们实验了FitNets-style hints，直接在全激活层上使用l2损失，用1×1卷积层来匹配张量形状，发现相比其他transfer，这种方法对学生baseline的改进是最小的（见表1的F-ActT列）。</p>
+<p>对于相同宽度不同深度的网络，我们尝试直接回归到激活，没有1×1卷积。我们还在转移损失之前使用l2正则化，并在训练期间衰减β，因为这些都能提供更好的性能。如图所示，我们发现，AT和全激活转移一样，都大大加快了收敛速度，但AT相比full-activation transfer对准确率的提高效果更好。由此可见，attention maps相比于full activation，携带了更多的对transfer比较重要的信息。</p>
+<p><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/study/paper/20210913160555.png"></p>
+<ul>
+<li>bold line是测试结果，dashed line是训练结果，可以看到在WRN-16-2—WRN-16-1的transfer中，AT和F-ActT收敛都挺快，但是AT最终的结果略好一些。</li>
+</ul>
+<h3 id="4-1-3-Gradient-based-attention-transfer"><a href="#4-1-3-Gradient-based-attention-transfer" class="headerlink" title="4.1.3 Gradient-based attention transfer"></a>4.1.3 Gradient-based attention transfer</h3><p>为了简单起见，我们在这些实验中使用了thin Network-in-Network模型，并且没有做批量正则化中的随机剪裁，只是进行了水平翻转的数据增强【因为梯度求导啥的比较难算】。我们也只使用确定性的算法和固定种子的采样，所以实验结果来自单次运行的实验【前面是5次的平均】。我们发现，在这种设置下，网络已经很难适应训练数据了，所以即使在基线实验中也要关闭权重衰减。</p>
+<p>在未来，我们计划使用批量归一化来探索师生对的gradient-based attention，因为到目前为止还不清楚批量归一化在gradient-based attention transfer中的第二个反向传播步骤中应该如何表现（例如，不知道它是有助于批量归一化参数，or is a separate forward propagation with fixed parameters needed【？？？】）。</p>
+<p>我们探索了以下方法：</p>
+<ul>
+<li>最小化输入梯度的l2范数，即双重反向传播方法【双反向传播正则化使Jacobian 矩阵偏小】 </li>
+<li>gradient attention map的对称范数（公式Lsym）</li>
+<li>学生-老师gradient-based attention transfer（不加对称约束的gradient版本）</li>
+<li>学生-老师activation-based attention transfer</li>
+</ul>
+<p>各种方法的结果显示在下表中：</p>
+<p><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/study/paper/20210913163920.png"></p>
+<p>有趣的是，仅仅最小化梯度的l2准则就已经很好了。另外，对称norm也是表现最好的注意力准则之一，我们计划将来在其他数据集上也进行研究。我们还观察到，与activation-based AT类似，使用gradient-based AT也会使性能提高。我们还在相同的训练条件下用activation-based AT训练了一个网络，结果在所有方法中表现最好。<strong>我们应该注意到，没有批量规范化的学生NIN的结构与教师网络略有不同，它在池化层之前没有ReLU激活，这导致没有批量规范化的性能更好</strong>。因此，为了达到activation-based AT的最佳性能，我们必须训练一个新的教师，在池化层之前没有ReLU激活，并且在卷积层的输出上有AT损失。【结果呢？】</p>
+<h2 id="4-2-Large-input-image-network"><a href="#4-2-Large-input-image-network" class="headerlink" title="4.2 Large input image network"></a>4.2 Large input image network</h2><p>在本节中，我们在输入图像大小为224 × 224的ImageNet网络上进行了隐层activation-based transfer的实验。据推测，在这类网络中，注意力更为重要，因为注意力地图的空间分辨率更高。</p>
+<h3 id="4-2-1-transfer-learning"><a href="#4-2-1-transfer-learning" class="headerlink" title="4.2.1 transfer learning"></a>4.2.1 transfer learning</h3><p>【微调就是预训练一个网络，然后在新的数据集上微调】<br>为了了解attention transfer在微调中的作用，我们选择了两个数据集。Caltech-UCSD Birds-200-2011 fine-grained classification（CUB）和MIT室内场景分类（Scenes），两者都包含大约5K的图像训练图像。我们采用ResNet-18和ResNet-34在ImageNet上进行预训练，并在这两个数据集上进行了微调。在CUB上，我们裁剪边界框，在一个维度上重新缩放到256，然后采取随机裁剪。微调时，固定批量正则层，冻结第一组残余块。然后，我们把经过微调的ResNet-34网络作为在ImageNet上预训练的ResNet-18的老师，使用最后两组的F2sum attention loss 【第一组被冻结了】。</p>
+<p><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/study/paper/20210913174040.png"></p>
+<p>如表所示，在这两种情况下，attention transfer都提供了明显的改进，缩小了ResNet-18和ResNet-34在准确性上的差距。在Scenes上，AT的效果和KD一样好，而在CUB上，AT的效果要好得多，我们推测这是因为中间注意力对细粒度识别的重要性。此外，经过微调后，学生的注意力图确实与教师的注意力图更加相似。【对于细粒度的重要性可不可以有别的验证方式？？？至少也像下面这样给个图吧orz】</p>
+<p><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/study/paper/20210913174420.png"></p>
+<ul>
+<li>顶层activation attention map：列1是微调前的（会有分类错误），列2是学生网络，列3是AT后的，列4是教师网络，效果理论上该越来越好。比如行1就越来越接近室内的场景结构【可以用线框模型画一下图！attention map能不能用到室内场景场景建模上，即使是分类错误的预训练模型，也感觉可以得到结构信息！！！】</li>
+</ul>
+<h3 id="4-2-2-ImageNet"><a href="#4-2-2-ImageNet" class="headerlink" title="4.2.2 ImageNet"></a>4.2.2 ImageNet</h3><p>为了在ImageNet上展示activation-based AT，我们把ResNet-18作为学生，把ResNet-34作为老师，并试图提高ResNet-18的准确性。</p>
+<p>我们在最后两组残余块中增加了两个损失，并使用F2sum。我们也没有时间调整任何超参数，并阻止它们进行微调。尽管如此，带有AT的ResNet-18取得了1.1% top-1和0.8% top-5的较好validation accuracy，<strong>我们计划用所有的4组残余块的损失来进阶我们的论文</strong>。</p>
+<p><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/study/paper/20210913180258.png"></p>
+<p><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/study/paper/20210913180400.png"></p>
+<ul>
+<li>solid lines代表top-5 validation error，dashed lines代表top-5 training error。只用了AT损失，没用KD。</li>
+</ul>
+<p>我们没能用KD在ImageNet上取得积极的结果。在ResNet-18-ResNet-34师生对中，它实际上损害了与CIFAR上相同的超参数的收敛性【？】。如果教师和学生有不同的架构/深度，KD就很难发挥作用（我们在CIFAR上观察到同样的情况）【why？？？】，因此我们尝试使用相同的架构和深度来transfer attention【不知道是不是笔误，但是AT没用相同的深度吧？，还是说KD必须深度相同，但是AT不用？应该是笔误，深度相同结构也相同还迁移个啥！】。</p>
+<p>在CIFAR上，AT和KD在这种情况下都工作得很好，并且提高了收敛性和最终的准确性，但在ImageNet上，KD的收敛速度明显较慢（由于缺乏计算资源，我们没有训练到最后）。我们在文献中也找不到FitNets、KD或类似方法在ImageNet上的应用。鉴于此，我们可以认为提出的基于激活的AT是第一个在ImageNet上成功应用的知识转移方法。【为啥那俩用不了？？？】</p>
+<h1 id="5-总结"><a href="#5-总结" class="headerlink" title="5. 总结"></a>5. 总结</h1><p>我们提出了几种（2种）将注意力从一个网络转移到另一个网络的方法，并对几个图像识别数据集进行了实验结果。有趣的是，在空间信息更重要的情况下（例如目标检测或弱监督定位）attentio transfer是如何工作的，这也是我们<strong>计划在未来探索的问题</strong>。</p>
+<p>总的来说，我们认为我们的方法将有助于知识蒸馏的进一步发展，也有助于卷积神经网络的普遍理解。</p>
+<h1 id="6-问题"><a href="#6-问题" class="headerlink" title="6. 问题"></a>6. 问题</h1><ol>
+<li><p>这两种注意力地图有啥区别</p>
+</li>
+<li><p>知识蒸馏是迁移学习的一种，attention在transfer learning中的其他应用</p>
+</li>
+<li><p>数据集ImageNet等</p>
+</li>
+<li><p>beita是什么</p>
+</li>
+<li><p>教师网络给学生网络注意力地图不是已经是知识蒸馏了吗？为何还可以与知识蒸馏相结合重新定义损失函数？</p>
+<p>solution：文章刚出炉那会，AT还不属于知识蒸馏的方法，文中的KD指的就是开山的那篇soft-target辅助hard-target一起训练的文章；</p>
+</li>
+<li><p>水平翻转不变性有啥作用？对于训练有正则化作用？？</p>
+<p>此处的水平翻转是数据增广的一种方案，数据增广可以减少过拟合</p>
+<p>不过，为什么只做水平翻转？？？</p>
+<p>因为有的动物图片翻转后就是倒着的了，没有实际意义；但是对于人脸这种具有对称结构的情况来说，只做左右翻转没有太大意义，无对称结构的图还有有用的！</p>
+<p>除了水平翻转，或许还可以部分置黑</p>
+</li>
+<li><p>如何在更高层的网络中考虑attention transfer</p>
+</li>
+<li><p>文章中的attention蒸馏适用于教师模型和学生模型整体结构类似的情况</p>
+</li>
+<li><p> 本文的ATLoss可以与RKD、PKT、SP、VID等用来学习网络最终输出蒸馏的方式结合使用，仿佛：AT和PKT结合会产生不错的效果</p>
+</li>
+<li><p>可以介绍一下其他知识蒸馏的方法，再说结合使用的好处</p>
+</li>
+<li><p>文章是分类，能否在目标检测中使用</p>
+</li>
+<li><p>从第一个实验的结果来看，层数更高AT效果更好，wider的话KD效果更好，但是也有结合后效果不好的，文章没有专门对比KD和AT，也没有对结合后效果不好的情况专门做讨论。</p>
+</li>
+<li><p>使用批量归一化来探索师生对的gradient-based attention</p>
+</li>
+<li><p>symmetry norm在其他数据集上的表现</p>
+</li>
+<li><p>l1正则化也行：文章只说了也行，但确实没做实验，未来可以探索一下</p>
+</li>
+<li><p>查一下作者对gradient和symmetry的探索</p>
+</li>
+<li><p>白化不好，但没实验</p>
+</li>
+<li><p>4.2.2是不是笔误，因为网络结构相同可以理解，但是深度肯定要不同啊。</p>
+</li>
+<li><p>如果网络结构不同，怎么知识蒸馏？为什么结构不同不行？</p>
+</li>
+</ol>
+]]></content>
+      <categories>
+        <category>科研</category>
+      </categories>
+      <tags>
+        <tag>科研</tag>
+        <tag>论文阅读</tag>
       </tags>
   </entry>
 </search>
