@@ -80,7 +80,7 @@
         <span class="post-meta-item-icon">
             <i class="ri-quill-pen-line"></i>
             <span class="post-meta-item-text"> Word count:</span>
-            <span class="post-count">3.7k</span>
+            <span class="post-count">4.7k</span>
         </span>
     </span>
 
@@ -89,7 +89,7 @@
         <span class="post-meta-item-icon">
             <i class="ri-book-open-line"></i>
             <span class="post-meta-item-text"> Reading time≈</span>
-            <span class="post-count">13 min</span>
+            <span class="post-count">17 min</span>
         </span>
     </span>
 </div>
@@ -105,7 +105,7 @@
     <div class="article-entry" itemprop="articleBody">
        
   <p>VSLAM学习素材是高翔老师的《视觉SLAM十四讲第二版》。这是我首次接触SLAM，感觉还算有趣。学士学完了，但是还需要系统的梳理一遍知识体系。</p>
-<p>内容比较多，放在两个博客里记述，第一个是基础知识部分，第二个是SLAM</p>
+<p>内容比较多，放在两个博客里记述，第一部分是基础知识，第二部分是SLAM实践。</p>
 <p>好了，废话不多说，开始吧~</p>
 <h1 id="第1讲-预备知识"><a href="#第1讲-预备知识" class="headerlink" title="第1讲 预备知识"></a>第1讲 预备知识</h1><p>没啥内容，略过</p>
 <hr>
@@ -118,7 +118,8 @@
 <h2 id="2-3-SLAM问题的数学表达"><a href="#2-3-SLAM问题的数学表达" class="headerlink" title="2.3 SLAM问题的数学表达"></a>2.3 SLAM问题的数学表达</h2><p>运动方程：k时刻相机位姿&lt;—k-1时刻位姿x + k时刻运动传感器的读数/输入u + k 时刻噪声w。</p>
 <p>观测方程：j位置k时刻的观测数据z&lt;—j位置路标y + k时刻相机位姿x + 噪声v，相机对路标点拍摄后得到图像中的像素。</p>
 <p><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/study/paper/20210928170515.png"></p>
-<p>在SLAM里面，通常会已知运动测量的读数u来估计位置x（定位），已知传感器读数z来估计y（建图）。</p>
+<p>在SLAM里面，通常会已知运动测量的读数u（输入数据）来估计位置x（定位），已知传感器读数z（观测数据）来估计y（建图）。</p>
+<p><em>这俩方程其实挺不规整的，要估计的值一个在右边一个在左边…有毒。</em></p>
 <h2 id="2-4-编程"><a href="#2-4-编程" class="headerlink" title="2.4 编程"></a>2.4 编程</h2><ol>
 <li>linux 18.04</li>
 <li>g++编译器</li>
@@ -382,7 +383,123 @@
 <li>根据各张图的相机位姿，把点云加起来，组成地图</li>
 </ol>
 <hr>
-<h1 id="第6将-非线性优化"><a href="#第6将-非线性优化" class="headerlink" title="第6将 非线性优化"></a>第6将 非线性优化</h1> 
+<h1 id="第6将-非线性优化"><a href="#第6将-非线性优化" class="headerlink" title="第6将 非线性优化"></a>第6将 非线性优化</h1><h2 id="6-1-状态估计问题"><a href="#6-1-状态估计问题" class="headerlink" title="6.1 状态估计问题"></a>6.1 状态估计问题</h2><p><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/study/paper/20210929164600.png"></p>
+<p>根据第5讲的内容，观测方程可以写成：</p>
+<p><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/study/paper/20210929163749.png"></p>
+<p>SLAM的目标是通过带噪声的观测数据z和输入u，来推断位姿x和地图y，这就是个状态估计问题。</p>
+<p>两种方案：</p>
+<ul>
+<li>滤波器/增量方法<ul>
+<li>在当前时刻的估计状态下，来一个新数据，更新一次状态</li>
+<li>只关心当前的xk</li>
+</ul>
+</li>
+<li>批量方法<ul>
+<li>攒一波数据，然后一并处理</li>
+<li>目前的主流</li>
+<li>为了达到实时性，可以固定一些历史轨迹，仅对当前时刻附近的一些轨迹进行优化（滑动窗口估计）</li>
+</ul>
+</li>
+</ul>
+<h3 id="6-1-1-批量状态估计与最大后验估计"><a href="#6-1-1-批量状态估计与最大后验估计" class="headerlink" title="6.1.1 批量状态估计与最大后验估计"></a>6.1.1 批量状态估计与最大后验估计</h3><p><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/study/paper/20210929170517.png"></p>
+<p>MAP估计：</p>
+<p><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/study/paper/20210929170545.png"></p>
+<p>ML估计：在什么样的状态下(x,y)下，最可能产生当前观测到的数据</p>
+<p><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/study/paper/20210929170719.png"></p>
+<h3 id="6-1-2-最小二乘的引出"><a href="#6-1-2-最小二乘的引出" class="headerlink" title="6.1.2 最小二乘的引出"></a>6.1.2 最小二乘的引出</h3><p>先不考虑运动方程，且假设噪声是高斯分布。</p>
+<p><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/study/paper/20210929171226.png"></p>
+<p>这个式子等同于在最小化噪声项，因此ML估计可以等价于最小化误差项(噪声)。</p>
+<ul>
+<li>上式的Q逆是信息矩阵</li>
+<li>噪声项是一个二次型，称为马氏距离。</li>
+</ul>
+<hr>
+<p>现在假设运动方程，考虑批量数据。</p>
+<p><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/study/paper/20210929171708.png">（因为独立）</p>
+<p>上式的ML估计等同于最小化所有时刻的误差项：</p>
+<p><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/study/paper/20210929171832.png"></p>
+<p><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/study/paper/20210929171855.png"></p>
+<p>这就是一个<strong>最小二乘问题</strong>了。</p>
+<h3 id="6-1-3-例子：批量状态估计"><a href="#6-1-3-例子：批量状态估计" class="headerlink" title="6.1.3 例子：批量状态估计"></a>6.1.3 例子：批量状态估计</h3><p>略</p>
+<h2 id="6-2-非线性最小二乘"><a href="#6-2-非线性最小二乘" class="headerlink" title="6.2 非线性最小二乘"></a>6.2 非线性最小二乘</h2><p><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/study/paper/20210929173626.png"></p>
+<p>这是一个比较正常的最小二乘的样子，一般用<code>梯度下降</code>来解</p>
+<p>具体步骤：</p>
+<p><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/study/paper/20210929174103.png"></p>
+<h3 id="6-2-1-一阶和二阶梯度法"><a href="#6-2-1-一阶和二阶梯度法" class="headerlink" title="6.2.1 一阶和二阶梯度法"></a>6.2.1 一阶和二阶梯度法</h3><p>J：一阶导数，梯度、雅克比矩阵</p>
+<p>H：二阶导数，海塞矩阵</p>
+<ul>
+<li><p>一阶梯度：最速下降法（并不是最小二乘）</p>
+<p><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/study/paper/20210929174156.png"></p>
+<p><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/study/paper/20210929174253.png"></p>
+</li>
+<li><p>二阶梯度：</p>
+<p><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/study/paper/20210929174411.png"></p>
+<p><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/study/paper/20210929174516.png"></p>
+</li>
+<li><p>缺点：</p>
+<ul>
+<li>最速过于贪心</li>
+<li>二阶里的H过于难算</li>
+</ul>
+</li>
+</ul>
+<h3 id="6-2-2-高斯牛顿法"><a href="#6-2-2-高斯牛顿法" class="headerlink" title="6.2.2 高斯牛顿法"></a>6.2.2 高斯牛顿法</h3><p>对误差：f(x)，而不是目标函数：F(x)，做一阶泰勒展开：</p>
+<p><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/study/paper/20210929174805.png"></p>
+<p>构建最小二乘问题：</p>
+<p><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/study/paper/20210929174937.png"></p>
+<p>得到<code>增量方程（高斯牛顿方程）</code>：</p>
+<p><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/study/paper/20210929175144.png"></p>
+<p><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/study/paper/20210929175209.png"></p>
+<p>可以看到，高斯牛顿法用JJ^T来做H的近似，避免了H的复杂计算。</p>
+<ul>
+<li><p>算法步骤：</p>
+<p><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/study/paper/20210929175400.png"></p>
+</li>
+<li><p>算法缺点：</p>
+<ul>
+<li>JJ^T不一定可逆，可能会导致无法收敛</li>
+</ul>
+</li>
+<li><p>补救措施：</p>
+<ul>
+<li>线搜索法：加上步长，即先找到方向，再确定长度。</li>
+<li>阻尼牛顿：引入信赖区域，认为近似只在区域内可靠</li>
+</ul>
+</li>
+</ul>
+<h3 id="6-2-3-列文伯格-马夸尔特方法"><a href="#6-2-3-列文伯格-马夸尔特方法" class="headerlink" title="6.2.3 列文伯格-马夸尔特方法"></a>6.2.3 列文伯格-马夸尔特方法</h3><p>又名阻尼牛顿法。</p>
+<p>根据近似模型下降的值 如果能近似等于 函数实际下降的值，说明这个近似很nice，可以扩大近似的范围。（下式接近1）</p>
+<p><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/study/paper/20210929181536.png"></p>
+<p>算法步骤：</p>
+<p><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/study/paper/20210929181856.png"></p>
+<p>拉格朗日乘子来解，最后推导到求解：</p>
+<p><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/study/paper/20210929183816.png"></p>
+<p>值得注意的是，上面的非线性优化都需要提供初始值，SLAM中，通常使用ICP、PnP等算法来提供初始值x0。</p>
+<h2 id="6-3-编程：曲线拟合问题"><a href="#6-3-编程：曲线拟合问题" class="headerlink" title="6.3 编程：曲线拟合问题"></a>6.3 编程：曲线拟合问题</h2><h3 id="6-3-1-手写高斯牛顿算法"><a href="#6-3-1-手写高斯牛顿算法" class="headerlink" title="6.3.1 手写高斯牛顿算法"></a>6.3.1 手写高斯牛顿算法</h3><h3 id="6-3-2-使用Ceres进行曲线拟合"><a href="#6-3-2-使用Ceres进行曲线拟合" class="headerlink" title="6.3.2 使用Ceres进行曲线拟合"></a>6.3.2 使用Ceres进行曲线拟合</h3><p>Cere库：最小二乘问题求解库</p>
+<p>Ceres求解的最小二乘问题的一般形式（带边界的核函数最小二乘）：</p>
+<p><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/study/paper/20210929185010.png"></p>
+<h4 id="图优化理论"><a href="#图优化理论" class="headerlink" title="图优化理论"></a>图优化理论</h4><p>G2o库：图优化库，SLAM领域广泛使用。</p>
+<p>图优化是一种将非线性优化和图论结合起来的理论，将优化问题用图（贝叶斯图）的形式呈现。</p>
+<p>图：顶点+边</p>
+<ul>
+<li>顶点：表示优化变量</li>
+<li>边：表示误差项</li>
+</ul>
+<p><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/study/paper/20210929191415.png"></p>
+<ul>
+<li>使用g2o拟合曲线</li>
+</ul>
+<p>需要先将问题转化为图优化问题。</p>
+<p><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/study/paper/20210929191653.png"></p>
+<p>曲线拟合问题中只有一个优化变量，而带噪声的数据构成了诸多误差项。</p>
+<p>步骤：</p>
+<ol>
+<li>定义顶点和边的类型</li>
+<li>构件图</li>
+<li>选择优化算法</li>
+<li>调用g2o进行优化，返回结果</li>
+</ol>
+ 
       <!-- reward -->
       
     </div>
@@ -446,15 +563,6 @@
 
    
   <nav class="article-nav">
-    
-      <a href="/V-SLAM%E6%95%B4%E7%90%86/" class="article-nav-link">
-        <strong class="article-nav-caption">上一篇</strong>
-        <div class="article-nav-title">
-          
-            V-SLAM整理1
-          
-        </div>
-      </a>
     
     
       <a href="/EE5907-CA1/" class="article-nav-link">
