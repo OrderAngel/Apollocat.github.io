@@ -1570,6 +1570,703 @@
       </tags>
   </entry>
   <entry>
+    <title>V-SLAM整理1</title>
+    <url>/V-SLAM%E6%95%B4%E7%90%86/</url>
+    <content><![CDATA[<p>VSLAM学习素材是高翔老师的《视觉SLAM十四讲第二版》。这是我首次接触SLAM，感觉还算有趣。学士学完了，但是还需要系统的梳理一遍知识体系。</p>
+<p>内容比较多，放在两个博客里记述，第一部分是基础知识，第二部分是SLAM实践。</p>
+<p>好了，废话不多说，开始吧~</p>
+<h1 id="第1讲-预备知识"><a href="#第1讲-预备知识" class="headerlink" title="第1讲 预备知识"></a>第1讲 预备知识</h1><p>没啥内容，略过</p>
+<hr>
+<h1 id="第2将-初始SLAM"><a href="#第2将-初始SLAM" class="headerlink" title="第2将 初始SLAM"></a>第2将 初始SLAM</h1><h2 id="2-2-经典视觉SLAM框架"><a href="#2-2-经典视觉SLAM框架" class="headerlink" title="2.2 经典视觉SLAM框架"></a>2.2 经典视觉SLAM框架</h2><p>一图以蔽之：<br><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/study/paper/20210928163420.png"></p>
+<p>我们把相机传感器放到一个未知空间中，相机边移动边拍摄，我们的目的是通过这些帧图构建未知空间的地图。那么我们首先要先反向计算出相机是怎么移动的，再根据相机的移动轨迹来建图。<strong>【建图这里也许还要加上拍摄图片，记不清了，先这么理解，后面再说】</strong></p>
+<p>我们通过相机传感器得到了数据，现在需要用堆数据来建图。相机在不停的移动，我们把某个时刻得到的帧图交给前端视觉里程器，视觉里程器可以通过相邻帧的数据（这里要调前面传进来的帧图）来估算相邻相机的运动，进而算出此刻相机的位姿，还要估算这部分数据对应的局部地图。前端会将估计的相机位姿和局部地图提供给后端。</p>
+<p>这些数据除了要交给视觉里程计，还要同时给回环检测，回环检测会对比当前帧图和之前的帧图，来判断相机是否之前来过此地，一旦检测到回环，就会将回环信息提供给后端。搞回环主要是为了修正漂移。</p>
+<p>后端接收前端和回环给的信息，将这些信息进行优化，得到全局一致的相机轨迹和地图。</p>
+<p>建图环节会根据估计的轨迹和任务需求，来建立不同的地图。</p>
+<h2 id="2-3-SLAM问题的数学表达"><a href="#2-3-SLAM问题的数学表达" class="headerlink" title="2.3 SLAM问题的数学表达"></a>2.3 SLAM问题的数学表达</h2><p>运动方程：k时刻相机位姿&lt;—k-1时刻位姿x + k时刻运动传感器的读数/输入u + k 时刻噪声w。</p>
+<p>观测方程：j位置k时刻的观测数据z&lt;—j位置路标y + k时刻相机位姿x + 噪声v，相机对路标点拍摄后得到图像中的像素。</p>
+<p><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/study/paper/20210928170515.png"></p>
+<p>在SLAM里面，通常会已知运动测量的读数u（输入数据）来估计位置x（定位），已知传感器读数z（观测数据）来估计y（建图）。</p>
+<p><em>这俩方程其实挺不规整的，要估计的值一个在右边一个在左边…有毒。</em></p>
+<h2 id="2-4-编程"><a href="#2-4-编程" class="headerlink" title="2.4 编程"></a>2.4 编程</h2><ol>
+<li>linux 18.04</li>
+<li>g++编译器</li>
+<li>cmake编译器</li>
+<li>IDE：KDevelop</li>
+</ol>
+<hr>
+<h1 id="第3讲-三维空间刚体运动"><a href="#第3讲-三维空间刚体运动" class="headerlink" title="第3讲 三维空间刚体运动"></a>第3讲 三维空间刚体运动</h1><h2 id="3-1-旋转矩阵"><a href="#3-1-旋转矩阵" class="headerlink" title="3.1 旋转矩阵"></a>3.1 旋转矩阵</h2><h3 id="3-1-1-点、向量、坐标系"><a href="#3-1-1-点、向量、坐标系" class="headerlink" title="3.1.1 点、向量、坐标系"></a>3.1.1 点、向量、坐标系</h3><p>反对称符号^</p>
+<h3 id="3-1-2-坐标系间的欧式变换"><a href="#3-1-2-坐标系间的欧式变换" class="headerlink" title="3.1.2 坐标系间的欧式变换"></a>3.1.2 坐标系间的欧式变换</h3><p>将坐标系A中的向量通过计算变换到坐标系B中，可以用<strong>欧式变换</strong>来实现。</p>
+<p>欧式变换包括旋转和平移。其中旋转可以用一个<strong>旋转矩阵R</strong>来描述，旋转+平移用<strong>变换矩阵T</strong>来描述。</p>
+<p><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/study/paper/20210928175923.png"></p>
+<p>需要注意的是：</p>
+<ul>
+<li>旋转矩阵是一个正交矩阵，其逆亦为其转置</li>
+<li>旋转矩阵的逆表示一个相反的旋转</li>
+<li>R12指坐标系2变换到坐标系1</li>
+</ul>
+<h3 id="3-1-3-变换矩阵与齐次坐标"><a href="#3-1-3-变换矩阵与齐次坐标" class="headerlink" title="3.1.3 变换矩阵与齐次坐标"></a>3.1.3 变换矩阵与齐次坐标</h3><p><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/study/paper/20210928175642.png"></p>
+<p>通过引入齐次坐标，两次变换的叠加便可以用两个变换矩阵相乘来表示，算是一个数学上的trick。</p>
+<p>需要注意，旋转矩阵不引入齐次坐标。</p>
+<h2 id="3-2-编程1"><a href="#3-2-编程1" class="headerlink" title="3.2 编程1"></a>3.2 编程1</h2><p>Eigen库：主要用来作矩阵运算</p>
+<h2 id="3-3-旋转向量和欧拉角"><a href="#3-3-旋转向量和欧拉角" class="headerlink" title="3.3 旋转向量和欧拉角"></a>3.3 旋转向量和欧拉角</h2><h3 id="3-3-1-旋转向量"><a href="#3-3-1-旋转向量" class="headerlink" title="3.3.1 旋转向量"></a>3.3.1 旋转向量</h3><p>旋转矩阵缺陷：</p>
+<ul>
+<li>自由度冗余</li>
+<li>矩阵自带约束</li>
+</ul>
+<p>旋转向量是另一种描述选择的方式，由旋转轴+旋转角组成。</p>
+<p>（nθ）</p>
+<p>旋转向量和旋转矩阵直接可以相互转换。</p>
+<h3 id="3-3-2-欧拉角"><a href="#3-3-2-欧拉角" class="headerlink" title="3.3.2 欧拉角"></a>3.3.2 欧拉角</h3><p>首先，这个欧拉角和欧拉变换没啥直接关系，就是撞名了。</p>
+<p>由于旋转矩阵和旋转向量都不够直观，这里引出足够直观的另一种描述旋转的方式：欧拉角。</p>
+<p>（[r,p,y]^T）</p>
+<p>欧拉角将一次旋转分解为3次绕不同轴的旋转：</p>
+<ul>
+<li>绕z，偏航角yaw</li>
+<li>绕y，俯仰角pitch</li>
+<li>绕x，滚转角roll</li>
+</ul>
+<p>例如，rpy角的旋转顺序是ZYX</p>
+<p>欧拉角的缺陷：万向锁，即欧拉角存在奇异性。</p>
+<h2 id="3-4-四元数"><a href="#3-4-四元数" class="headerlink" title="3.4 四元数"></a>3.4 四元数</h2><h3 id="3-4-1-四元数的定义"><a href="#3-4-1-四元数的定义" class="headerlink" title="3.4.1 四元数的定义"></a>3.4.1 四元数的定义</h3><ul>
+<li>旋转矩阵缺点：不够直观，冗余</li>
+<li>旋转向量缺点：不够直观，奇异性</li>
+<li>欧拉角缺点：奇异性</li>
+<li>四元数缺点：不够直观，运算复杂</li>
+</ul>
+<p>单位四元数可以描述一个三维旋转。</p>
+<p>四元数和复数类有点像，一个实部+三个虚部。</p>
+<p>q=q0+q1i+q2j+q3k;</p>
+<p>q=[s,v]^T, s=q0, v=[q1,q2,q3]^T</p>
+<h3 id="3-4-2-四元数的运算"><a href="#3-4-2-四元数的运算" class="headerlink" title="3.4.2 四元数的运算"></a>3.4.2 四元数的运算</h3><ol>
+<li>加减</li>
+<li>乘法</li>
+<li>模长</li>
+<li>共轭</li>
+<li>逆</li>
+<li>数乘</li>
+</ol>
+<h3 id="3-4-3-用四元数表示旋转"><a href="#3-4-3-用四元数表示旋转" class="headerlink" title="3.4.3 用四元数表示旋转"></a>3.4.3 用四元数表示旋转</h3><p><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/study/paper/20210928204734.png">，</p>
+<p>其中q为旋转四元数，等于把p转到四维空间再转回来。</p>
+<h3 id="3-4-4-四元数到其他旋转表示的旋转"><a href="#3-4-4-四元数到其他旋转表示的旋转" class="headerlink" title="3.4.4 四元数到其他旋转表示的旋转"></a>3.4.4 四元数到其他旋转表示的旋转</h3><p>简单来说：</p>
+<ul>
+<li>四元数和旋转向量可以相互转换</li>
+<li>旋转矩阵和旋转向量可以相互转换</li>
+</ul>
+<h2 id="3-5-相似、仿射、射影变换"><a href="#3-5-相似、仿射、射影变换" class="headerlink" title="3.5 相似、仿射、射影变换"></a>3.5 相似、仿射、射影变换</h2><p>这些变化都是前面的欧式变换的拓展，思路差不多：</p>
+<ol>
+<li>相似变换</li>
+<li>仿射变换</li>
+<li>射影变换</li>
+</ol>
+<h2 id="3-6-编程2"><a href="#3-6-编程2" class="headerlink" title="3.6 编程2"></a>3.6 编程2</h2><p>Eigen几何模块</p>
+<h2 id="3-7-编程3"><a href="#3-7-编程3" class="headerlink" title="3.7 编程3"></a>3.7 编程3</h2><p>可视化演示</p>
+<h3 id="3-7-1-显示运动轨迹"><a href="#3-7-1-显示运动轨迹" class="headerlink" title="3.7.1 显示运动轨迹"></a>3.7.1 显示运动轨迹</h3><p>Pangolin库：支持3D绘图</p>
+<ul>
+<li>轨迹文件每一行格式：</li>
+</ul>
+<p><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/study/paper/20210928205725.png">，其中t为平移。</p>
+<ul>
+<li>所谓轨迹，就是把一系列机器人坐标系原点在世界坐标系中的坐标连起来：</li>
+</ul>
+<p><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/study/paper/20210928210214.png"></p>
+<h3 id="3-7-2-显示相机位姿"><a href="#3-7-2-显示相机位姿" class="headerlink" title="3.7.2 显示相机位姿"></a>3.7.2 显示相机位姿</h3><hr>
+<h1 id="第4讲-李群与李代数"><a href="#第4讲-李群与李代数" class="headerlink" title="第4讲 李群与李代数"></a>第4讲 李群与李代数</h1><h2 id="4-1-李群与李代数基础"><a href="#4-1-李群与李代数基础" class="headerlink" title="4.1 李群与李代数基础"></a>4.1 李群与李代数基础</h2><p>旋转矩阵构成了特殊正交群SO(3)，变换矩阵构成了特殊欧式群SE(3)。</p>
+<p><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/study/paper/20210928222743.png"></p>
+<p>旋转矩阵和变换矩阵——只对乘法封闭，对加法不封闭。</p>
+<p>群：只有一个封闭运算的集合</p>
+<h3 id="4-1-1-群"><a href="#4-1-1-群" class="headerlink" title="4.1.1 群"></a>4.1.1 群</h3><p>更严谨的定义一下群：群是一种集合加上一种运算的代数结构。<br>群里的集合对于群的运算满足以下性质：</p>
+<ul>
+<li>封闭性</li>
+<li>结合律</li>
+<li>幺元</li>
+<li>逆</li>
+</ul>
+<p>李群：具有连续性质的群。</p>
+<ul>
+<li>SO(3)、SE(3)</li>
+</ul>
+<p>但是由于SO(3)和SE(3)只有定义良好的乘法而没有加法，因此难以求导，故，引入李代数。</p>
+<p>每一个李群都对应着一个李代数。</p>
+<h3 id="4-1-2-李代数的引出"><a href="#4-1-2-李代数的引出" class="headerlink" title="4.1.2 李代数的引出"></a>4.1.2 李代数的引出</h3><p>对旋转矩阵求导引出的概念</p>
+<p><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/study/paper/20210929091937.png"></p>
+<h3 id="4-1-3-李代数的定义"><a href="#4-1-3-李代数的定义" class="headerlink" title="4.1.3 李代数的定义"></a>4.1.3 李代数的定义</h3><p>每个李群对应一个李代数。</p>
+<p>李代数描述李群的局部性质，是单位元附近的正切空间。</p>
+<p>李代数g：集合V + 数域F + 二元运算(李括号)[,]</p>
+<h3 id="4-1-4-李代数so-3"><a href="#4-1-4-李代数so-3" class="headerlink" title="4.1.4 李代数so(3)"></a>4.1.4 李代数so(3)</h3><p>SO(3)对应的李代数so(3)里的元素记作Φ：</p>
+<p><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/study/paper/20210929091427.png"></p>
+<p><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/study/paper/20210929091737.png"></p>
+<p>so(3)是一个由三维向量组成的集合，每个向量对应一个反对称矩阵，可以用于表达旋转矩阵的导数。</p>
+<p>so(3)与SO(3)关系：</p>
+<p><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/study/paper/20210929092033.png"></p>
+<h3 id="4-1-5-李代数se-3"><a href="#4-1-5-李代数se-3" class="headerlink" title="4.1.5 李代数se(3)"></a>4.1.5 李代数se(3)</h3><p>se(3)的每个元素是一个6维向量，前三维表示平移，后三维表示旋转，其后三维就是so(3)的元素Φ。因此，se(3)可以理解为一个三维平移加上一个so(3)元素。</p>
+<p><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/study/paper/20210929092633.png"></p>
+<ul>
+<li>∧：指代从向量到矩阵</li>
+<li>∨：指代从矩阵到向量</li>
+</ul>
+<p><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/study/paper/20210929092531.png"></p>
+<h1 id="4-2-指数与对数映射"><a href="#4-2-指数与对数映射" class="headerlink" title="4.2 指数与对数映射"></a>4.2 指数与对数映射</h1><p>前面有提到so(3)和SO(3)之间可以用exp来转换，这章主要是说so(3)、se(3)和SO(3)、SE(3)之间的转换（也就是这个exp）究竟是如何计算的。</p>
+<p>有趣的是，SO(3)对应旋转矩阵，而so(3)对应旋转向量。</p>
+<h3 id="4-2-1-SO-3-上的指数映射"><a href="#4-2-1-SO-3-上的指数映射" class="headerlink" title="4.2.1 SO(3)上的指数映射"></a>4.2.1 SO(3)上的指数映射</h3><ul>
+<li>so(3)—&gt;SO(3)：通过指数映射，可以将so(3)中的任意一个向量对应到SO(3)中的一个旋转矩阵上。</li>
+</ul>
+<p>R=exp(Φ^)=exp(θa^), 其中θ是模长，a是方向。</p>
+<p><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/study/paper/20210929094246.png"></p>
+<ul>
+<li>SO(3)—&gt;so(3)：对数映射</li>
+</ul>
+<p><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/study/paper/20210929094947.png"></p>
+<ul>
+<li>需要注意的是，这种映射并不是一一对应的，一个SO(3)可能对应多个so(3)。</li>
+</ul>
+<h3 id="4-2-2-SE-3-上的指数映射"><a href="#4-2-2-SE-3-上的指数映射" class="headerlink" title="4.2.2 SE(3)上的指数映射"></a>4.2.2 SE(3)上的指数映射</h3><ul>
+<li>se(3)—&gt;SE(3)：指数映射</li>
+</ul>
+<p><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/study/paper/20210929095400.png"></p>
+<p><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/study/paper/20210929095524.png"></p>
+<ul>
+<li><p>SE(3)—&gt;se(3)：略</p>
+</li>
+<li><p><strong>总结一下转换关系：</strong></p>
+</li>
+</ul>
+<p><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/study/paper/20210929095957.png"></p>
+<h2 id="4-3-李代数求导与扰动模型"><a href="#4-3-李代数求导与扰动模型" class="headerlink" title="4.3 李代数求导与扰动模型"></a>4.3 李代数求导与扰动模型</h2><h3 id="4-3-1-BCH公式与近似模型"><a href="#4-3-1-BCH公式与近似模型" class="headerlink" title="4.3.1 BCH公式与近似模型"></a>4.3.1 BCH公式与近似模型</h3><p>探索一下李群乘法和李代数加法之间的关系。</p>
+<ul>
+<li><p>SO(3) &amp; so(3)：</p>
+<ul>
+<li><p>李群乘法：在李群上左乘小量，等于在李代数上加上一个左雅克比的逆乘小量</p>
+<p>给旋转矩阵R左乘一个微小扰动—ΔR·R（左乘右乘区别不大，可以互推）</p>
+<p><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/study/paper/20210929101057.png"></p>
+<p><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/study/paper/20210929101149.png"></p>
+</li>
+<li><p>李代数加法：在李代数上加上小量，等于在李群上左乘一个左雅克比乘小量</p>
+<p><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/study/paper/20210929101614.png"></p>
+</li>
+</ul>
+</li>
+<li><p>SE(3) &amp; se(3)：</p>
+<p>  <img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/study/paper/20210929101716.png"></p>
+</li>
+</ul>
+<h3 id="4-3-2-SO-3-上的李代数求导"><a href="#4-3-2-SO-3-上的李代数求导" class="headerlink" title="4.3.2 SO(3)上的李代数求导"></a>4.3.2 SO(3)上的李代数求导</h3><p>选择矩阵R的求导在SLAM上有很强的应用性：</p>
+<p>观测方程：z=Tp+w，相机以T位姿观察到p点，在w噪声情况下产生观测数据z。</p>
+<p>虽然有时候我们是用观测数据和通过运动方程得到的相机位姿来估计路标点p，但有时候并没有相机位姿反而有路标点p的数据，我们也可以利用路标点和观测来估计位姿。在这种情况下，相当于寻找一个最优的T，使得整体误差最小化：</p>
+<p><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/study/paper/20210929102802.png"></p>
+<p>这是最小二乘估计，求解时目标函数J要对变换矩阵T求导。</p>
+<p>总之就是SLAM里面经常出现”与位姿相关的函数对位姿求导”的情况，这时就需要对李群求导，但由于李群没有加法不太好搞，于是需要利用李代数来解决李群上的求导问题，思路包括：</p>
+<ol>
+<li>李代数求导模型：通过李群到李代数的转换，用李代数来表示位姿，然后对李代数求导</li>
+<li>扰动模型：对李群左乘（右乘）微小扰动，对该扰动求导</li>
+</ol>
+<h3 id="4-3-3-李代数求导"><a href="#4-3-3-李代数求导" class="headerlink" title="4.3.3 李代数求导"></a>4.3.3 李代数求导</h3><p><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/study/paper/20210929104458.png"> 等效于 <img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/study/paper/20210929104519.png"></p>
+<p>这个思路逻辑比较清晰，但是计算略麻烦，故通常并不使用这个求导思路。</p>
+<h3 id="4-3-4-扰动模型（左乘）"><a href="#4-3-4-扰动模型（左乘）" class="headerlink" title="4.3.4 扰动模型（左乘）"></a>4.3.4 扰动模型（左乘）</h3><p>空间点p经过一次旋转R，对左扰动对应的李代数求导：设左扰动ΔR对应李代数φ</p>
+<p><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/study/paper/20210929104832.png"></p>
+<h3 id="4-3-5-SE-3-上的李代数求导"><a href="#4-3-5-SE-3-上的李代数求导" class="headerlink" title="4.3.5 SE(3)上的李代数求导"></a>4.3.5 SE(3)上的李代数求导</h3><p>扰动模型</p>
+<p>空间点p经过一次变化T，对左扰动对应的李代数求导</p>
+<p><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/study/paper/20210929105439.png"></p>
+<p><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/study/paper/20210929105514.png"></p>
+<h2 id="编程"><a href="#编程" class="headerlink" title="编程"></a>编程</h2><h3 id="4-4-1-Sophus基本使用"><a href="#4-4-1-Sophus基本使用" class="headerlink" title="4.4.1 Sophus基本使用"></a>4.4.1 Sophus基本使用</h3><p>Sophus库：李群/李代数库，本书使用带模板的Sophus库</p>
+<h3 id="4-4-2-评估轨迹误差"><a href="#4-4-2-评估轨迹误差" class="headerlink" title="4.4.2 评估轨迹误差"></a>4.4.2 评估轨迹误差</h3><p>误差指标：</p>
+<ul>
+<li>绝对轨迹误差ATE</li>
+<li>绝对平移误差</li>
+<li>相对位姿误差RPE</li>
+<li>相对位姿平移误差</li>
+</ul>
+<h2 id="4-5-相似变换群与李代数"><a href="#4-5-相似变换群与李代数" class="headerlink" title="4.5 相似变换群与李代数"></a>4.5 相似变换群与李代数</h2><p>没看，略</p>
+<hr>
+<h1 id="第5讲-相机与图像"><a href="#第5讲-相机与图像" class="headerlink" title="第5讲 相机与图像"></a>第5讲 相机与图像</h1><h2 id="5-1-相机模型"><a href="#5-1-相机模型" class="headerlink" title="5.1 相机模型"></a>5.1 相机模型</h2><p>相机将三维世界坐标点（m）映射到二维图像平面（像素）的过程可以用一个几何模型来描述。</p>
+<p>相机内参数：针孔模型 + 畸变模型，外部三维点投影到相机内部的成像平面。</p>
+<h3 id="5-1-1-针孔相机模型"><a href="#5-1-1-针孔相机模型" class="headerlink" title="5.1.1 针孔相机模型"></a>5.1.1 针孔相机模型</h3><p>步骤：</p>
+<ul>
+<li>现实世界P[X,Y,Z]^T</li>
+<li>成像平面P’[X’,Y’,Z’]^T<ul>
+<li>真实成像平面</li>
+<li>对称成像平面</li>
+<li>归一化成像平面[x,y]^T </li>
+</ul>
+</li>
+<li>像素平面[u,v]^T：在成像平面上对像进行采样和量化</li>
+</ul>
+<p><strong>内参</strong>：矩阵K为相机的内参数，有时生产厂商会告诉你，但有时也需要自己去标定。</p>
+<p><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/study/paper/20210929113717.png"></p>
+<p><strong>外参</strong>：上面公式中的P实际上是<code>相机的世界坐标</code>根据<code>相机位姿</code>变换到<code>相机坐标系</code>下的结果。<code>相机位姿</code>，也就是这个变换矩阵就是<code>相机外参</code>。</p>
+<p><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/study/paper/20210929114250.png"></p>
+<p>这里的外参是SLAM中的待估计目标，代表着机器人的轨迹。</p>
+<p>值得一提的是，这个过程中丢失了深度信息。</p>
+<h3 id="5-1-2-畸变模型"><a href="#5-1-2-畸变模型" class="headerlink" title="5.1.2 畸变模型"></a>5.1.2 畸变模型</h3><p>径向畸变（失真）：透镜形状引起的畸变</p>
+<p><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/study/paper/20210929114910.png"></p>
+<p>切向畸变：透镜未和成像平面严格平行引起的畸变</p>
+<p>畸变系数：k1, k2, k3, p1, p2（前3个为径向的，后2个为切向的）</p>
+<p>畸变变换发生在<code>归一化成像平面[x,y]^T</code>到<code>像素平面[u,v]^T</code>的过程中：</p>
+<p><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/study/paper/20210929115410.png"></p>
+<p><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/study/paper/20210929115515.png"></p>
+<ul>
+<li>去畸变处理（畸变矫正）<ul>
+<li>对整张图像去畸变，再用这个图像去对应空间位置</li>
+<li>对图像上的每个像素点去畸变，对应其畸变前的空间点</li>
+</ul>
+</li>
+</ul>
+<p><strong>总的来说</strong>：</p>
+<ul>
+<li><code>世界坐标Pw</code> –+外参T–&gt;</li>
+<li><code>相机坐标Pc</code> —&gt; </li>
+<li><code>归一化坐标</code> –+畸变–+内参α,β,c,f–&gt; </li>
+<li><code>像素坐标Puv</code></li>
+</ul>
+<h3 id="5-1-3-双目相机模型"><a href="#5-1-3-双目相机模型" class="headerlink" title="5.1.3 双目相机模型"></a>5.1.3 双目相机模型</h3><p>双目相机的原理是同步采集左右相机图像，计算图像<code>视差</code>，计算每个像素点的深度。</p>
+<p><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/study/paper/20210929120525.png"></p>
+<p><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/study/paper/20210929120549.png">，b为基线</p>
+<p>计算量比较大，要用GPU或FPGA来实现实时计算。</p>
+<h3 id="5-1-4-RGB-D-相机模型"><a href="#5-1-4-RGB-D-相机模型" class="headerlink" title="5.1.4 RGB-D 相机模型"></a>5.1.4 RGB-D 相机模型</h3><p>RGB-D相机原理：主动测量每个像素深度</p>
+<ul>
+<li>通过<code>红外结构光</code>原理测量 深度</li>
+<li>通过<code>飞行时间</code>原理测量深度</li>
+</ul>
+<p><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/study/paper/20210929121048.png"></p>
+<p>主要问题是，发射-接收测量方式使得使用范围比较受限。</p>
+<h2 id="5-2-图像"><a href="#5-2-图像" class="headerlink" title="5.2 图像"></a>5.2 图像</h2><p>计算机中图像存储为数值矩阵。</p>
+<p>灰度图：每个像素位置对应一个灰度值I</p>
+<figure class="highlight c++"><table><tbody><tr><td class="code"><pre><span class="line"><span class="keyword">unsigned</span> <span class="keyword">char</span> image[<span class="number">480</span>][<span class="number">640</span>]   <span class="comment">//一张宽640像素，高480像素分辨率的灰度图</span></span><br><span class="line"><span class="keyword">unsigned</span> <span class="keyword">char</span> pixel = image[y][x]   <span class="comment">//访问图像像素，pixel=I(x,y)，注意下标</span></span><br></pre></td></tr></tbody></table></figure>
+<ul>
+<li>深度图</li>
+<li>彩色图：多通道<ul>
+<li>opencv中通道顺序是B、G、R</li>
+</ul>
+</li>
+</ul>
+<p><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/study/paper/20210929121909.png"></p>
+<h2 id="5-3-编程：计算机中的图像"><a href="#5-3-编程：计算机中的图像" class="headerlink" title="5.3 编程：计算机中的图像"></a>5.3 编程：计算机中的图像</h2><h3 id="5-3-1-opencv基本使用"><a href="#5-3-1-opencv基本使用" class="headerlink" title="5.3.1 opencv基本使用"></a>5.3.1 opencv基本使用</h3><p>opencv库：图像处理算法库</p>
+<p>本书用的是opencv3</p>
+<h3 id="5-3-2-图像去畸变"><a href="#5-3-2-图像去畸变" class="headerlink" title="5.3.2 图像去畸变"></a>5.3.2 图像去畸变</h3><figure class="highlight c++"><table><tbody><tr><td class="code"><pre><span class="line">cv::<span class="built_in">Undistort</span>() <span class="comment">//去畸变函数</span></span><br></pre></td></tr></tbody></table></figure>
+<h2 id="5-4-编程：3D视觉"><a href="#5-4-编程：3D视觉" class="headerlink" title="5.4 编程：3D视觉"></a>5.4 编程：3D视觉</h2><h3 id="5-4-1-双目视觉"><a href="#5-4-1-双目视觉" class="headerlink" title="5.4.1 双目视觉"></a>5.4.1 双目视觉</h3><p>从双目视觉的左右图像出发，计算图像对应的视差图，然后将像素点转换回相机坐标，构成物体的点云。</p>
+<p>SGBM算法：计算视差</p>
+<h3 id="5-4-2-RGB-D视觉"><a href="#5-4-2-RGB-D视觉" class="headerlink" title="5.4.2 RGB-D视觉"></a>5.4.2 RGB-D视觉</h3><p>位姿记录形式：[x,y,z,qx,qy,qz,qw]—平移向量+旋转四元数</p>
+<ol>
+<li>根据内参计算一对RGB-D图像对应的点云</li>
+<li>根据各张图的相机位姿，把点云加起来，组成地图</li>
+</ol>
+<hr>
+<h1 id="第6将-非线性优化"><a href="#第6将-非线性优化" class="headerlink" title="第6将 非线性优化"></a>第6将 非线性优化</h1><h2 id="6-1-状态估计问题"><a href="#6-1-状态估计问题" class="headerlink" title="6.1 状态估计问题"></a>6.1 状态估计问题</h2><p><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/study/paper/20210929164600.png"></p>
+<p>根据第5讲的内容，观测方程可以写成：</p>
+<p><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/study/paper/20210929163749.png"></p>
+<p>SLAM的目标是通过带噪声的观测数据z和输入u，来推断位姿x和地图y，这就是个状态估计问题。</p>
+<p>两种方案：</p>
+<ul>
+<li>滤波器/增量方法<ul>
+<li>在当前时刻的估计状态下，来一个新数据，更新一次状态</li>
+<li>只关心当前的xk</li>
+</ul>
+</li>
+<li>批量方法<ul>
+<li>攒一波数据，然后一并处理</li>
+<li>目前的主流</li>
+<li>为了达到实时性，可以固定一些历史轨迹，仅对当前时刻附近的一些轨迹进行优化（滑动窗口估计）</li>
+</ul>
+</li>
+</ul>
+<h3 id="6-1-1-批量状态估计与最大后验估计"><a href="#6-1-1-批量状态估计与最大后验估计" class="headerlink" title="6.1.1 批量状态估计与最大后验估计"></a>6.1.1 批量状态估计与最大后验估计</h3><p><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/study/paper/20210929170517.png"></p>
+<p>MAP估计：</p>
+<p><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/study/paper/20210929170545.png"></p>
+<p>ML估计：在什么样的状态下(x,y)下，最可能产生当前观测到的数据</p>
+<p><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/study/paper/20210929170719.png"></p>
+<h3 id="6-1-2-最小二乘的引出"><a href="#6-1-2-最小二乘的引出" class="headerlink" title="6.1.2 最小二乘的引出"></a>6.1.2 最小二乘的引出</h3><p>先不考虑运动方程，且假设噪声是高斯分布。</p>
+<p><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/study/paper/20210929171226.png"></p>
+<p>这个式子等同于在最小化噪声项，因此ML估计可以等价于最小化误差项(噪声)。</p>
+<ul>
+<li>上式的Q逆是信息矩阵</li>
+<li>噪声项是一个二次型，称为马氏距离。</li>
+</ul>
+<hr>
+<p>现在假设运动方程，考虑批量数据。</p>
+<p><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/study/paper/20210929171708.png">（因为独立）</p>
+<p>上式的ML估计等同于最小化所有时刻的误差项：</p>
+<p><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/study/paper/20210929171832.png"></p>
+<p><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/study/paper/20210929171855.png"></p>
+<p>这就是一个<strong>最小二乘问题</strong>了。</p>
+<h3 id="6-1-3-例子：批量状态估计"><a href="#6-1-3-例子：批量状态估计" class="headerlink" title="6.1.3 例子：批量状态估计"></a>6.1.3 例子：批量状态估计</h3><p>略</p>
+<h2 id="6-2-非线性最小二乘"><a href="#6-2-非线性最小二乘" class="headerlink" title="6.2 非线性最小二乘"></a>6.2 非线性最小二乘</h2><p><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/study/paper/20210929173626.png"></p>
+<p>这是一个比较正常的最小二乘的样子，一般用<code>梯度下降</code>来解</p>
+<p>具体步骤：</p>
+<p><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/study/paper/20210929174103.png"></p>
+<h3 id="6-2-1-一阶和二阶梯度法"><a href="#6-2-1-一阶和二阶梯度法" class="headerlink" title="6.2.1 一阶和二阶梯度法"></a>6.2.1 一阶和二阶梯度法</h3><p>J：一阶导数，梯度、雅克比矩阵</p>
+<p>H：二阶导数，海塞矩阵</p>
+<ul>
+<li><p>一阶梯度：最速下降法（并不是最小二乘）</p>
+<p><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/study/paper/20210929174156.png"></p>
+<p><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/study/paper/20210929174253.png"></p>
+</li>
+<li><p>二阶梯度：</p>
+<p><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/study/paper/20210929174411.png"></p>
+<p><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/study/paper/20210929174516.png"></p>
+</li>
+<li><p>缺点：</p>
+<ul>
+<li>最速过于贪心</li>
+<li>二阶里的H过于难算</li>
+</ul>
+</li>
+</ul>
+<h3 id="6-2-2-高斯牛顿法"><a href="#6-2-2-高斯牛顿法" class="headerlink" title="6.2.2 高斯牛顿法"></a>6.2.2 高斯牛顿法</h3><p>对误差：f(x)，而不是目标函数：F(x)，做一阶泰勒展开：</p>
+<p><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/study/paper/20210929174805.png"></p>
+<p>构建最小二乘问题：</p>
+<p><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/study/paper/20210929174937.png"></p>
+<p>得到<code>增量方程（高斯牛顿方程）</code>：</p>
+<p><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/study/paper/20210929175144.png"></p>
+<p><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/study/paper/20210929175209.png"></p>
+<p>可以看到，高斯牛顿法用JJ^T来做H的近似，避免了H的复杂计算。</p>
+<ul>
+<li><p>算法步骤：</p>
+<p><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/study/paper/20210929175400.png"></p>
+</li>
+<li><p>算法缺点：</p>
+<ul>
+<li>JJ^T不一定可逆，可能会导致无法收敛</li>
+</ul>
+</li>
+<li><p>补救措施：</p>
+<ul>
+<li>线搜索法：加上步长，即先找到方向，再确定长度。</li>
+<li>阻尼牛顿：引入信赖区域，认为近似只在区域内可靠</li>
+</ul>
+</li>
+</ul>
+<h3 id="6-2-3-列文伯格-马夸尔特方法"><a href="#6-2-3-列文伯格-马夸尔特方法" class="headerlink" title="6.2.3 列文伯格-马夸尔特方法"></a>6.2.3 列文伯格-马夸尔特方法</h3><p>又名阻尼牛顿法。</p>
+<p>根据近似模型下降的值 如果能近似等于 函数实际下降的值，说明这个近似很nice，可以扩大近似的范围。（下式接近1）</p>
+<p><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/study/paper/20210929181536.png"></p>
+<p>算法步骤：</p>
+<p><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/study/paper/20210929181856.png"></p>
+<p>拉格朗日乘子来解，最后推导到求解：</p>
+<p><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/study/paper/20210929183816.png"></p>
+<p>值得注意的是，上面的非线性优化都需要提供初始值，SLAM中，通常使用ICP、PnP等算法来提供初始值x0。</p>
+<h2 id="6-3-编程：曲线拟合问题"><a href="#6-3-编程：曲线拟合问题" class="headerlink" title="6.3 编程：曲线拟合问题"></a>6.3 编程：曲线拟合问题</h2><h3 id="6-3-1-手写高斯牛顿算法"><a href="#6-3-1-手写高斯牛顿算法" class="headerlink" title="6.3.1 手写高斯牛顿算法"></a>6.3.1 手写高斯牛顿算法</h3><h3 id="6-3-2-使用Ceres进行曲线拟合"><a href="#6-3-2-使用Ceres进行曲线拟合" class="headerlink" title="6.3.2 使用Ceres进行曲线拟合"></a>6.3.2 使用Ceres进行曲线拟合</h3><p>Cere库：最小二乘问题求解库</p>
+<p>Ceres求解的最小二乘问题的一般形式（带边界的核函数最小二乘）：</p>
+<p><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/study/paper/20210929185010.png"></p>
+<h4 id="图优化理论"><a href="#图优化理论" class="headerlink" title="图优化理论"></a>图优化理论</h4><p>G2o库：图优化库，SLAM领域广泛使用。</p>
+<p>图优化是一种将非线性优化和图论结合起来的理论，将优化问题用图（贝叶斯图）的形式呈现。</p>
+<p>图：顶点+边</p>
+<ul>
+<li>顶点：表示优化变量</li>
+<li>边：表示误差项</li>
+</ul>
+<p><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/study/paper/20210929191415.png"></p>
+<ul>
+<li>使用g2o拟合曲线</li>
+</ul>
+<p>需要先将问题转化为图优化问题。</p>
+<p><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/study/paper/20210929191653.png"></p>
+<p>曲线拟合问题中只有一个优化变量，而带噪声的数据构成了诸多误差项。</p>
+<p>步骤：</p>
+<ol>
+<li>定义顶点和边的类型</li>
+<li>构件图</li>
+<li>选择优化算法</li>
+<li>调用g2o进行优化，返回结果</li>
+</ol>
+]]></content>
+      <categories>
+        <category>科研</category>
+      </categories>
+      <tags>
+        <tag>SLAM</tag>
+        <tag>科研</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>V-SLAM整理1</title>
+    <url>/V-SLAM%E6%95%B4%E7%90%861/</url>
+    <content><![CDATA[<p>VSLAM学习素材是高翔老师的《视觉SLAM十四讲第二版》。这是我首次接触SLAM，感觉还算有趣。学士学完了，但是还需要系统的梳理一遍知识体系。</p>
+<p>内容比较多，放在两个博客里记述，第一个是基础知识部分，第二个是SLAM</p>
+<p>好了，废话不多说，开始吧~</p>
+<h1 id="第1讲-预备知识"><a href="#第1讲-预备知识" class="headerlink" title="第1讲 预备知识"></a>第1讲 预备知识</h1><p>没啥内容，略过</p>
+<hr>
+<h1 id="第2将-初始SLAM"><a href="#第2将-初始SLAM" class="headerlink" title="第2将 初始SLAM"></a>第2将 初始SLAM</h1><h2 id="2-2-经典视觉SLAM框架"><a href="#2-2-经典视觉SLAM框架" class="headerlink" title="2.2 经典视觉SLAM框架"></a>2.2 经典视觉SLAM框架</h2><p>一图以蔽之：<br><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/study/paper/20210928163420.png"></p>
+<p>我们把相机传感器放到一个未知空间中，相机边移动边拍摄，我们的目的是通过这些帧图构建未知空间的地图。那么我们首先要先反向计算出相机是怎么移动的，再根据相机的移动轨迹来建图。<strong>【建图这里也许还要加上拍摄图片，记不清了，先这么理解，后面再说】</strong></p>
+<p>我们通过相机传感器得到了数据，现在需要用堆数据来建图。相机在不停的移动，我们把某个时刻得到的帧图交给前端视觉里程器，视觉里程器可以通过相邻帧的数据（这里要调前面传进来的帧图）来估算相邻相机的运动，进而算出此刻相机的位姿，还要估算这部分数据对应的局部地图。前端会将估计的相机位姿和局部地图提供给后端。</p>
+<p>这些数据除了要交给视觉里程计，还要同时给回环检测，回环检测会对比当前帧图和之前的帧图，来判断相机是否之前来过此地，一旦检测到回环，就会将回环信息提供给后端。搞回环主要是为了修正漂移。</p>
+<p>后端接收前端和回环给的信息，将这些信息进行优化，得到全局一致的相机轨迹和地图。</p>
+<p>建图环节会根据估计的轨迹和任务需求，来建立不同的地图。</p>
+<h2 id="2-3-SLAM问题的数学表达"><a href="#2-3-SLAM问题的数学表达" class="headerlink" title="2.3 SLAM问题的数学表达"></a>2.3 SLAM问题的数学表达</h2><p>运动方程：k时刻相机位姿&lt;—k-1时刻位姿x + k时刻运动传感器的读数/输入u + k 时刻噪声w。</p>
+<p>观测方程：j位置k时刻的观测数据z&lt;—j位置路标y + k时刻相机位姿x + 噪声v，相机对路标点拍摄后得到图像中的像素。</p>
+<p><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/study/paper/20210928170515.png"></p>
+<p>在SLAM里面，通常会已知运动测量的读数u来估计位置x（定位），已知传感器读数z来估计y（建图）。</p>
+<h2 id="2-4-编程"><a href="#2-4-编程" class="headerlink" title="2.4 编程"></a>2.4 编程</h2><ol>
+<li>linux 18.04</li>
+<li>g++编译器</li>
+<li>cmake编译器</li>
+<li>IDE：KDevelop</li>
+</ol>
+<hr>
+<h1 id="第3讲-三维空间刚体运动"><a href="#第3讲-三维空间刚体运动" class="headerlink" title="第3讲 三维空间刚体运动"></a>第3讲 三维空间刚体运动</h1><h2 id="3-1-旋转矩阵"><a href="#3-1-旋转矩阵" class="headerlink" title="3.1 旋转矩阵"></a>3.1 旋转矩阵</h2><h3 id="3-1-1-点、向量、坐标系"><a href="#3-1-1-点、向量、坐标系" class="headerlink" title="3.1.1 点、向量、坐标系"></a>3.1.1 点、向量、坐标系</h3><p>反对称符号^</p>
+<h3 id="3-1-2-坐标系间的欧式变换"><a href="#3-1-2-坐标系间的欧式变换" class="headerlink" title="3.1.2 坐标系间的欧式变换"></a>3.1.2 坐标系间的欧式变换</h3><p>将坐标系A中的向量通过计算变换到坐标系B中，可以用<strong>欧式变换</strong>来实现。</p>
+<p>欧式变换包括旋转和平移。其中旋转可以用一个<strong>旋转矩阵R</strong>来描述，旋转+平移用<strong>变换矩阵T</strong>来描述。</p>
+<p><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/study/paper/20210928175923.png"></p>
+<p>需要注意的是：</p>
+<ul>
+<li>旋转矩阵是一个正交矩阵，其逆亦为其转置</li>
+<li>旋转矩阵的逆表示一个相反的旋转</li>
+<li>R12指坐标系2变换到坐标系1</li>
+</ul>
+<h3 id="3-1-3-变换矩阵与齐次坐标"><a href="#3-1-3-变换矩阵与齐次坐标" class="headerlink" title="3.1.3 变换矩阵与齐次坐标"></a>3.1.3 变换矩阵与齐次坐标</h3><p><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/study/paper/20210928175642.png"></p>
+<p>通过引入齐次坐标，两次变换的叠加便可以用两个变换矩阵相乘来表示，算是一个数学上的trick。</p>
+<p>需要注意，旋转矩阵不引入齐次坐标。</p>
+<h2 id="3-2-编程1"><a href="#3-2-编程1" class="headerlink" title="3.2 编程1"></a>3.2 编程1</h2><p>Eigen库：主要用来作矩阵运算</p>
+<h2 id="3-3-旋转向量和欧拉角"><a href="#3-3-旋转向量和欧拉角" class="headerlink" title="3.3 旋转向量和欧拉角"></a>3.3 旋转向量和欧拉角</h2><h3 id="3-3-1-旋转向量"><a href="#3-3-1-旋转向量" class="headerlink" title="3.3.1 旋转向量"></a>3.3.1 旋转向量</h3><p>旋转矩阵缺陷：</p>
+<ul>
+<li>自由度冗余</li>
+<li>矩阵自带约束</li>
+</ul>
+<p>旋转向量是另一种描述选择的方式，由旋转轴+旋转角组成。</p>
+<p>（nθ）</p>
+<p>旋转向量和旋转矩阵直接可以相互转换。</p>
+<h3 id="3-3-2-欧拉角"><a href="#3-3-2-欧拉角" class="headerlink" title="3.3.2 欧拉角"></a>3.3.2 欧拉角</h3><p>首先，这个欧拉角和欧拉变换没啥直接关系，就是撞名了。</p>
+<p>由于旋转矩阵和旋转向量都不够直观，这里引出足够直观的另一种描述旋转的方式：欧拉角。</p>
+<p>（[r,p,y]^T）</p>
+<p>欧拉角将一次旋转分解为3次绕不同轴的旋转：</p>
+<ul>
+<li>绕z，偏航角yaw</li>
+<li>绕y，俯仰角pitch</li>
+<li>绕x，滚转角roll</li>
+</ul>
+<p>例如，rpy角的旋转顺序是ZYX</p>
+<p>欧拉角的缺陷：万向锁，即欧拉角存在奇异性。</p>
+<h2 id="3-4-四元数"><a href="#3-4-四元数" class="headerlink" title="3.4 四元数"></a>3.4 四元数</h2><h3 id="3-4-1-四元数的定义"><a href="#3-4-1-四元数的定义" class="headerlink" title="3.4.1 四元数的定义"></a>3.4.1 四元数的定义</h3><ul>
+<li>旋转矩阵缺点：不够直观，冗余</li>
+<li>旋转向量缺点：不够直观，奇异性</li>
+<li>欧拉角缺点：奇异性</li>
+<li>四元数缺点：不够直观，运算复杂</li>
+</ul>
+<p>单位四元数可以描述一个三维旋转。</p>
+<p>四元数和复数类有点像，一个实部+三个虚部。</p>
+<p>q=q0+q1i+q2j+q3k;</p>
+<p>q=[s,v]^T, s=q0, v=[q1,q2,q3]^T</p>
+<h3 id="3-4-2-四元数的运算"><a href="#3-4-2-四元数的运算" class="headerlink" title="3.4.2 四元数的运算"></a>3.4.2 四元数的运算</h3><ol>
+<li>加减</li>
+<li>乘法</li>
+<li>模长</li>
+<li>共轭</li>
+<li>逆</li>
+<li>数乘</li>
+</ol>
+<h3 id="3-4-3-用四元数表示旋转"><a href="#3-4-3-用四元数表示旋转" class="headerlink" title="3.4.3 用四元数表示旋转"></a>3.4.3 用四元数表示旋转</h3><p><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/study/paper/20210928204734.png">，</p>
+<p>其中q为旋转四元数，等于把p转到四维空间再转回来。</p>
+<h3 id="3-4-4-四元数到其他旋转表示的旋转"><a href="#3-4-4-四元数到其他旋转表示的旋转" class="headerlink" title="3.4.4 四元数到其他旋转表示的旋转"></a>3.4.4 四元数到其他旋转表示的旋转</h3><p>简单来说：</p>
+<ul>
+<li>四元数和旋转向量可以相互转换</li>
+<li>旋转矩阵和旋转向量可以相互转换</li>
+</ul>
+<h2 id="3-5-相似、仿射、射影变换"><a href="#3-5-相似、仿射、射影变换" class="headerlink" title="3.5 相似、仿射、射影变换"></a>3.5 相似、仿射、射影变换</h2><p>这些变化都是前面的欧式变换的拓展，思路差不多：</p>
+<ol>
+<li>相似变换</li>
+<li>仿射变换</li>
+<li>射影变换</li>
+</ol>
+<h2 id="3-6-编程2"><a href="#3-6-编程2" class="headerlink" title="3.6 编程2"></a>3.6 编程2</h2><p>Eigen几何模块</p>
+<h2 id="3-7-编程3"><a href="#3-7-编程3" class="headerlink" title="3.7 编程3"></a>3.7 编程3</h2><p>可视化演示</p>
+<h3 id="3-7-1-显示运动轨迹"><a href="#3-7-1-显示运动轨迹" class="headerlink" title="3.7.1 显示运动轨迹"></a>3.7.1 显示运动轨迹</h3><p>Pangolin库：支持3D绘图</p>
+<ul>
+<li>轨迹文件每一行格式：</li>
+</ul>
+<p><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/study/paper/20210928205725.png">，其中t为平移。</p>
+<ul>
+<li>所谓轨迹，就是把一系列机器人坐标系原点在世界坐标系中的坐标连起来：</li>
+</ul>
+<p><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/study/paper/20210928210214.png"></p>
+<h3 id="3-7-2-显示相机位姿"><a href="#3-7-2-显示相机位姿" class="headerlink" title="3.7.2 显示相机位姿"></a>3.7.2 显示相机位姿</h3><hr>
+<h1 id="第4讲-李群与李代数"><a href="#第4讲-李群与李代数" class="headerlink" title="第4讲 李群与李代数"></a>第4讲 李群与李代数</h1><h2 id="4-1-李群与李代数基础"><a href="#4-1-李群与李代数基础" class="headerlink" title="4.1 李群与李代数基础"></a>4.1 李群与李代数基础</h2><p>旋转矩阵构成了特殊正交群SO(3)，变换矩阵构成了特殊欧式群SE(3)。</p>
+<p><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/study/paper/20210928222743.png"></p>
+<p>旋转矩阵和变换矩阵——只对乘法封闭，对加法不封闭。</p>
+<p>群：只有一个封闭运算的集合</p>
+<h3 id="4-1-1-群"><a href="#4-1-1-群" class="headerlink" title="4.1.1 群"></a>4.1.1 群</h3><p>更严谨的定义一下群：群是一种集合加上一种运算的代数结构。<br>群里的集合对于群的运算满足以下性质：</p>
+<ul>
+<li>封闭性</li>
+<li>结合律</li>
+<li>幺元</li>
+<li>逆</li>
+</ul>
+<p>李群：具有连续性质的群。</p>
+<ul>
+<li>SO(3)、SE(3)</li>
+</ul>
+<p>但是由于SO(3)和SE(3)只有定义良好的乘法而没有加法，因此难以求导，故，引入李代数。</p>
+<p>每一个李群都对应着一个李代数。</p>
+<h3 id="4-1-2-李代数的引出"><a href="#4-1-2-李代数的引出" class="headerlink" title="4.1.2 李代数的引出"></a>4.1.2 李代数的引出</h3><p>对旋转矩阵求导引出的概念</p>
+<p><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/study/paper/20210929091937.png"></p>
+<h3 id="4-1-3-李代数的定义"><a href="#4-1-3-李代数的定义" class="headerlink" title="4.1.3 李代数的定义"></a>4.1.3 李代数的定义</h3><p>每个李群对应一个李代数。</p>
+<p>李代数描述李群的局部性质，是单位元附近的正切空间。</p>
+<p>李代数g：集合V + 数域F + 二元运算(李括号)[,]</p>
+<h3 id="4-1-4-李代数so-3"><a href="#4-1-4-李代数so-3" class="headerlink" title="4.1.4 李代数so(3)"></a>4.1.4 李代数so(3)</h3><p>SO(3)对应的李代数so(3)里的元素记作Φ：</p>
+<p><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/study/paper/20210929091427.png"></p>
+<p><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/study/paper/20210929091737.png"></p>
+<p>so(3)是一个由三维向量组成的集合，每个向量对应一个反对称矩阵，可以用于表达旋转矩阵的导数。</p>
+<p>so(3)与SO(3)关系：</p>
+<p><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/study/paper/20210929092033.png"></p>
+<h3 id="4-1-5-李代数se-3"><a href="#4-1-5-李代数se-3" class="headerlink" title="4.1.5 李代数se(3)"></a>4.1.5 李代数se(3)</h3><p>se(3)的每个元素是一个6维向量，前三维表示平移，后三维表示旋转，其后三维就是so(3)的元素Φ。因此，se(3)可以理解为一个三维平移加上一个so(3)元素。</p>
+<p><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/study/paper/20210929092633.png"></p>
+<ul>
+<li>∧：指代从向量到矩阵</li>
+<li>∨：指代从矩阵到向量</li>
+</ul>
+<p><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/study/paper/20210929092531.png"></p>
+<h1 id="4-2-指数与对数映射"><a href="#4-2-指数与对数映射" class="headerlink" title="4.2 指数与对数映射"></a>4.2 指数与对数映射</h1><p>前面有提到so(3)和SO(3)之间可以用exp来转换，这章主要是说so(3)、se(3)和SO(3)、SE(3)之间的转换（也就是这个exp）究竟是如何计算的。</p>
+<p>有趣的是，SO(3)对应旋转矩阵，而so(3)对应旋转向量。</p>
+<h3 id="4-2-1-SO-3-上的指数映射"><a href="#4-2-1-SO-3-上的指数映射" class="headerlink" title="4.2.1 SO(3)上的指数映射"></a>4.2.1 SO(3)上的指数映射</h3><ul>
+<li>so(3)—&gt;SO(3)：通过指数映射，可以将so(3)中的任意一个向量对应到SO(3)中的一个旋转矩阵上。</li>
+</ul>
+<p>R=exp(Φ^)=exp(θa^), 其中θ是模长，a是方向。</p>
+<p><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/study/paper/20210929094246.png"></p>
+<ul>
+<li>SO(3)—&gt;so(3)：对数映射</li>
+</ul>
+<p><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/study/paper/20210929094947.png"></p>
+<ul>
+<li>需要注意的是，这种映射并不是一一对应的，一个SO(3)可能对应多个so(3)。</li>
+</ul>
+<h3 id="4-2-2-SE-3-上的指数映射"><a href="#4-2-2-SE-3-上的指数映射" class="headerlink" title="4.2.2 SE(3)上的指数映射"></a>4.2.2 SE(3)上的指数映射</h3><ul>
+<li>se(3)—&gt;SE(3)：指数映射</li>
+</ul>
+<p><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/study/paper/20210929095400.png"></p>
+<p><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/study/paper/20210929095524.png"></p>
+<ul>
+<li><p>SE(3)—&gt;se(3)：略</p>
+</li>
+<li><p><strong>总结一下转换关系：</strong></p>
+</li>
+</ul>
+<p><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/study/paper/20210929095957.png"></p>
+<h2 id="4-3-李代数求导与扰动模型"><a href="#4-3-李代数求导与扰动模型" class="headerlink" title="4.3 李代数求导与扰动模型"></a>4.3 李代数求导与扰动模型</h2><h3 id="4-3-1-BCH公式与近似模型"><a href="#4-3-1-BCH公式与近似模型" class="headerlink" title="4.3.1 BCH公式与近似模型"></a>4.3.1 BCH公式与近似模型</h3><p>探索一下李群乘法和李代数加法之间的关系。</p>
+<ul>
+<li><p>SO(3) &amp; so(3)：</p>
+<ul>
+<li><p>李群乘法：在李群上左乘小量，等于在李代数上加上一个左雅克比的逆乘小量</p>
+<p>给旋转矩阵R左乘一个微小扰动—ΔR·R（左乘右乘区别不大，可以互推）</p>
+<p><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/study/paper/20210929101057.png"></p>
+<p><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/study/paper/20210929101149.png"></p>
+</li>
+<li><p>李代数加法：在李代数上加上小量，等于在李群上左乘一个左雅克比乘小量</p>
+<p><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/study/paper/20210929101614.png"></p>
+</li>
+</ul>
+</li>
+<li><p>SE(3) &amp; se(3)：</p>
+<p>  <img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/study/paper/20210929101716.png"></p>
+</li>
+</ul>
+<h3 id="4-3-2-SO-3-上的李代数求导"><a href="#4-3-2-SO-3-上的李代数求导" class="headerlink" title="4.3.2 SO(3)上的李代数求导"></a>4.3.2 SO(3)上的李代数求导</h3><p>选择矩阵R的求导在SLAM上有很强的应用性：</p>
+<p>观测方程：z=Tp+w，相机以T位姿观察到p点，在w噪声情况下产生观测数据z。</p>
+<p>虽然有时候我们是用观测数据和通过运动方程得到的相机位姿来估计路标点p，但有时候并没有相机位姿反而有路标点p的数据，我们也可以利用路标点和观测来估计位姿。在这种情况下，相当于寻找一个最优的T，使得整体误差最小化：</p>
+<p><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/study/paper/20210929102802.png"></p>
+<p>这是最小二乘估计，求解时目标函数J要对变换矩阵T求导。</p>
+<p>总之就是SLAM里面经常出现”与位姿相关的函数对位姿求导”的情况，这时就需要对李群求导，但由于李群没有加法不太好搞，于是需要利用李代数来解决李群上的求导问题，思路包括：</p>
+<ol>
+<li>李代数求导模型：通过李群到李代数的转换，用李代数来表示位姿，然后对李代数求导</li>
+<li>扰动模型：对李群左乘（右乘）微小扰动，对该扰动求导</li>
+</ol>
+<h3 id="4-3-3-李代数求导"><a href="#4-3-3-李代数求导" class="headerlink" title="4.3.3 李代数求导"></a>4.3.3 李代数求导</h3><p><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/study/paper/20210929104458.png"> 等效于 <img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/study/paper/20210929104519.png"></p>
+<p>这个思路逻辑比较清晰，但是计算略麻烦，故通常并不使用这个求导思路。</p>
+<h3 id="4-3-4-扰动模型（左乘）"><a href="#4-3-4-扰动模型（左乘）" class="headerlink" title="4.3.4 扰动模型（左乘）"></a>4.3.4 扰动模型（左乘）</h3><p>空间点p经过一次旋转R，对左扰动对应的李代数求导：设左扰动ΔR对应李代数φ</p>
+<p><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/study/paper/20210929104832.png"></p>
+<h3 id="4-3-5-SE-3-上的李代数求导"><a href="#4-3-5-SE-3-上的李代数求导" class="headerlink" title="4.3.5 SE(3)上的李代数求导"></a>4.3.5 SE(3)上的李代数求导</h3><p>扰动模型</p>
+<p>空间点p经过一次变化T，对左扰动对应的李代数求导</p>
+<p><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/study/paper/20210929105439.png"></p>
+<p><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/study/paper/20210929105514.png"></p>
+<h2 id="编程"><a href="#编程" class="headerlink" title="编程"></a>编程</h2><h3 id="4-4-1-Sophus基本使用"><a href="#4-4-1-Sophus基本使用" class="headerlink" title="4.4.1 Sophus基本使用"></a>4.4.1 Sophus基本使用</h3><p>Sophus库：李群/李代数库，本书使用带模板的Sophus库</p>
+<h3 id="4-4-2-评估轨迹误差"><a href="#4-4-2-评估轨迹误差" class="headerlink" title="4.4.2 评估轨迹误差"></a>4.4.2 评估轨迹误差</h3><p>误差指标：</p>
+<ul>
+<li>绝对轨迹误差ATE</li>
+<li>绝对平移误差</li>
+<li>相对位姿误差RPE</li>
+<li>相对位姿平移误差</li>
+</ul>
+<h2 id="4-5-相似变换群与李代数"><a href="#4-5-相似变换群与李代数" class="headerlink" title="4.5 相似变换群与李代数"></a>4.5 相似变换群与李代数</h2><p>没看，略</p>
+<hr>
+<h1 id="第5讲-相机与图像"><a href="#第5讲-相机与图像" class="headerlink" title="第5讲 相机与图像"></a>第5讲 相机与图像</h1><h2 id="5-1-相机模型"><a href="#5-1-相机模型" class="headerlink" title="5.1 相机模型"></a>5.1 相机模型</h2><p>相机将三维世界坐标点（m）映射到二维图像平面（像素）的过程可以用一个几何模型来描述。</p>
+<p>相机内参数：针孔模型 + 畸变模型，外部三维点投影到相机内部的成像平面。</p>
+<h3 id="5-1-1-针孔相机模型"><a href="#5-1-1-针孔相机模型" class="headerlink" title="5.1.1 针孔相机模型"></a>5.1.1 针孔相机模型</h3><p>步骤：</p>
+<ul>
+<li>现实世界P[X,Y,Z]^T</li>
+<li>成像平面P’[X’,Y’,Z’]^T<ul>
+<li>真实成像平面</li>
+<li>对称成像平面</li>
+<li>归一化成像平面[x,y]^T </li>
+</ul>
+</li>
+<li>像素平面[u,v]^T：在成像平面上对像进行采样和量化</li>
+</ul>
+<p><strong>内参</strong>：矩阵K为相机的内参数，有时生产厂商会告诉你，但有时也需要自己去标定。</p>
+<p><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/study/paper/20210929113717.png"></p>
+<p><strong>外参</strong>：上面公式中的P实际上是<code>相机的世界坐标</code>根据<code>相机位姿</code>变换到<code>相机坐标系</code>下的结果。<code>相机位姿</code>，也就是这个变换矩阵就是<code>相机外参</code>。</p>
+<p><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/study/paper/20210929114250.png"></p>
+<p>这里的外参是SLAM中的待估计目标，代表着机器人的轨迹。</p>
+<p>值得一提的是，这个过程中丢失了深度信息。</p>
+<h3 id="5-1-2-畸变模型"><a href="#5-1-2-畸变模型" class="headerlink" title="5.1.2 畸变模型"></a>5.1.2 畸变模型</h3><p>径向畸变（失真）：透镜形状引起的畸变</p>
+<p><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/study/paper/20210929114910.png"></p>
+<p>切向畸变：透镜未和成像平面严格平行引起的畸变</p>
+<p>畸变系数：k1, k2, k3, p1, p2（前3个为径向的，后2个为切向的）</p>
+<p>畸变变换发生在<code>归一化成像平面[x,y]^T</code>到<code>像素平面[u,v]^T</code>的过程中：</p>
+<p><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/study/paper/20210929115410.png"></p>
+<p><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/study/paper/20210929115515.png"></p>
+<ul>
+<li>去畸变处理（畸变矫正）<ul>
+<li>对整张图像去畸变，再用这个图像去对应空间位置</li>
+<li>对图像上的每个像素点去畸变，对应其畸变前的空间点</li>
+</ul>
+</li>
+</ul>
+<p><strong>总的来说</strong>：</p>
+<ul>
+<li><code>世界坐标Pw</code> –+外参T–&gt;</li>
+<li><code>相机坐标Pc</code> —&gt; </li>
+<li><code>归一化坐标</code> –+畸变–+内参α,β,c,f–&gt; </li>
+<li><code>像素坐标Puv</code></li>
+</ul>
+<h3 id="5-1-3-双目相机模型"><a href="#5-1-3-双目相机模型" class="headerlink" title="5.1.3 双目相机模型"></a>5.1.3 双目相机模型</h3><p>双目相机的原理是同步采集左右相机图像，计算图像<code>视差</code>，计算每个像素点的深度。</p>
+<p><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/study/paper/20210929120525.png"></p>
+<p><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/study/paper/20210929120549.png">，b为基线</p>
+<p>计算量比较大，要用GPU或FPGA来实现实时计算。</p>
+<h3 id="5-1-4-RGB-D-相机模型"><a href="#5-1-4-RGB-D-相机模型" class="headerlink" title="5.1.4 RGB-D 相机模型"></a>5.1.4 RGB-D 相机模型</h3><p>RGB-D相机原理：主动测量每个像素深度</p>
+<ul>
+<li>通过<code>红外结构光</code>原理测量 深度</li>
+<li>通过<code>飞行时间</code>原理测量深度</li>
+</ul>
+<p><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/study/paper/20210929121048.png"></p>
+<p>主要问题是，发射-接收测量方式使得使用范围比较受限。</p>
+<h2 id="5-2-图像"><a href="#5-2-图像" class="headerlink" title="5.2 图像"></a>5.2 图像</h2><p>计算机中图像存储为数值矩阵。</p>
+<p>灰度图：每个像素位置对应一个灰度值I</p>
+<figure class="highlight c++"><table><tbody><tr><td class="code"><pre><span class="line"><span class="keyword">unsigned</span> <span class="keyword">char</span> image[<span class="number">480</span>][<span class="number">640</span>]   <span class="comment">//一张宽640像素，高480像素分辨率的灰度图</span></span><br><span class="line"><span class="keyword">unsigned</span> <span class="keyword">char</span> pixel = image[y][x]   <span class="comment">//访问图像像素，pixel=I(x,y)，注意下标</span></span><br></pre></td></tr></tbody></table></figure>
+<ul>
+<li>深度图</li>
+<li>彩色图：多通道<ul>
+<li>opencv中通道顺序是B、G、R</li>
+</ul>
+</li>
+</ul>
+<p><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/study/paper/20210929121909.png"></p>
+<h2 id="5-3-编程：计算机中的图像"><a href="#5-3-编程：计算机中的图像" class="headerlink" title="5.3 编程：计算机中的图像"></a>5.3 编程：计算机中的图像</h2><h3 id="5-3-1-opencv基本使用"><a href="#5-3-1-opencv基本使用" class="headerlink" title="5.3.1 opencv基本使用"></a>5.3.1 opencv基本使用</h3><p>opencv库：图像处理算法库</p>
+<p>本书用的是opencv3</p>
+<h3 id="5-3-2-图像去畸变"><a href="#5-3-2-图像去畸变" class="headerlink" title="5.3.2 图像去畸变"></a>5.3.2 图像去畸变</h3><figure class="highlight c++"><table><tbody><tr><td class="code"><pre><span class="line">cv::<span class="built_in">Undistort</span>() <span class="comment">//去畸变函数</span></span><br></pre></td></tr></tbody></table></figure>
+<h2 id="5-4-编程：3D视觉"><a href="#5-4-编程：3D视觉" class="headerlink" title="5.4 编程：3D视觉"></a>5.4 编程：3D视觉</h2><h3 id="5-4-1-双目视觉"><a href="#5-4-1-双目视觉" class="headerlink" title="5.4.1 双目视觉"></a>5.4.1 双目视觉</h3><p>从双目视觉的左右图像出发，计算图像对应的视差图，然后将像素点转换回相机坐标，构成物体的点云。</p>
+<p>SGBM算法：计算视差</p>
+<h3 id="5-4-2-RGB-D视觉"><a href="#5-4-2-RGB-D视觉" class="headerlink" title="5.4.2 RGB-D视觉"></a>5.4.2 RGB-D视觉</h3><p>位姿记录形式：[x,y,z,qx,qy,qz,qw]—平移向量+旋转四元数</p>
+<ol>
+<li>根据内参计算一对RGB-D图像对应的点云</li>
+<li>根据各张图的相机位姿，把点云加起来，组成地图</li>
+</ol>
+<hr>
+<h1 id="第6将-非线性优化"><a href="#第6将-非线性优化" class="headerlink" title="第6将 非线性优化"></a>第6将 非线性优化</h1>]]></content>
+      <categories>
+        <category>科研</category>
+      </categories>
+      <tags>
+        <tag>SLAM</tag>
+        <tag>科研</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>VSCode+Clang+MinGW+OpenGl配置教程</title>
     <url>/VSCode-Clang-MinGW-OpenGl%E9%85%8D%E7%BD%AE%E6%95%99%E7%A8%8B/</url>
     <content><![CDATA[<h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>这几天帮别人跑一个天空盒代码，需要用到OpenGl环境，配置过程掉坑比较多略为艰难，因此写个教程记录一下，免得以后换电脑配环境的时候又掉坑233。</p>
