@@ -1,0 +1,692 @@
+<!DOCTYPE html>
+
+
+<html lang="zh-Hans">
+
+
+<head>
+  <meta charset="utf-8" />
+   
+  <meta name="keywords" content="记录，学习，娱乐，博客" />
+   
+  <meta name="description" content="四界云官" />
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+  <title>
+    V-SLAM整理3 |  四界
+  </title>
+  <meta name="generator" content="hexo-theme-ayer">
+  
+  <link rel="shortcut icon" href="/greencat2.ico" />
+  
+  
+<link rel="stylesheet" href="/dist/main.css">
+
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/Shen-Yu/cdn/css/remixicon.min.css">
+  
+<link rel="stylesheet" href="/css/custom.css">
+
+  
+  <script src="https://cdn.jsdelivr.net/npm/pace-js@1.0.2/pace.min.js"></script>
+  
+  
+
+  
+
+
+<style>.github-emoji { position: relative; display: inline-block; width: 1.2em; min-height: 1.2em; overflow: hidden; vertical-align: top; color: transparent; }  .github-emoji > span { position: relative; z-index: 10; }  .github-emoji img, .github-emoji .fancybox { margin: 0 !important; padding: 0 !important; border: none !important; outline: none !important; text-decoration: none !important; user-select: none !important; cursor: auto !important; }  .github-emoji img { height: 1.2em !important; width: 1.2em !important; position: absolute !important; left: 50% !important; top: 50% !important; transform: translate(-50%, -50%) !important; user-select: none !important; cursor: auto !important; } .github-emoji-fallback { color: inherit; } .github-emoji-fallback img { opacity: 0 !important; }</style>
+</head>
+
+</html>
+
+<body>
+  <div id="app">
+    
+      
+      <canvas width="1777" height="841"
+        style="position: fixed; left: 0px; top: 0px; z-index: 99999; pointer-events: none;"></canvas>
+      
+    <main class="content on">
+      <section class="outer">
+  <article
+  id="post-V-SLAM整理3"
+  class="article article-type-post"
+  itemscope
+  itemprop="blogPost"
+  data-scroll-reveal
+>
+  <div class="article-inner">
+    
+    <header class="article-header">
+       
+<h1 class="article-title sea-center" style="border-left:0" itemprop="name">
+  V-SLAM整理3
+</h1>
+ 
+
+      
+    </header>
+     
+    <div class="article-meta">
+      <a href="/V-SLAM%E6%95%B4%E7%90%863/" class="article-date">
+  <time datetime="2021-09-30T09:06:36.000Z" itemprop="datePublished">2021-09-30</time>
+</a> 
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/%E7%A7%91%E7%A0%94/">科研</a>
+  </div>
+  
+<div class="word_count">
+    <span class="post-time">
+        <span class="post-meta-item-icon">
+            <i class="ri-quill-pen-line"></i>
+            <span class="post-meta-item-text"> Word count:</span>
+            <span class="post-count">2k</span>
+        </span>
+    </span>
+
+    <span class="post-time">
+        &nbsp; | &nbsp;
+        <span class="post-meta-item-icon">
+            <i class="ri-book-open-line"></i>
+            <span class="post-meta-item-text"> Reading time≈</span>
+            <span class="post-count">7 min</span>
+        </span>
+    </span>
+</div>
+ 
+    </div>
+      
+    <div class="tocbot"></div>
+
+
+
+
+  
+    <div class="article-entry" itemprop="articleBody">
+       
+  <h1 id="第9讲-后端1"><a href="#第9讲-后端1" class="headerlink" title="第9讲 后端1"></a>第9讲 后端1</h1><p>状态估计问题：从带噪声的数据估计内在的状态</p>
+<p>前端：短时间的状态估计问题。从相机的相邻图像中估计相机运动，可以给出一个短时间内的轨迹和地图。</p>
+<p>后端：长时间的状态估计问题。希望构建一个尺度、规模更大的优化问题，来获得长时间内的最优轨迹和地图。</p>
+<p>主要方案：</p>
+<ul>
+<li>渐进：保持当前状态的估计，在加入新信息时，更新已有的估计（滤波器）</li>
+<li>批量：给定一定规模的数据，计算该批量数据下的最优估计（优化）【第6讲】<ul>
+<li>根据第6讲的玩法，批量状态估计问题可以转换成最大似然估计问题，再用最小二乘法求解。</li>
+</ul>
+</li>
+</ul>
+<h2 id="9-1-概述"><a href="#9-1-概述" class="headerlink" title="9.1 概述"></a>9.1 概述</h2><h3 id="9-1-1-状态估计的概率解释"><a href="#9-1-1-状态估计的概率解释" class="headerlink" title="9.1.1 状态估计的概率解释"></a>9.1.1 状态估计的概率解释</h3><p><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/study/paper/20210930173301.png"></p>
+<ol>
+<li>已知某些运动数据和观测数据z，如何确定状态量x,y的分布？</li>
+<li>如果得到了新时刻的数据，x和y的分布又将怎么变化？</li>
+</ol>
+<p>假设状态量和噪声项服从高斯分布，问题转变为：已知一些运动数据和观测数据，如何估计状态量的高斯分布？</p>
+<p><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/study/paper/20210930173948.png"></p>
+<hr>
+<p>改变记号——待估计量xk表示k时刻所有未知量，包括位姿和路标点：</p>
+<p><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/study/paper/20210930181033.png"></p>
+<p>改写后的SLAM方程：</p>
+<p><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/study/paper/20210930181238.png"></p>
+<p>目标是用过去0-k时刻的数据直接从x0估计xk：</p>
+<p><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/study/paper/20210930181840.png"></p>
+<p><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/study/paper/20210930182259.png"></p>
+<p>后续操作有两种方法：</p>
+<ul>
+<li>假设<code>马尔可夫性</code>：k时刻状态只与k-1时刻状态有关，而与再之前的状态无关<ul>
+<li>滤波器方法，如EKF</li>
+</ul>
+</li>
+<li>不假设<code>马尔可夫性</code>，k时刻的状态与之前所有状态有关<ul>
+<li>非线性优化</li>
+</ul>
+</li>
+</ul>
+<hr>
+<h3 id="9-1-2-线性系统和KF"><a href="#9-1-2-线性系统和KF" class="headerlink" title="9.1.2 线性系统和KF"></a>9.1.2 线性系统和KF</h3><p>有关滤波器的部分先略过，有需要再整理</p>
+<h3 id="9-1-3-非线性系统和EKF"><a href="#9-1-3-非线性系统和EKF" class="headerlink" title="9.1.3 非线性系统和EKF"></a>9.1.3 非线性系统和EKF</h3><p>EKF：在某段时间内估计某个不确定的量</p>
+<h3 id="9-1-4-EKF的讨论"><a href="#9-1-4-EKF的讨论" class="headerlink" title="9.1.4 EKF的讨论"></a>9.1.4 EKF的讨论</h3><hr>
+<h2 id="9-2-BA与图优化"><a href="#9-2-BA与图优化" class="headerlink" title="9.2 BA与图优化"></a>9.2 BA与图优化</h2><p>Bundle Adjustment：从视觉图像中提炼出最优的3D模型和相机参数（内参+外参），即带有相机位姿和空间点的图优化称为BA。</p>
+<p>BA能够精准的优化每个相机位姿与特征点的位置。</p>
+<p>形象点解释，就是通过调整相机位姿和特征点的空间位置，使得从任意特征点发出的光线最终收束到相机的光心。</p>
+<p>注意：BA只有观测方程</p>
+<h3 id="9-2-1-投影模型和BA代价函数"><a href="#9-2-1-投影模型和BA代价函数" class="headerlink" title="9.2.1 投影模型和BA代价函数"></a>9.2.1 投影模型和BA代价函数</h3><p>投影过程：</p>
+<p><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/study/paper/20210930183745.png"></p>
+<p>所谓观测数据，指的是相机得到的图像中的像素坐标[u,v]^T</p>
+<p>实际观测数据z 与 根据投影过程估计的观测点的<strong>误差</strong>：请参考7.7.3</p>
+<ul>
+<li><p>这里的T是相机位姿x(R,t)对应的李群T，p是路标</p>
+<p>  <img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/study/paper/20210930183911.png"></p>
+</li>
+</ul>
+<p>整体的代价函数：</p>
+<p><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/study/paper/20210930184817.png"></p>
+<p>对这个最小二乘求解，相当于同时调整位姿和路标，也就是BA。</p>
+<h3 id="9-2-2-BA的求解"><a href="#9-2-2-BA的求解" class="headerlink" title="9.2.2 BA的求解"></a>9.2.2 BA的求解</h3><p>请参考第6讲的非线性优化的思路。</p>
+<p>待优化变量：</p>
+<p><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/study/paper/20210930185614.png"></p>
+<p>目标函数：F是整体代价函数对相机位姿的偏导，E是整体代价函数对路标的偏导：</p>
+<p><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/study/paper/20210930185634.png"></p>
+<p>F和E的推导请参考7.7.3</p>
+<p>化简：</p>
+<p><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/study/paper/20210930190230.png"><br><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/study/paper/20210930190246.png"></p>
+<p><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/study/paper/20210930190258.png"></p>
+<p>增量方程：</p>
+<p><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/study/paper/20210930190333.png"></p>
+<p>J = [F E]</p>
+<ul>
+<li>高斯牛顿：H=JJ</li>
+<li>阻尼牛顿：H=JJ+λI</li>
+</ul>
+<p>高斯牛顿的H：</p>
+<p><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/study/paper/20210930190656.png"></p>
+<p>这个H很庞大，对它求逆看上去非常艰难，但是好在H具有一定特殊结构，会好求一些。下面就说说H的特殊结构。</p>
+<h3 id="9-2-3-稀疏性和边缘化"><a href="#9-2-3-稀疏性和边缘化" class="headerlink" title="9.2.3 稀疏性和边缘化"></a>9.2.3 稀疏性和边缘化</h3><p>H具有稀疏结构，并且可以用图优化来表示！</p>
+<p>由于在Ti看到pj这件事与其他轨迹和路标点无关，这项的误差也与其他无关，因此求导是0。</p>
+<p>i在相机位姿中取值，j在路标点中取值：</p>
+<p>H11只与相机位姿有关，H22只与路标点有关。</p>
+<p><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/study/paper/20210930191753.png"></p>
+<p><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/study/paper/20210930191646.png"></p>
+<p><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/study/paper/20210930191550.png"></p>
+<p>以下事实成立：</p>
+<p><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/study/paper/20210930191941.png"></p>
+<p><strong>Ace. 现在有两个相机位姿和6个路标点：</strong></p>
+<p><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/study/paper/20210930192106.png"></p>
+<p>以e11为例，这是C1处看到P1这件事的误差项，其雅克比矩阵为J11：</p>
+<p><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/study/paper/20210930192341.png"></p>
+<p><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/study/paper/20210930192454.png"></p>
+<p><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/study/paper/20210930192614.png"></p>
+<p>邻接矩阵和H矩阵除了对角线元素之外的其余部分结构一致:</p>
+<p><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/study/paper/20210930193635.png"></p>
+<p>H矩阵的非对角部分可以体现约束关系：</p>
+<p><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/study/paper/20210930193252.png"></p>
+<p><strong>一般的H矩阵长这样：</strong></p>
+<p><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/study/paper/20210930193336.png"></p>
+<hr>
+<p>求解这样稀疏结构的H矩阵：<code>边缘化</code></p>
+<ul>
+<li><code>Schur消元</code></li>
+<li><code>Cholesky分解</code></li>
+</ul>
+<p>以下是<code>Schur消元</code>：</p>
+<p><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/study/paper/20210930193720.png"></p>
+<p>那么H△x=g变成：</p>
+<p><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/study/paper/20210930193852.png"></p>
+<p>经过一波化简：</p>
+<p><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/study/paper/20210930194012.png"></p>
+<p><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/study/paper/20210930194148.png"></p>
+<ul>
+<li>此方程系数记为S：  <img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/study/paper/20210930194422.png"></li>
+</ul>
+<p>先求出△xc再求△xp：</p>
+<p><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/study/paper/20210930194304.png"></p>
+<ul>
+<li><p>关于S：S矩阵的非对角线上的非0矩阵块，表示该处对应的两个相机变量之间存在着共同观测的路标点，又名<code>共视</code>。</p>
+<p>  <img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/study/paper/20210930194826.png"></p>
+</li>
+<li><p>S矩阵的稀疏性结构取决于实际观测的结果</p>
+<ul>
+<li><code>ORB-SLAM</code>中的<code>Local Mapping</code>，在做BA的时候刻意选择那些具有共同观测的帧作为关键帧（这帧被多个相机看到），在这种情况下爱，Schur消元后得到的S就是<code>稠密矩阵</code>，计算开销大。但是该模块不是实时进行的，所以也ok。</li>
+<li>然而，对于别的一些需要实时算BA的方法，S的稠密就变得不可忍受了。比如DSO、OKVIS等采用<code>滑动窗口</code>，该方法对每一帧都要求做一次BA来防止误差累计，因此必须采取一些技巧来保持S矩阵的稀疏性。</li>
+</ul>
+</li>
+</ul>
+<h3 id="9-2-4-鲁棒核函数"><a href="#9-2-4-鲁棒核函数" class="headerlink" title="9.2.4 鲁棒核函数"></a>9.2.4 鲁棒核函数</h3><p>如果某个误差项的数据是错误的，意味着突然观测到了一次不可能产生的数据，在图优化中会有一条误差很大的边，会严重影响到其他正确的边。</p>
+<p>解决方法：<code>鲁棒核函数</code>——保证每条边的误差不会大的离谱而掩盖其他的边</p>
+<p>具体操作是把目标函数中的<code>二范数度量</code>换成其他增长没那么快的函数。</p>
+<p>鲁棒核函数：</p>
+<ul>
+<li>Huber核</li>
+<li>Cauchy核</li>
+<li>Tukey核</li>
+</ul>
+<p><code>g2o和Ceres中有提供一些核函数</code></p>
+<h2 id="9-3-编程：Ceres-BA"><a href="#9-3-编程：Ceres-BA" class="headerlink" title="9.3 编程：Ceres BA"></a>9.3 编程：Ceres BA</h2><h3 id="9-3-1-BAL数据集"><a href="#9-3-1-BAL数据集" class="headerlink" title="9.3.1 BAL数据集"></a>9.3.1 BAL数据集</h3><p>BAL数据集提供若干个场景</p>
+<p><code>Meshlab软件</code>可以查看<code>ply</code>点云文件</p>
+<h3 id="9-3-2-Ceres-BA的书写"><a href="#9-3-2-Ceres-BA的书写" class="headerlink" title="9.3.2 Ceres BA的书写"></a>9.3.2 Ceres BA的书写</h3><h2 id="9-4-编程：g2o求解BA"><a href="#9-4-编程：g2o求解BA" class="headerlink" title="9.4 编程：g2o求解BA"></a>9.4 编程：g2o求解BA</h2><hr>
+<h1 id="第10讲-后端2"><a href="#第10讲-后端2" class="headerlink" title="第10讲 后端2"></a>第10讲 后端2</h1><p>BA能够精准优化每个相机位姿和特征点位置，有效求解大规模定位与建图问题。但是在更大的场景中，大量特征点的存在会导致庞大的计算开销，难以实时化。</p>
+<p>在SLAM中，为了保证实时性，需要控制BA的规模。</p>
+<p>例如，有一种简化的BA：位姿图。</p>
+<h2 id="10-1-滑动窗口滤波和优化"><a href="#10-1-滑动窗口滤波和优化" class="headerlink" title="10.1 滑动窗口滤波和优化"></a>10.1 滑动窗口滤波和优化</h2><h3 id="10-1-1-实际环境下的BA结构"><a href="#10-1-1-实际环境下的BA结构" class="headerlink" title="10.1.1 实际环境下的BA结构"></a>10.1.1 实际环境下的BA结构</h3><p>控制BA规模的方法：从连续的视频中抽取一部分作为<code>关键帧</code>，仅构造关键帧与路标点之间的BA，非关键帧只用于定位，对建图无贡献。</p>
+<ul>
+<li><code>滑动窗口法</code>：取N个离当前时刻最近的<code>关键帧</code>，去掉更早的关键帧，将BA控制在一个时间窗口内。</li>
+<li><code>共视图法</code>：在BA优化时，按照某种原则在共视图内取一些<code>关键帧</code>和路标进行优化（例如，仅优化与当前帧有20个以上共视路标的关键帧，固定其他部分）<ul>
+<li>共视图是指与现在的相机存在共同观测的关键帧构成的图。</li>
+<li>例如<code>ORB-SLAM</code></li>
+</ul>
+</li>
+</ul>
+<p><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/study/paper/20210930204101.png"></p>
+<hr>
+<h3 id="10-1-2-滑动窗口法"><a href="#10-1-2-滑动窗口法" class="headerlink" title="10.1.2 滑动窗口法"></a>10.1.2 滑动窗口法</h3><p>有需要的时候再整理</p>
+<h4 id="1-新增一个关键帧和路标点"><a href="#1-新增一个关键帧和路标点" class="headerlink" title="1) 新增一个关键帧和路标点"></a>1) 新增一个关键帧和路标点</h4><h4 id="2-删除一个旧的关键帧"><a href="#2-删除一个旧的关键帧" class="headerlink" title="2) 删除一个旧的关键帧"></a>2) 删除一个旧的关键帧</h4><h4 id="3-SWF中边缘化的直观解释"><a href="#3-SWF中边缘化的直观解释" class="headerlink" title="3) SWF中边缘化的直观解释"></a>3) SWF中边缘化的直观解释</h4><hr>
+<h2 id="10-2-位姿图"><a href="#10-2-位姿图" class="headerlink" title="10.2 位姿图"></a>10.2 位姿图</h2><p>有需要的时候再整理</p>
+<h3 id="10-2-1-位姿图的意义"><a href="#10-2-1-位姿图的意义" class="headerlink" title="10.2.1 位姿图的意义"></a>10.2.1 位姿图的意义</h3><h3 id="10-2-2-位姿图的优化"><a href="#10-2-2-位姿图的优化" class="headerlink" title="10.2.2 位姿图的优化"></a>10.2.2 位姿图的优化</h3><h2 id="10-3-编程：位姿图优化"><a href="#10-3-编程：位姿图优化" class="headerlink" title="10.3 编程：位姿图优化"></a>10.3 编程：位姿图优化</h2><h3 id="10-3-1-g2o原生位姿图"><a href="#10-3-1-g2o原生位姿图" class="headerlink" title="10.3.1 g2o原生位姿图"></a>10.3.1 g2o原生位姿图</h3><h3 id="10-3-2-李代数上的位姿图优化"><a href="#10-3-2-李代数上的位姿图优化" class="headerlink" title="10.3.2 李代数上的位姿图优化"></a>10.3.2 李代数上的位姿图优化</h3><h3 id="10-3-3-小结"><a href="#10-3-3-小结" class="headerlink" title="10.3.3 小结"></a>10.3.3 小结</h3> 
+      <!-- reward -->
+      
+    </div>
+    
+
+    <!-- copyright -->
+    
+    <footer class="article-footer">
+       
+<div class="share-btn">
+      <span class="share-sns share-outer">
+        <i class="ri-share-forward-line"></i>
+        分享
+      </span>
+      <div class="share-wrap">
+        <i class="arrow"></i>
+        <div class="share-icons">
+          
+          <a class="weibo share-sns" href="javascript:;" data-type="weibo">
+            <i class="ri-weibo-fill"></i>
+          </a>
+          <a class="weixin share-sns wxFab" href="javascript:;" data-type="weixin">
+            <i class="ri-wechat-fill"></i>
+          </a>
+          <a class="qq share-sns" href="javascript:;" data-type="qq">
+            <i class="ri-qq-fill"></i>
+          </a>
+          <a class="douban share-sns" href="javascript:;" data-type="douban">
+            <i class="ri-douban-line"></i>
+          </a>
+          <!-- <a class="qzone share-sns" href="javascript:;" data-type="qzone">
+            <i class="icon icon-qzone"></i>
+          </a> -->
+          
+          <a class="facebook share-sns" href="javascript:;" data-type="facebook">
+            <i class="ri-facebook-circle-fill"></i>
+          </a>
+          <a class="twitter share-sns" href="javascript:;" data-type="twitter">
+            <i class="ri-twitter-fill"></i>
+          </a>
+          <a class="google share-sns" href="javascript:;" data-type="google">
+            <i class="ri-google-fill"></i>
+          </a>
+        </div>
+      </div>
+</div>
+
+<div class="wx-share-modal">
+    <a class="modal-close" href="javascript:;"><i class="ri-close-circle-line"></i></a>
+    <p>扫一扫，分享到微信</p>
+    <div class="wx-qrcode">
+      <img src="//api.qrserver.com/v1/create-qr-code/?size=150x150&data=https://apollomao.com/V-SLAM%E6%95%B4%E7%90%863/" alt="微信分享二维码">
+    </div>
+</div>
+
+<div id="share-mask"></div>  
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/SLAM/" rel="tag">SLAM</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E7%A7%91%E7%A0%94/" rel="tag">科研</a></li></ul>
+
+    </footer>
+  </div>
+
+   
+  <nav class="article-nav">
+    
+    
+      <a href="/V-SLAM%E6%95%B4%E7%90%862/" class="article-nav-link">
+        <strong class="article-nav-caption">下一篇</strong>
+        <div class="article-nav-title">V-SLAM整理2</div>
+      </a>
+    
+  </nav>
+
+  
+   
+     
+</article>
+
+</section>
+      <footer class="footer">
+  <div class="outer">
+    <ul>
+      <li>
+        Copyrights &copy;
+        2021
+        <i class="ri-heart-fill heart_icon"></i> 阿波罗猫
+      </li>
+    </ul>
+    <ul>
+      <li>
+        
+        
+        
+        Powered by <a href="https://hexo.io" target="_blank">Hexo</a>
+        <span class="division">|</span>
+        Theme - <a href="https://github.com/Shen-Yu/hexo-theme-ayer" target="_blank">Ayer</a>
+        
+      </li>
+    </ul>
+    <ul>
+      <li>
+        
+      </li>
+    </ul>
+    <ul>
+      
+    </ul>
+    <ul>
+      
+    </ul>
+    <ul>
+      <li>
+        <!-- cnzz统计 -->
+        
+      </li>
+    </ul>
+  </div>
+</footer>
+      <div class="float_btns">
+        <div class="totop" id="totop">
+  <i class="ri-arrow-up-line"></i>
+</div>
+
+<div class="todark" id="todark">
+  <i class="ri-moon-line"></i>
+</div>
+
+      </div>
+    </main>
+    <aside class="sidebar on">
+      <button class="navbar-toggle"></button>
+<nav class="navbar">
+  
+  <div class="logo">
+    <a href="/"><img src="/images/bluecat.svg" alt="四界"></a>
+  </div>
+  
+  <ul class="nav nav-main">
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/">主页</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/archives">归档</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/categories">分类</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/tags">标签</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/tags/%E9%9A%8F%E7%AC%94/">随笔</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/2021/about">关于我</a>
+    </li>
+    
+  </ul>
+</nav>
+<nav class="navbar navbar-bottom">
+  <ul class="nav">
+    <li class="nav-item">
+      
+      <a class="nav-item-link nav-item-search"  title="Search">
+        <i class="ri-search-line"></i>
+      </a>
+      
+      
+    </li>
+  </ul>
+</nav>
+<div class="search-form-wrap">
+  <div class="local-search local-search-plugin">
+  <input type="search" id="local-search-input" class="local-search-input" placeholder="Search...">
+  <div id="local-search-result" class="local-search-result"></div>
+</div>
+</div>
+    </aside>
+    <div id="mask"></div>
+
+<!-- #reward -->
+<div id="reward">
+  <span class="close"><i class="ri-close-line"></i></span>
+  <p class="reward-p"><i class="ri-cup-line"></i>请我喝杯咖啡吧~</p>
+  <div class="reward-box">
+    
+    <div class="reward-item">
+      <img class="reward-img" src="https://cdn.jsdelivr.net/gh/Shen-Yu/cdn/img/alipay.jpg">
+      <span class="reward-type">支付宝</span>
+    </div>
+    
+    
+    <div class="reward-item">
+      <img class="reward-img" src="https://cdn.jsdelivr.net/gh/Shen-Yu/cdn/img/wechat.jpg">
+      <span class="reward-type">微信</span>
+    </div>
+    
+  </div>
+</div>
+    
+<script src="/js/jquery-2.0.3.min.js"></script>
+
+
+<script src="/js/lazyload.min.js"></script>
+
+<!-- Tocbot -->
+
+
+<script src="/js/tocbot.min.js"></script>
+
+<script>
+  tocbot.init({
+    tocSelector: '.tocbot',
+    contentSelector: '.article-entry',
+    headingSelector: 'h1, h2, h3, h4, h5, h6',
+    hasInnerContainers: true,
+    scrollSmooth: true,
+    scrollContainer: 'main',
+    positionFixedSelector: '.tocbot',
+    positionFixedClass: 'is-position-fixed',
+    fixedSidebarOffset: 'auto'
+  });
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/jquery-modal@0.9.2/jquery.modal.min.js"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/jquery-modal@0.9.2/jquery.modal.min.css">
+<script src="https://cdn.jsdelivr.net/npm/justifiedGallery@3.7.0/dist/js/jquery.justifiedGallery.min.js"></script>
+
+<script src="/dist/main.js"></script>
+
+<!-- ImageViewer -->
+
+<!-- Root element of PhotoSwipe. Must have class pswp. -->
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+
+    <!-- Background of PhotoSwipe. 
+         It's a separate element as animating opacity is faster than rgba(). -->
+    <div class="pswp__bg"></div>
+
+    <!-- Slides wrapper with overflow:hidden. -->
+    <div class="pswp__scroll-wrap">
+
+        <!-- Container that holds slides. 
+            PhotoSwipe keeps only 3 of them in the DOM to save memory.
+            Don't modify these 3 pswp__item elements, data is added later on. -->
+        <div class="pswp__container">
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+        </div>
+
+        <!-- Default (PhotoSwipeUI_Default) interface on top of sliding area. Can be changed. -->
+        <div class="pswp__ui pswp__ui--hidden">
+
+            <div class="pswp__top-bar">
+
+                <!--  Controls are self-explanatory. Order can be changed. -->
+
+                <div class="pswp__counter"></div>
+
+                <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+
+                <button class="pswp__button pswp__button--share" style="display:none" title="Share"></button>
+
+                <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+
+                <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+
+                <!-- Preloader demo http://codepen.io/dimsemenov/pen/yyBWoR -->
+                <!-- element will get class pswp__preloader--active when preloader is running -->
+                <div class="pswp__preloader">
+                    <div class="pswp__preloader__icn">
+                        <div class="pswp__preloader__cut">
+                            <div class="pswp__preloader__donut"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+                <div class="pswp__share-tooltip"></div>
+            </div>
+
+            <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+            </button>
+
+            <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+            </button>
+
+            <div class="pswp__caption">
+                <div class="pswp__caption__center"></div>
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/default-skin/default-skin.min.css">
+<script src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe-ui-default.min.js"></script>
+
+<script>
+    function viewer_init() {
+        let pswpElement = document.querySelectorAll('.pswp')[0];
+        let $imgArr = document.querySelectorAll(('.article-entry img:not(.reward-img)'))
+
+        $imgArr.forEach(($em, i) => {
+            $em.onclick = () => {
+                // slider展开状态
+                // todo: 这样不好，后面改成状态
+                if (document.querySelector('.left-col.show')) return
+                let items = []
+                $imgArr.forEach(($em2, i2) => {
+                    let img = $em2.getAttribute('data-idx', i2)
+                    let src = $em2.getAttribute('data-target') || $em2.getAttribute('src')
+                    let title = $em2.getAttribute('alt')
+                    // 获得原图尺寸
+                    const image = new Image()
+                    image.src = src
+                    items.push({
+                        src: src,
+                        w: image.width || $em2.width,
+                        h: image.height || $em2.height,
+                        title: title
+                    })
+                })
+                var gallery = new PhotoSwipe(pswpElement, PhotoSwipeUI_Default, items, {
+                    index: parseInt(i)
+                });
+                gallery.init()
+            }
+        })
+    }
+    viewer_init()
+</script>
+
+<!-- MathJax -->
+
+<!-- Katex -->
+
+<!-- busuanzi  -->
+
+<!-- ClickLove -->
+
+<!-- ClickBoom1 -->
+
+<!-- ClickBoom2 -->
+
+
+<script src="/js/clickBoom2.js"></script>
+
+
+<!-- CodeCopy -->
+
+
+<link rel="stylesheet" href="/css/clipboard.css">
+
+<script src="https://cdn.jsdelivr.net/npm/clipboard@2/dist/clipboard.min.js"></script>
+<script>
+  function wait(callback, seconds) {
+    var timelag = null;
+    timelag = window.setTimeout(callback, seconds);
+  }
+  !function (e, t, a) {
+    var initCopyCode = function(){
+      var copyHtml = '';
+      copyHtml += '<button class="btn-copy" data-clipboard-snippet="">';
+      copyHtml += '<i class="ri-file-copy-2-line"></i><span>COPY</span>';
+      copyHtml += '</button>';
+      $(".highlight .code pre").before(copyHtml);
+      $(".article pre code").before(copyHtml);
+      var clipboard = new ClipboardJS('.btn-copy', {
+        target: function(trigger) {
+          return trigger.nextElementSibling;
+        }
+      });
+      clipboard.on('success', function(e) {
+        let $btn = $(e.trigger);
+        $btn.addClass('copied');
+        let $icon = $($btn.find('i'));
+        $icon.removeClass('ri-file-copy-2-line');
+        $icon.addClass('ri-checkbox-circle-line');
+        let $span = $($btn.find('span'));
+        $span[0].innerText = 'COPIED';
+        
+        wait(function () { // 等待两秒钟后恢复
+          $icon.removeClass('ri-checkbox-circle-line');
+          $icon.addClass('ri-file-copy-2-line');
+          $span[0].innerText = 'COPY';
+        }, 2000);
+      });
+      clipboard.on('error', function(e) {
+        e.clearSelection();
+        let $btn = $(e.trigger);
+        $btn.addClass('copy-failed');
+        let $icon = $($btn.find('i'));
+        $icon.removeClass('ri-file-copy-2-line');
+        $icon.addClass('ri-time-line');
+        let $span = $($btn.find('span'));
+        $span[0].innerText = 'COPY FAILED';
+        
+        wait(function () { // 等待两秒钟后恢复
+          $icon.removeClass('ri-time-line');
+          $icon.addClass('ri-file-copy-2-line');
+          $span[0].innerText = 'COPY';
+        }, 2000);
+      });
+    }
+    initCopyCode();
+  }(window, document);
+</script>
+
+
+<!-- CanvasBackground -->
+
+
+    
+  </div>
+</body>
+
+</html>

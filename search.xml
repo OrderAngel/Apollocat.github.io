@@ -1,6 +1,348 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
+    <title>EE5907-CA1</title>
+    <url>/EE5907-CA1/</url>
+    <content><![CDATA[<h1 id="数据"><a href="#数据" class="headerlink" title="数据"></a>数据</h1><h2 id="1-数据描述"><a href="#1-数据描述" class="headerlink" title="1. 数据描述"></a>1. 数据描述</h2><ol>
+<li><p>数据集：SPAM E-mail Database。包含4601封邮件，每个样本有57维特征和一个标签（1=spam，0=!spam）</p>
+</li>
+<li><p>具体：</p>
+</li>
+</ol>
+<ul>
+<li>Xtrain<ul>
+<li>3065x57 double</li>
+</ul>
+</li>
+<li>ytrain<ul>
+<li>3065x1 double</li>
+</ul>
+</li>
+<li>Xtest<ul>
+<li>1536x57 double</li>
+</ul>
+</li>
+<li>ytest<ul>
+<li>1536x1 double</li>
+</ul>
+</li>
+</ul>
+<ol start="3">
+<li>描述：<a href="https://web.stanford.edu/~hastie/ElemStatLearn/datasets/spam.info.txt">详情</a> </li>
+</ol>
+<ul>
+<li><p>包括：</p>
+<ul>
+<li>Spam      1813  (39.4%)</li>
+<li>Non-Spam  2788  (60.6%)</li>
+</ul>
+</li>
+<li><p>特征：</p>
+<ul>
+<li>48 个word_freq_WORD类型的连续实数[0,100]属性 = 电子邮件中匹配WORD的单词的百分比<ul>
+<li>即100 *(“word”在邮件中出现的次数)/电子邮件的总字数。在本例中，“word”是由非字母数字字符或字符串结束符限定的任何字母数字字符字符串。</li>
+</ul>
+</li>
+<li>6 个char_freq_CHAR类型的连续实数[0,100]属性 = 电子邮件中匹配CHAR的字符百分比<ul>
+<li>即100 *(“char”出现次数)/电子邮件中的字符总数</li>
+</ul>
+</li>
+<li>1 个连续实数[1，…]属性类型为capital_run_length_average = 连续大写字母序列的平均长度</li>
+<li>1 个连续整数[1，…]属性类型为capital_run_length_longest = 最长连续大写字母序列的长度</li>
+<li>1 个连续整数[1，…]属性类型为capital_run_length_total = 连续的大写字母序列的长度之和 = 电子邮件中大写字母的总数</li>
+</ul>
+</li>
+<li><p>缺失：None</p>
+</li>
+</ul>
+<h2 id="2-数据处理"><a href="#2-数据处理" class="headerlink" title="2. 数据处理"></a>2. 数据处理</h2><p>可以尝试对特征进行不同的预处理：</p>
+<ol>
+<li>log-transform：对于每个特征使用ln(xij + 0.1)进行转换</li>
+<li>binarization: 对特征进行二值化，如果大于0就设置为1，否则设置为0</li>
+</ol>
+<h1 id="Beta-binomial朴素贝叶斯"><a href="#Beta-binomial朴素贝叶斯" class="headerlink" title="Beta-binomial朴素贝叶斯"></a>Beta-binomial朴素贝叶斯</h1><h2 id="题目描述："><a href="#题目描述：" class="headerlink" title="题目描述："></a>题目描述：</h2><p>在数据处理部分的<strong>二值化数据</strong>上拟合一个beta-二项朴素贝叶斯分类器。</p>
+<p>由于存在大量的垃圾邮件和非垃圾邮件，您不需要在类标签上假设任何先验。换句话说，<strong>类别标签的先验λ可以用ML估计</strong>，在测试时可以用λ ML作为插值估计。</p>
+<p>另一方面，需要为特征分布假设Beta(α,α)，对于每个α={0,0.5,1,1.5,2,…,100}，在训练数据上拟合分类器并计算其错误率(即，电子邮件分类错误的百分比)。</p>
+<p>对于特征（比如计算p(x|y)），请使用朴素贝叶斯（如后验预测）训练并测试。</p>
+<p>报告至少需要包含以下内容：</p>
+<ul>
+<li>绘制关于α的训练和测试的错误率</li>
+<li>当α改变时，你观察到的训练和测试的错误率</li>
+<li>α=1,10,100时，训练和测试的错误率</li>
+</ul>
+<h2 id="思路"><a href="#思路" class="headerlink" title="思路"></a>思路</h2><p>1: class 1=spam；</p>
+<p>0: class2=!spam</p>
+<ul>
+<li><p>特征xn经过二项处理后，只有0，1</p>
+</li>
+<li><p>数据（x,y）是58二项分布；</p>
+</li>
+<li><p>在训练集上建模：</p>
+<p>特征xn是二项，使用每一类的训练样本的特征xn，使用“beta-二项后验预测公式”计算估计x的第n维特征的pdf，即我们会得到class1:2，feature1:57这2*57个二项特征对数似然（放到2x57维矩阵中，每个元素(a,b)表示当y=a时，xb的概率密度）；</p>
+<p>以及ML估计的类别先验的对数；</p>
+</li>
+<li><p>训练+测试（分别在训练集和测试集上进行）：</p>
+<p>针对每一个训练/测试数据，分别计算给定特征条件下，类别为1或0的概率。</p>
+<p>即，57个特征对应的二项特征对数似然之和+ML估计类别先验对数；</p>
+<p>将y=1的概率和y=0的概率对比，选择大概率的作为估计的标签y。</p>
+</li>
+<li><p>错误率：</p>
+<p>对于估计的标签计算分错的样本数量/总样本；</p>
+<p>这个操作对测试集和验证集分别搞一遍</p>
+<h2 id="结果"><a href="#结果" class="headerlink" title="结果"></a>结果</h2><p><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/study/paper/20210928161328.png"></p>
+</li>
+</ul>
+<h1 id="高斯朴素贝叶斯"><a href="#高斯朴素贝叶斯" class="headerlink" title="高斯朴素贝叶斯"></a>高斯朴素贝叶斯</h1><h2 id="题目"><a href="#题目" class="headerlink" title="题目"></a>题目</h2><p>在数据处理部分的<strong>log转换数据</strong>上拟合一个高斯朴素贝叶斯分类器。</p>
+<p>由于存在大量的垃圾邮件和非垃圾邮件，您不需要在类标签上假设任何先验。换句话说，<strong>类别标签的先验λ可以用ML估计</strong>，在测试时可以用λ ML作为插值估计。</p>
+<p>对于本练习，只需使用ML估计每个特征的类条件均值和方差（eta），并使用ML估计作为测试的插值估计</p>
+<p>报告至少需要包含以下内容：</p>
+<ul>
+<li>关于log转换数据的训练和测试的错误率</li>
+</ul>
+<h2 id="思路-1"><a href="#思路-1" class="headerlink" title="思路"></a>思路</h2><p>单变量高斯的ML估计可以得到μ_ML和σ^2_ML</p>
+<p>因为#class=2，λ的ML估计可以用二项的N1/N；</p>
+<p>eta是给定class=j时，特征的pdf=N(μ_ML,σ^2_ML)</p>
+<p>和上一题类似，还是要先获得eta矩阵，矩阵中的每个元素(i,j)对应给定j类别时，第i维特征的条件概率。该值由ML估计的正态分布得到。</p>
+<h2 id="结果-1"><a href="#结果-1" class="headerlink" title="结果"></a>结果</h2><p><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/study/paper/20210928161435.png"></p>
+<h1 id="逻辑回归"><a href="#逻辑回归" class="headerlink" title="逻辑回归"></a>逻辑回归</h1><p>##题目<br>对于<strong>log转换数据</strong>，拟合一个l2正则的逻辑回归模型（牛顿方法+l2正则+从l2正则中排除偏移项）。</p>
+<p>对于每个正则参数值λ={1,2,…,9,10,15,20,…95,100}，在训练集上拟合逻辑回归模型，并在测试集上计算它的错误率。</p>
+<p>报告至少需要包含以下内容：</p>
+<ul>
+<li>绘制关于λ的训练和测试的错误率</li>
+<li>当λ改变时，你观察到的训练和测试的错误率</li>
+<li>λ=1,10,100时，训练和测试的错误率</li>
+</ul>
+<p>不要忘记在逻辑回归中包括偏倚项，而在l2正则化中排除偏移项。</p>
+<h2 id="思路-2"><a href="#思路-2" class="headerlink" title="思路"></a>思路</h2><ul>
+<li><p>变量</p>
+<ul>
+<li>W：(D+1)x1</li>
+<li>w：Dx1</li>
+<li>X：Nx(D+1)</li>
+<li>Xi：(D+1)X1（每个样本的特征）Xi=[1,xi]</li>
+<li>μ：里面的Xi和W都是D+1维的，Nx1</li>
+<li>y：Nx1</li>
+</ul>
+</li>
+<li><p>函数</p>
+<ul>
+<li>求μ(W,Xi)—(特征矩阵，w)</li>
+<li>求NLLreg(特征矩阵,W，λ)</li>
+<li>求greg(特征矩阵,类别矩阵,w,λ)</li>
+<li>求Hreg(特征矩阵,类别矩阵,w，λ)</li>
+</ul>
+</li>
+</ul>
+<p>数据预处理</p>
+<p>初始化：给X加一维’1’；步长1；阈值0.01</p>
+<p>大循环：λ；</p>
+<p>初始化w0—57+1维0向量（这个不是偏移向量）</p>
+<p>中循环：while NLL&lt;阈值【目的是get：W】</p>
+<ol>
+<li> k+1</li>
+<li> greg</li>
+<li>hreg</li>
+<li>W[k+1]—-要存记录</li>
+<li>NLL</li>
+</ol>
+<p>end</p>
+<p>用W预测：训练集+测试集（k，#样本数）</p>
+<p>end</p>
+<p>计算错误率</p>
+<p>画图</p>
+<h2 id="结果-2"><a href="#结果-2" class="headerlink" title="结果"></a>结果</h2><p><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/study/paper/20210928161533.png"></p>
+<h1 id="k最近邻居"><a href="#k最近邻居" class="headerlink" title="k最近邻居"></a>k最近邻居</h1><h2 id="题目-1"><a href="#题目-1" class="headerlink" title="题目"></a>题目</h2><p>在<strong>log转换数据</strong>上，实现KNN分类器。用欧式距离来测量邻居之间的距离。</p>
+<p>对于每个K={1, 2, …9,10,15,20,…95,100}，计算训练和测试的错误率。</p>
+<p>报告至少需要包含以下内容：</p>
+<ul>
+<li>绘制关于K的训练和测试的错误率</li>
+<li>当K改变时，你观察到的训练和测试的错误率</li>
+<li>K=1,10,100时，训练和测试的错误率</li>
+</ul>
+<h2 id="思路-3"><a href="#思路-3" class="headerlink" title="思路"></a>思路</h2><p>先搞个函数来计算两个特征之间的距离；<br>再搞个函数来计算新样本和矩阵（训练集）中每个样本的距离</p>
+<p>测试和训练时调用算距离函数，生成距离矩阵，每个点(i，j)表示新样本i和训练集样本j之间的距离。</p>
+<p>对于每一个新样本，根据不同的K，得到距离该样本最近的K个训练点，对比其中类0和类1的比例，将新样本的标签预测为占比大的那个类。</p>
+<p>训练集上的测试或许可以有一些tricky，因为生产的距离矩阵是对称的，且对角线值为0。</p>
+<p>训练集：dist—3065<em>3065<br>测试集：dist—1536</em>3065</p>
+<h2 id="结果-3"><a href="#结果-3" class="headerlink" title="结果"></a>结果</h2><p><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/study/paper/20210928161622.png"></p>
+]]></content>
+      <categories>
+        <category>project</category>
+      </categories>
+      <tags>
+        <tag>课程</tag>
+        <tag>matlab</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>V-SLAM整理3</title>
+    <url>/V-SLAM%E6%95%B4%E7%90%863/</url>
+    <content><![CDATA[<h1 id="第9讲-后端1"><a href="#第9讲-后端1" class="headerlink" title="第9讲 后端1"></a>第9讲 后端1</h1><p>状态估计问题：从带噪声的数据估计内在的状态</p>
+<p>前端：短时间的状态估计问题。从相机的相邻图像中估计相机运动，可以给出一个短时间内的轨迹和地图。</p>
+<p>后端：长时间的状态估计问题。希望构建一个尺度、规模更大的优化问题，来获得长时间内的最优轨迹和地图。</p>
+<p>主要方案：</p>
+<ul>
+<li>渐进：保持当前状态的估计，在加入新信息时，更新已有的估计（滤波器）</li>
+<li>批量：给定一定规模的数据，计算该批量数据下的最优估计（优化）【第6讲】<ul>
+<li>根据第6讲的玩法，批量状态估计问题可以转换成最大似然估计问题，再用最小二乘法求解。</li>
+</ul>
+</li>
+</ul>
+<h2 id="9-1-概述"><a href="#9-1-概述" class="headerlink" title="9.1 概述"></a>9.1 概述</h2><h3 id="9-1-1-状态估计的概率解释"><a href="#9-1-1-状态估计的概率解释" class="headerlink" title="9.1.1 状态估计的概率解释"></a>9.1.1 状态估计的概率解释</h3><p><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/study/paper/20210930173301.png"></p>
+<ol>
+<li>已知某些运动数据和观测数据z，如何确定状态量x,y的分布？</li>
+<li>如果得到了新时刻的数据，x和y的分布又将怎么变化？</li>
+</ol>
+<p>假设状态量和噪声项服从高斯分布，问题转变为：已知一些运动数据和观测数据，如何估计状态量的高斯分布？</p>
+<p><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/study/paper/20210930173948.png"></p>
+<hr>
+<p>改变记号——待估计量xk表示k时刻所有未知量，包括位姿和路标点：</p>
+<p><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/study/paper/20210930181033.png"></p>
+<p>改写后的SLAM方程：</p>
+<p><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/study/paper/20210930181238.png"></p>
+<p>目标是用过去0-k时刻的数据直接从x0估计xk：</p>
+<p><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/study/paper/20210930181840.png"></p>
+<p><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/study/paper/20210930182259.png"></p>
+<p>后续操作有两种方法：</p>
+<ul>
+<li>假设<code>马尔可夫性</code>：k时刻状态只与k-1时刻状态有关，而与再之前的状态无关<ul>
+<li>滤波器方法，如EKF</li>
+</ul>
+</li>
+<li>不假设<code>马尔可夫性</code>，k时刻的状态与之前所有状态有关<ul>
+<li>非线性优化</li>
+</ul>
+</li>
+</ul>
+<hr>
+<h3 id="9-1-2-线性系统和KF"><a href="#9-1-2-线性系统和KF" class="headerlink" title="9.1.2 线性系统和KF"></a>9.1.2 线性系统和KF</h3><p>有关滤波器的部分先略过，有需要再整理</p>
+<h3 id="9-1-3-非线性系统和EKF"><a href="#9-1-3-非线性系统和EKF" class="headerlink" title="9.1.3 非线性系统和EKF"></a>9.1.3 非线性系统和EKF</h3><p>EKF：在某段时间内估计某个不确定的量</p>
+<h3 id="9-1-4-EKF的讨论"><a href="#9-1-4-EKF的讨论" class="headerlink" title="9.1.4 EKF的讨论"></a>9.1.4 EKF的讨论</h3><hr>
+<h2 id="9-2-BA与图优化"><a href="#9-2-BA与图优化" class="headerlink" title="9.2 BA与图优化"></a>9.2 BA与图优化</h2><p>Bundle Adjustment：从视觉图像中提炼出最优的3D模型和相机参数（内参+外参），即带有相机位姿和空间点的图优化称为BA。</p>
+<p>BA能够精准的优化每个相机位姿与特征点的位置。</p>
+<p>形象点解释，就是通过调整相机位姿和特征点的空间位置，使得从任意特征点发出的光线最终收束到相机的光心。</p>
+<p>注意：BA只有观测方程</p>
+<h3 id="9-2-1-投影模型和BA代价函数"><a href="#9-2-1-投影模型和BA代价函数" class="headerlink" title="9.2.1 投影模型和BA代价函数"></a>9.2.1 投影模型和BA代价函数</h3><p>投影过程：</p>
+<p><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/study/paper/20210930183745.png"></p>
+<p>所谓观测数据，指的是相机得到的图像中的像素坐标[u,v]^T</p>
+<p>实际观测数据z 与 根据投影过程估计的观测点的<strong>误差</strong>：请参考7.7.3</p>
+<ul>
+<li><p>这里的T是相机位姿x(R,t)对应的李群T，p是路标</p>
+<p>  <img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/study/paper/20210930183911.png"></p>
+</li>
+</ul>
+<p>整体的代价函数：</p>
+<p><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/study/paper/20210930184817.png"></p>
+<p>对这个最小二乘求解，相当于同时调整位姿和路标，也就是BA。</p>
+<h3 id="9-2-2-BA的求解"><a href="#9-2-2-BA的求解" class="headerlink" title="9.2.2 BA的求解"></a>9.2.2 BA的求解</h3><p>请参考第6讲的非线性优化的思路。</p>
+<p>待优化变量：</p>
+<p><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/study/paper/20210930185614.png"></p>
+<p>目标函数：F是整体代价函数对相机位姿的偏导，E是整体代价函数对路标的偏导：</p>
+<p><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/study/paper/20210930185634.png"></p>
+<p>F和E的推导请参考7.7.3</p>
+<p>化简：</p>
+<p><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/study/paper/20210930190230.png"><br><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/study/paper/20210930190246.png"></p>
+<p><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/study/paper/20210930190258.png"></p>
+<p>增量方程：</p>
+<p><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/study/paper/20210930190333.png"></p>
+<p>J = [F E]</p>
+<ul>
+<li>高斯牛顿：H=JJ</li>
+<li>阻尼牛顿：H=JJ+λI</li>
+</ul>
+<p>高斯牛顿的H：</p>
+<p><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/study/paper/20210930190656.png"></p>
+<p>这个H很庞大，对它求逆看上去非常艰难，但是好在H具有一定特殊结构，会好求一些。下面就说说H的特殊结构。</p>
+<h3 id="9-2-3-稀疏性和边缘化"><a href="#9-2-3-稀疏性和边缘化" class="headerlink" title="9.2.3 稀疏性和边缘化"></a>9.2.3 稀疏性和边缘化</h3><p>H具有稀疏结构，并且可以用图优化来表示！</p>
+<p>由于在Ti看到pj这件事与其他轨迹和路标点无关，这项的误差也与其他无关，因此求导是0。</p>
+<p>i在相机位姿中取值，j在路标点中取值：</p>
+<p>H11只与相机位姿有关，H22只与路标点有关。</p>
+<p><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/study/paper/20210930191753.png"></p>
+<p><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/study/paper/20210930191646.png"></p>
+<p><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/study/paper/20210930191550.png"></p>
+<p>以下事实成立：</p>
+<p><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/study/paper/20210930191941.png"></p>
+<p><strong>Ace. 现在有两个相机位姿和6个路标点：</strong></p>
+<p><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/study/paper/20210930192106.png"></p>
+<p>以e11为例，这是C1处看到P1这件事的误差项，其雅克比矩阵为J11：</p>
+<p><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/study/paper/20210930192341.png"></p>
+<p><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/study/paper/20210930192454.png"></p>
+<p><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/study/paper/20210930192614.png"></p>
+<p>邻接矩阵和H矩阵除了对角线元素之外的其余部分结构一致:</p>
+<p><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/study/paper/20210930193635.png"></p>
+<p>H矩阵的非对角部分可以体现约束关系：</p>
+<p><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/study/paper/20210930193252.png"></p>
+<p><strong>一般的H矩阵长这样：</strong></p>
+<p><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/study/paper/20210930193336.png"></p>
+<hr>
+<p>求解这样稀疏结构的H矩阵：<code>边缘化</code></p>
+<ul>
+<li><code>Schur消元</code></li>
+<li><code>Cholesky分解</code></li>
+</ul>
+<p>以下是<code>Schur消元</code>：</p>
+<p><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/study/paper/20210930193720.png"></p>
+<p>那么H△x=g变成：</p>
+<p><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/study/paper/20210930193852.png"></p>
+<p>经过一波化简：</p>
+<p><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/study/paper/20210930194012.png"></p>
+<p><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/study/paper/20210930194148.png"></p>
+<ul>
+<li>此方程系数记为S：  <img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/study/paper/20210930194422.png"></li>
+</ul>
+<p>先求出△xc再求△xp：</p>
+<p><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/study/paper/20210930194304.png"></p>
+<ul>
+<li><p>关于S：S矩阵的非对角线上的非0矩阵块，表示该处对应的两个相机变量之间存在着共同观测的路标点，又名<code>共视</code>。</p>
+<p>  <img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/study/paper/20210930194826.png"></p>
+</li>
+<li><p>S矩阵的稀疏性结构取决于实际观测的结果</p>
+<ul>
+<li><code>ORB-SLAM</code>中的<code>Local Mapping</code>，在做BA的时候刻意选择那些具有共同观测的帧作为关键帧（这帧被多个相机看到），在这种情况下爱，Schur消元后得到的S就是<code>稠密矩阵</code>，计算开销大。但是该模块不是实时进行的，所以也ok。</li>
+<li>然而，对于别的一些需要实时算BA的方法，S的稠密就变得不可忍受了。比如DSO、OKVIS等采用<code>滑动窗口</code>，该方法对每一帧都要求做一次BA来防止误差累计，因此必须采取一些技巧来保持S矩阵的稀疏性。</li>
+</ul>
+</li>
+</ul>
+<h3 id="9-2-4-鲁棒核函数"><a href="#9-2-4-鲁棒核函数" class="headerlink" title="9.2.4 鲁棒核函数"></a>9.2.4 鲁棒核函数</h3><p>如果某个误差项的数据是错误的，意味着突然观测到了一次不可能产生的数据，在图优化中会有一条误差很大的边，会严重影响到其他正确的边。</p>
+<p>解决方法：<code>鲁棒核函数</code>——保证每条边的误差不会大的离谱而掩盖其他的边</p>
+<p>具体操作是把目标函数中的<code>二范数度量</code>换成其他增长没那么快的函数。</p>
+<p>鲁棒核函数：</p>
+<ul>
+<li>Huber核</li>
+<li>Cauchy核</li>
+<li>Tukey核</li>
+</ul>
+<p><code>g2o和Ceres中有提供一些核函数</code></p>
+<h2 id="9-3-编程：Ceres-BA"><a href="#9-3-编程：Ceres-BA" class="headerlink" title="9.3 编程：Ceres BA"></a>9.3 编程：Ceres BA</h2><h3 id="9-3-1-BAL数据集"><a href="#9-3-1-BAL数据集" class="headerlink" title="9.3.1 BAL数据集"></a>9.3.1 BAL数据集</h3><p>BAL数据集提供若干个场景</p>
+<p><code>Meshlab软件</code>可以查看<code>ply</code>点云文件</p>
+<h3 id="9-3-2-Ceres-BA的书写"><a href="#9-3-2-Ceres-BA的书写" class="headerlink" title="9.3.2 Ceres BA的书写"></a>9.3.2 Ceres BA的书写</h3><h2 id="9-4-编程：g2o求解BA"><a href="#9-4-编程：g2o求解BA" class="headerlink" title="9.4 编程：g2o求解BA"></a>9.4 编程：g2o求解BA</h2><hr>
+<h1 id="第10讲-后端2"><a href="#第10讲-后端2" class="headerlink" title="第10讲 后端2"></a>第10讲 后端2</h1><p>BA能够精准优化每个相机位姿和特征点位置，有效求解大规模定位与建图问题。但是在更大的场景中，大量特征点的存在会导致庞大的计算开销，难以实时化。</p>
+<p>在SLAM中，为了保证实时性，需要控制BA的规模。</p>
+<p>例如，有一种简化的BA：位姿图。</p>
+<h2 id="10-1-滑动窗口滤波和优化"><a href="#10-1-滑动窗口滤波和优化" class="headerlink" title="10.1 滑动窗口滤波和优化"></a>10.1 滑动窗口滤波和优化</h2><h3 id="10-1-1-实际环境下的BA结构"><a href="#10-1-1-实际环境下的BA结构" class="headerlink" title="10.1.1 实际环境下的BA结构"></a>10.1.1 实际环境下的BA结构</h3><p>控制BA规模的方法：从连续的视频中抽取一部分作为<code>关键帧</code>，仅构造关键帧与路标点之间的BA，非关键帧只用于定位，对建图无贡献。</p>
+<ul>
+<li><code>滑动窗口法</code>：取N个离当前时刻最近的<code>关键帧</code>，去掉更早的关键帧，将BA控制在一个时间窗口内。</li>
+<li><code>共视图法</code>：在BA优化时，按照某种原则在共视图内取一些<code>关键帧</code>和路标进行优化（例如，仅优化与当前帧有20个以上共视路标的关键帧，固定其他部分）<ul>
+<li>共视图是指与现在的相机存在共同观测的关键帧构成的图。</li>
+<li>例如<code>ORB-SLAM</code></li>
+</ul>
+</li>
+</ul>
+<p><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/study/paper/20210930204101.png"></p>
+<hr>
+<h3 id="10-1-2-滑动窗口法"><a href="#10-1-2-滑动窗口法" class="headerlink" title="10.1.2 滑动窗口法"></a>10.1.2 滑动窗口法</h3><p>有需要的时候再整理</p>
+<h4 id="1-新增一个关键帧和路标点"><a href="#1-新增一个关键帧和路标点" class="headerlink" title="1) 新增一个关键帧和路标点"></a>1) 新增一个关键帧和路标点</h4><h4 id="2-删除一个旧的关键帧"><a href="#2-删除一个旧的关键帧" class="headerlink" title="2) 删除一个旧的关键帧"></a>2) 删除一个旧的关键帧</h4><h4 id="3-SWF中边缘化的直观解释"><a href="#3-SWF中边缘化的直观解释" class="headerlink" title="3) SWF中边缘化的直观解释"></a>3) SWF中边缘化的直观解释</h4><hr>
+<h2 id="10-2-位姿图"><a href="#10-2-位姿图" class="headerlink" title="10.2 位姿图"></a>10.2 位姿图</h2><p>有需要的时候再整理</p>
+<h3 id="10-2-1-位姿图的意义"><a href="#10-2-1-位姿图的意义" class="headerlink" title="10.2.1 位姿图的意义"></a>10.2.1 位姿图的意义</h3><h3 id="10-2-2-位姿图的优化"><a href="#10-2-2-位姿图的优化" class="headerlink" title="10.2.2 位姿图的优化"></a>10.2.2 位姿图的优化</h3><h2 id="10-3-编程：位姿图优化"><a href="#10-3-编程：位姿图优化" class="headerlink" title="10.3 编程：位姿图优化"></a>10.3 编程：位姿图优化</h2><h3 id="10-3-1-g2o原生位姿图"><a href="#10-3-1-g2o原生位姿图" class="headerlink" title="10.3.1 g2o原生位姿图"></a>10.3.1 g2o原生位姿图</h3><h3 id="10-3-2-李代数上的位姿图优化"><a href="#10-3-2-李代数上的位姿图优化" class="headerlink" title="10.3.2 李代数上的位姿图优化"></a>10.3.2 李代数上的位姿图优化</h3><h3 id="10-3-3-小结"><a href="#10-3-3-小结" class="headerlink" title="10.3.3 小结"></a>10.3.3 小结</h3>]]></content>
+      <categories>
+        <category>科研</category>
+      </categories>
+      <tags>
+        <tag>科研</tag>
+        <tag>SLAM</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>ubuntu18.04+VINS-MONO+RealsenseD453i 配置教程</title>
     <url>/ubuntu18-04-VINS-MONO-RealsenseD453i-%E9%85%8D%E7%BD%AE%E6%95%99%E7%A8%8B/</url>
     <content><![CDATA[<h1 id="VINS-MONO"><a href="#VINS-MONO" class="headerlink" title="VINS-MONO"></a>VINS-MONO</h1><p>主要参考链接：<br><a href="https://blog.csdn.net/github_53583003/article/details/111187288">Ubuntu18配置VINS-MONO</a></p>
@@ -127,8 +469,8 @@
         <category>教程</category>
       </categories>
       <tags>
-        <tag>教程</tag>
         <tag>SLAM</tag>
+        <tag>教程</tag>
       </tags>
   </entry>
   <entry>
@@ -791,180 +1133,6 @@
       </tags>
   </entry>
   <entry>
-    <title>EE5907-CA1</title>
-    <url>/EE5907-CA1/</url>
-    <content><![CDATA[<h1 id="数据"><a href="#数据" class="headerlink" title="数据"></a>数据</h1><h2 id="1-数据描述"><a href="#1-数据描述" class="headerlink" title="1. 数据描述"></a>1. 数据描述</h2><ol>
-<li><p>数据集：SPAM E-mail Database。包含4601封邮件，每个样本有57维特征和一个标签（1=spam，0=!spam）</p>
-</li>
-<li><p>具体：</p>
-</li>
-</ol>
-<ul>
-<li>Xtrain<ul>
-<li>3065x57 double</li>
-</ul>
-</li>
-<li>ytrain<ul>
-<li>3065x1 double</li>
-</ul>
-</li>
-<li>Xtest<ul>
-<li>1536x57 double</li>
-</ul>
-</li>
-<li>ytest<ul>
-<li>1536x1 double</li>
-</ul>
-</li>
-</ul>
-<ol start="3">
-<li>描述：<a href="https://web.stanford.edu/~hastie/ElemStatLearn/datasets/spam.info.txt">详情</a> </li>
-</ol>
-<ul>
-<li><p>包括：</p>
-<ul>
-<li>Spam      1813  (39.4%)</li>
-<li>Non-Spam  2788  (60.6%)</li>
-</ul>
-</li>
-<li><p>特征：</p>
-<ul>
-<li>48 个word_freq_WORD类型的连续实数[0,100]属性 = 电子邮件中匹配WORD的单词的百分比<ul>
-<li>即100 *(“word”在邮件中出现的次数)/电子邮件的总字数。在本例中，“word”是由非字母数字字符或字符串结束符限定的任何字母数字字符字符串。</li>
-</ul>
-</li>
-<li>6 个char_freq_CHAR类型的连续实数[0,100]属性 = 电子邮件中匹配CHAR的字符百分比<ul>
-<li>即100 *(“char”出现次数)/电子邮件中的字符总数</li>
-</ul>
-</li>
-<li>1 个连续实数[1，…]属性类型为capital_run_length_average = 连续大写字母序列的平均长度</li>
-<li>1 个连续整数[1，…]属性类型为capital_run_length_longest = 最长连续大写字母序列的长度</li>
-<li>1 个连续整数[1，…]属性类型为capital_run_length_total = 连续的大写字母序列的长度之和 = 电子邮件中大写字母的总数</li>
-</ul>
-</li>
-<li><p>缺失：None</p>
-</li>
-</ul>
-<h2 id="2-数据处理"><a href="#2-数据处理" class="headerlink" title="2. 数据处理"></a>2. 数据处理</h2><p>可以尝试对特征进行不同的预处理：</p>
-<ol>
-<li>log-transform：对于每个特征使用ln(xij + 0.1)进行转换</li>
-<li>binarization: 对特征进行二值化，如果大于0就设置为1，否则设置为0</li>
-</ol>
-<h1 id="Beta-binomial朴素贝叶斯"><a href="#Beta-binomial朴素贝叶斯" class="headerlink" title="Beta-binomial朴素贝叶斯"></a>Beta-binomial朴素贝叶斯</h1><h2 id="题目描述："><a href="#题目描述：" class="headerlink" title="题目描述："></a>题目描述：</h2><p>在数据处理部分的<strong>二值化数据</strong>上拟合一个beta-二项朴素贝叶斯分类器。</p>
-<p>由于存在大量的垃圾邮件和非垃圾邮件，您不需要在类标签上假设任何先验。换句话说，<strong>类别标签的先验λ可以用ML估计</strong>，在测试时可以用λ ML作为插值估计。</p>
-<p>另一方面，需要为特征分布假设Beta(α,α)，对于每个α={0,0.5,1,1.5,2,…,100}，在训练数据上拟合分类器并计算其错误率(即，电子邮件分类错误的百分比)。</p>
-<p>对于特征（比如计算p(x|y)），请使用朴素贝叶斯（如后验预测）训练并测试。</p>
-<p>报告至少需要包含以下内容：</p>
-<ul>
-<li>绘制关于α的训练和测试的错误率</li>
-<li>当α改变时，你观察到的训练和测试的错误率</li>
-<li>α=1,10,100时，训练和测试的错误率</li>
-</ul>
-<h2 id="思路"><a href="#思路" class="headerlink" title="思路"></a>思路</h2><p>1: class 1=spam；</p>
-<p>0: class2=!spam</p>
-<ul>
-<li><p>特征xn经过二项处理后，只有0，1</p>
-</li>
-<li><p>数据（x,y）是58二项分布；</p>
-</li>
-<li><p>在训练集上建模：</p>
-<p>特征xn是二项，使用每一类的训练样本的特征xn，使用“beta-二项后验预测公式”计算估计x的第n维特征的pdf，即我们会得到class1:2，feature1:57这2*57个二项特征对数似然（放到2x57维矩阵中，每个元素(a,b)表示当y=a时，xb的概率密度）；</p>
-<p>以及ML估计的类别先验的对数；</p>
-</li>
-<li><p>训练+测试（分别在训练集和测试集上进行）：</p>
-<p>针对每一个训练/测试数据，分别计算给定特征条件下，类别为1或0的概率。</p>
-<p>即，57个特征对应的二项特征对数似然之和+ML估计类别先验对数；</p>
-<p>将y=1的概率和y=0的概率对比，选择大概率的作为估计的标签y。</p>
-</li>
-<li><p>错误率：</p>
-<p>对于估计的标签计算分错的样本数量/总样本；</p>
-<p>这个操作对测试集和验证集分别搞一遍</p>
-<h2 id="结果"><a href="#结果" class="headerlink" title="结果"></a>结果</h2><p><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/study/paper/20210928161328.png"></p>
-</li>
-</ul>
-<h1 id="高斯朴素贝叶斯"><a href="#高斯朴素贝叶斯" class="headerlink" title="高斯朴素贝叶斯"></a>高斯朴素贝叶斯</h1><h2 id="题目"><a href="#题目" class="headerlink" title="题目"></a>题目</h2><p>在数据处理部分的<strong>log转换数据</strong>上拟合一个高斯朴素贝叶斯分类器。</p>
-<p>由于存在大量的垃圾邮件和非垃圾邮件，您不需要在类标签上假设任何先验。换句话说，<strong>类别标签的先验λ可以用ML估计</strong>，在测试时可以用λ ML作为插值估计。</p>
-<p>对于本练习，只需使用ML估计每个特征的类条件均值和方差（eta），并使用ML估计作为测试的插值估计</p>
-<p>报告至少需要包含以下内容：</p>
-<ul>
-<li>关于log转换数据的训练和测试的错误率</li>
-</ul>
-<h2 id="思路-1"><a href="#思路-1" class="headerlink" title="思路"></a>思路</h2><p>单变量高斯的ML估计可以得到μ_ML和σ^2_ML</p>
-<p>因为#class=2，λ的ML估计可以用二项的N1/N；</p>
-<p>eta是给定class=j时，特征的pdf=N(μ_ML,σ^2_ML)</p>
-<p>和上一题类似，还是要先获得eta矩阵，矩阵中的每个元素(i,j)对应给定j类别时，第i维特征的条件概率。该值由ML估计的正态分布得到。</p>
-<h2 id="结果-1"><a href="#结果-1" class="headerlink" title="结果"></a>结果</h2><p><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/study/paper/20210928161435.png"></p>
-<h1 id="逻辑回归"><a href="#逻辑回归" class="headerlink" title="逻辑回归"></a>逻辑回归</h1><p>##题目<br>对于<strong>log转换数据</strong>，拟合一个l2正则的逻辑回归模型（牛顿方法+l2正则+从l2正则中排除偏移项）。</p>
-<p>对于每个正则参数值λ={1,2,…,9,10,15,20,…95,100}，在训练集上拟合逻辑回归模型，并在测试集上计算它的错误率。</p>
-<p>报告至少需要包含以下内容：</p>
-<ul>
-<li>绘制关于λ的训练和测试的错误率</li>
-<li>当λ改变时，你观察到的训练和测试的错误率</li>
-<li>λ=1,10,100时，训练和测试的错误率</li>
-</ul>
-<p>不要忘记在逻辑回归中包括偏倚项，而在l2正则化中排除偏移项。</p>
-<h2 id="思路-2"><a href="#思路-2" class="headerlink" title="思路"></a>思路</h2><ul>
-<li><p>变量</p>
-<ul>
-<li>W：(D+1)x1</li>
-<li>w：Dx1</li>
-<li>X：Nx(D+1)</li>
-<li>Xi：(D+1)X1（每个样本的特征）Xi=[1,xi]</li>
-<li>μ：里面的Xi和W都是D+1维的，Nx1</li>
-<li>y：Nx1</li>
-</ul>
-</li>
-<li><p>函数</p>
-<ul>
-<li>求μ(W,Xi)—(特征矩阵，w)</li>
-<li>求NLLreg(特征矩阵,W，λ)</li>
-<li>求greg(特征矩阵,类别矩阵,w,λ)</li>
-<li>求Hreg(特征矩阵,类别矩阵,w，λ)</li>
-</ul>
-</li>
-</ul>
-<p>数据预处理</p>
-<p>初始化：给X加一维’1’；步长1；阈值0.01</p>
-<p>大循环：λ；</p>
-<p>初始化w0—57+1维0向量（这个不是偏移向量）</p>
-<p>中循环：while NLL&lt;阈值【目的是get：W】</p>
-<ol>
-<li> k+1</li>
-<li> greg</li>
-<li>hreg</li>
-<li>W[k+1]—-要存记录</li>
-<li>NLL</li>
-</ol>
-<p>end</p>
-<p>用W预测：训练集+测试集（k，#样本数）</p>
-<p>end</p>
-<p>计算错误率</p>
-<p>画图</p>
-<h2 id="结果-2"><a href="#结果-2" class="headerlink" title="结果"></a>结果</h2><p><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/study/paper/20210928161533.png"></p>
-<h1 id="k最近邻居"><a href="#k最近邻居" class="headerlink" title="k最近邻居"></a>k最近邻居</h1><h2 id="题目-1"><a href="#题目-1" class="headerlink" title="题目"></a>题目</h2><p>在<strong>log转换数据</strong>上，实现KNN分类器。用欧式距离来测量邻居之间的距离。</p>
-<p>对于每个K={1, 2, …9,10,15,20,…95,100}，计算训练和测试的错误率。</p>
-<p>报告至少需要包含以下内容：</p>
-<ul>
-<li>绘制关于K的训练和测试的错误率</li>
-<li>当K改变时，你观察到的训练和测试的错误率</li>
-<li>K=1,10,100时，训练和测试的错误率</li>
-</ul>
-<h2 id="思路-3"><a href="#思路-3" class="headerlink" title="思路"></a>思路</h2><p>先搞个函数来计算两个特征之间的距离；<br>再搞个函数来计算新样本和矩阵（训练集）中每个样本的距离</p>
-<p>测试和训练时调用算距离函数，生成距离矩阵，每个点(i，j)表示新样本i和训练集样本j之间的距离。</p>
-<p>对于每一个新样本，根据不同的K，得到距离该样本最近的K个训练点，对比其中类0和类1的比例，将新样本的标签预测为占比大的那个类。</p>
-<p>训练集上的测试或许可以有一些tricky，因为生产的距离矩阵是对称的，且对角线值为0。</p>
-<p>训练集：dist—3065<em>3065<br>测试集：dist—1536</em>3065</p>
-<h2 id="结果-3"><a href="#结果-3" class="headerlink" title="结果"></a>结果</h2><p><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/study/paper/20210928161622.png"></p>
-]]></content>
-      <categories>
-        <category>project</category>
-      </categories>
-      <tags>
-        <tag>课程</tag>
-        <tag>matlab</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>本科知识整理</title>
     <url>/%E6%9C%AC%E7%A7%91%E7%9F%A5%E8%AF%86%E6%95%B4%E7%90%86/</url>
     <content><![CDATA[<h1 id="算法设计与分析"><a href="#算法设计与分析" class="headerlink" title="算法设计与分析"></a>算法设计与分析</h1><p>《算法设计与分析第三版-王晓东》</p>
@@ -1284,289 +1452,6 @@
       </categories>
       <tags>
         <tag>学习</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>Hexo+Github博客搭建教程</title>
-    <url>/Hexo-Github%E5%8D%9A%E5%AE%A2%E6%90%AD%E5%BB%BA%E6%95%99%E7%A8%8B/</url>
-    <content><![CDATA[<h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>新手小白，第一次搭博客，先向前辈们大佬们隔空致敬。</p>
-<p>搭建博客有很多种方法，我选择的是Hexo静态博客框架，利用Github Page服务器，比较节省时间和金钱，可以更加专注于内容本身。</p>
-<span id="more"></span>
-
-<p>首先附上参考链接：</p>
-<table>
-<thead>
-<tr>
-<th align="center">类型</th>
-<th align="left">链接</th>
-</tr>
-</thead>
-<tbody><tr>
-<td align="center">概述</td>
-<td align="left">1. <a href="https://zoomyale.com/2016/why_blogging/">为什么要在老掉牙的独立博客上写东西</a></td>
-</tr>
-<tr>
-<td align="center">参考教程</td>
-<td align="left">1. <a href="https://godweiyang.com/2018/04/13/hexo-blog/">超详细Hexo+Github博客搭建小白教程-韦阳</a><br>2. <a href="https://zhuanlan.zhihu.com/p/26625249">GitHub+Hexo 搭建个人网站详细教程 - 知乎</a><br>3. <a href="https://www.cnblogs.com/shwee/p/11421156.html">Hexo+Github: 个人博客网站搭建完全教程- 博客园</a><br>4. <a href="https://segmentfault.com/a/1190000021979631">超级详细Hexo+GitHub+阿里云域名的博客搭建教程，新手也能轻松学会</a><br>5. <a href="https://www.cnblogs.com/shwee/p/11421156.html">Hexo+Github: 个人博客网站搭建完全教程</a><br>6. <a href="https://winney07.github.io/2018/08/02/%E5%9C%A8Hexo%E5%8D%9A%E5%AE%A2%E4%B8%AD%E5%8F%91%E5%B8%83%E6%96%87%E7%AB%A0/">在Hexo博客中发布文章</a></td>
-</tr>
-<tr>
-<td align="center">个性化</td>
-<td align="left">1. <a href="https://shen-yu.gitee.io/2019/ayer/">Ayer主题</a><br>2. <a href="https://yuchen-lea.github.io/2016-01-18-hexo-dir-struct/">hexo目录结构小探</a></td>
-</tr>
-<tr>
-<td align="center">写作</td>
-<td align="left">1. <a href="http://itmyhome.com/markdown/index.html">Markdown 入门参考</a><br>2. <a href="https://zhuanlan.zhihu.com/p/56943330">使用vscode开始Markdown写作之旅 - 知乎</a><br>3. <a href="https://hexo.io/zh-cn/docs/">Hexo-文档</a></td>
-</tr>
-<tr>
-<td align="center">图床</td>
-<td align="left">1. <a href="https://www.jianshu.com/p/bff6638e450f">图床工具推荐</a><br>2. <a href="https://sunhwee.com/posts/1788dd4a.html">PicGo+GitHub：你的最佳免费图床选择-洪卫</a></td>
-</tr>
-</tbody></table>
-<h1 id="搭建博客框架"><a href="#搭建博客框架" class="headerlink" title="搭建博客框架"></a>搭建博客框架</h1><h2 id="安装Node-js"><a href="#安装Node-js" class="headerlink" title="安装Node.js"></a>安装Node.js</h2><p>Hexo基于Node.js，首先要下载<a href="https://nodejs.org/en/download/">Node.js安装包</a>（建议选LTS版本，current版本或许无法安装一些插件），改一下安装路径，其他安装选项选择默认就行。</p>
-<p>安装完成后，<code>win+R</code>打开命令行，输入<code>node -v</code>和<code>npm -v</code>，显示版本号则安装成功。</p>
-<h2 id="添加镜像"><a href="#添加镜像" class="headerlink" title="添加镜像"></a>添加镜像</h2><p>如果没有梯子，npm部分可以用阿里国内镜像加速。</p>
-<figure class="highlight plain"><table><tbody><tr><td class="code"><pre><span class="line">npm config set registry https://registry.npm.taobao.org</span><br></pre></td></tr></tbody></table></figure>
-
-<h2 id="安装Git"><a href="#安装Git" class="headerlink" title="安装Git"></a>安装Git</h2><p>为了将本地网页文件上传到Github上，需要安装分布式版本控制工具<a href="https://git-scm.com/download/win">Git</a>。</p>
-<p>有兴趣深入了解Git的话，可以参考廖雪峰老师的<a href="https://www.liaoxuefeng.com/wiki/896043488029600">Git教程</a></p>
-<p>安装完成后在命令行输入git –version验证是否安装成功。</p>
-<h2 id="Github部分"><a href="#Github部分" class="headerlink" title="Github部分"></a>Github部分</h2><p>每个程序猿都该有个Github啦，毕竟这就是猿的浪漫了~如果没有也没有关系，你可以从现在开始拥有这份独特的浪漫。</p>
-<ol>
-<li><p>注册一个<a href="https://github.com/">Github</a>账号，强烈建议名字正常一点。</p>
-</li>
-<li><p>新建一个仓库：</p>
-<div align="center">
-<img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/blog_files/img/Pic-Github-Picbed20210415174145.png" width="300/">
-</div></li>
-<li><p>仓库基本配置如下：</p>
-<p>这里要注意的是：仓库的命名一定要跟用户名一样！</p>
-<div align="center">
-<img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/blog_files/img/Pic-Github-Picbed20210415222443.png">
-</div></li>
-<li><p>在新建好的仓库界面选择<code>setting</code>–<code>Pages</code>–<code>Choose a theme</code>，这里的主题可以随便选一个，后期可以换成别的。</p>
-</li>
-<li><p>刷新一下，<code>Pages</code>界面会出现你自己的网页链接，比如：<code>Your site is ready to be published at http://OrderAngel.com/OrderAngel.github.io</code></p>
-<p>虽然简陋，但是这就是你的博客啦~</p>
-</li>
-</ol>
-<h2 id="安装Hexo，生成静态框架"><a href="#安装Hexo，生成静态框架" class="headerlink" title="安装Hexo，生成静态框架"></a>安装Hexo，生成静态框架</h2><p>Hexo是一款基于Node.js的静态博客框架，生成的静态网页可以借助Github服务器发布。</p>
-<ol>
-<li><p>在合适的地方（这里说的一定不是C盘!）新建一个文件夹,用于存放博客文件，比如<code>E:\Study\Apollocat\blog</code>。</p>
-</li>
-<li><p>在该目录下右键，点击<code>Git Bash Here</code>，如果右键没有就直接搜Git bash，<code>cd</code>过去也行。</p>
-</li>
-<li><p>在该目录下输入<code>npm i hexo-cli -g</code>安装Hexo，或许有报错，直接无视就行。</p>
-</li>
-<li><p>安装完输入<code>hexo v</code>出现版本号则安装成功。</p>
-</li>
-<li><p>输入<code>hexo init</code>初始化文件夹，接着输入<code>nmp install</code>安装必要组件。</p>
-</li>
-<li><p>为了检测网站雏形，输入<code>hexo new "hello world"</code>新建文章。打开<code>E:\Study\Apollocat\blog\source\_posts</code>目录，可以看到一个<code>hello world.md</code>，这就是你新建的文章文件。</p>
-</li>
-<li><p>输入<code>hexo g</code>生成静态网页，再输入<code>hexo s</code>打开本地服务器。（Actually, 不生成静态网页，直接输入<code>hexo s</code>进行预览测试也可以）</p>
-<p>这时用浏览器打开<code>localhost:4000</code>就能看到你的第一篇博客了，即便它只有一个标题，且只是静态的。</p>
-<p>最后<code>ctrl+c</code>关闭本地服务器。</p>
-</li>
-</ol>
-<h2 id="链接Github与本地Git"><a href="#链接Github与本地Git" class="headerlink" title="链接Github与本地Git"></a>链接Github与本地Git</h2><p>我们的网站在本地搭建完毕，如果想要发布到Github上就需要用到Git了。前面我们已经在本地安装Git了，现在需要将你的本地Git与Github链接，该步骤我们通过设置ssh秘钥来完成。</p>
-<ol>
-<li><p>鼠标右键打开Git Bash，设置本地Git的用户名和邮箱，注意要与Github相同，别输错了：</p>
-<figure class="highlight plain"><table><tbody><tr><td class="code"><pre><span class="line">git config --global user.name "GitHub用户名"</span><br><span class="line">git config --global user.email "GitHub注册邮箱"</span><br></pre></td></tr></tbody></table></figure>
-<p>可以用以下两条命令，检查一下你有没有输对:</p>
-<figure class="highlight plain"><table><tbody><tr><td class="code"><pre><span class="line">git config user.name</span><br><span class="line">git config user.email</span><br></pre></td></tr></tbody></table></figure></li>
-<li><p>生成ssh秘钥：</p>
-<p>ssh简单而言是一个秘钥，<code>id_rsa</code>是本地电脑的私人秘钥，<code>id_rsa.pub</code>是公共秘钥。公钥放在Github上，当链接本地与Github时，会根据公钥匹配私钥，匹配上则成功链接，之后可以用Git上传本地文件到Github上。</p>
-<p>为啥需要设置ssh秘钥？由于Github要求每次上传文件的都是合法用户，因此每次上传都需要输入账号和密码来进行验证。这里设置ssh秘钥就是为了省去手动验证的步骤，上传时由Git自行匹配私钥与公钥完成验证。</p>
-<p>输入命令生成ssh秘钥：</p>
-<figure class="highlight plain"><table><tbody><tr><td class="code"><pre><span class="line">ssh-keygen -t rsa -C "GitHub注册邮箱"</span><br></pre></td></tr></tbody></table></figure>
-<p>直接回车，默认不设密码。</p>
-</li>
-<li><p>找到生成的.ssh文件夹中的id_rsa.pub秘钥，复制全部内容。</p>
-<p><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/blog_files/img/Pic-Github-Picbed20210416095437.png"><br>回到Github，打开<code>Settings</code>（是头像处的settings）– <code>SSH and GPG Keys</code> – <code>New SSH Key</code>：</p>
-<p><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/blog_files/img/Pic-Github-Picbed20210416101521.png"></p>
-<p>Title随便写，Key部分将刚才复制的id_rsa.pub秘钥粘进去，最后点<code>Add SHH Key</code>。</p>
-</li>
-<li><p>在本地的Git Bash里检测Github公钥是否成功设置，输入<code>ssh git@github.com</code>，如果输出部分出现你的用户名，则设置成功。</p>
-<p><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/blog_files/img/Pic-Github-Picbed20210416102021.png"></p>
-</li>
-</ol>
-<h2 id="发布网站"><a href="#发布网站" class="headerlink" title="发布网站"></a>发布网站</h2><p>此时我们的网站已经在本地搭好了，而且本地Git也和Github成功链接，接下来要做的就是把本地搭的网站发布出去，让网站可以被其他人访问。</p>
-<ol>
-<li><p>打开本地blog根目录下的站点配置文件_config.yml，该文件用于配置博客的基本信息。</p>
-<p>需要注意的是，theme文件夹中有个同名文件，我们称之为主题配置文件，用于配置博客的主题信息。</p>
-</li>
-<li><p>修改站点配置文件_config.yml的最后一行配置并保存：</p>
-<p><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/blog_files/img/Pic-Github/Blogconstruction20210416105511.png"></p>
-<p>这里的<code>repository</code>可以简写为<code>repo</code>，是你Github上创建的博客仓库的路径。</p>
-<p><strong>注意</strong>：这里的branch可以设置为main或者master，但务必与Github仓库中<code>Settings</code>–<code>Pages</code>–<code>Source</code>–<code>Branch</code>相匹配，否则即使上传成功也看不到你的网站。</p>
-<p>修改deploy其实是在给网站部署命令<code>hexo d</code>做相应配置，使用该命令进行部署时，hexo就能知道要把blog部署到Github的博客仓库中。</p>
-</li>
-<li><p>安装Git部署插件：</p>
-<figure class="highlight plain"><table><tbody><tr><td class="code"><pre><span class="line">npm install hexo-deployer-git --save</span><br></pre></td></tr></tbody></table></figure></li>
-<li><p>分别输入以下三条命令：</p>
-<figure class="highlight c"><table><tbody><tr><td class="code"><pre><span class="line">hexo clean <span class="comment">//清除缓存，若是网页正常情况下可以忽略这条命令</span></span><br><span class="line">hexo g <span class="comment">//生成静态网页</span></span><br><span class="line">hexo d <span class="comment">//部署</span></span><br></pre></td></tr></tbody></table></figure>
-<p>之后打开浏览器，输入部分博客仓库路径<code>OrderAngel.github.io</code>，就能看到你发布的博客了。</p>
-</li>
-</ol>
-<h1 id="优化博客框架"><a href="#优化博客框架" class="headerlink" title="优化博客框架"></a>优化博客框架</h1><h2 id="绑定域名"><a href="#绑定域名" class="headerlink" title="绑定域名"></a>绑定域名</h2><p>如果嫌弃<code>balabala.github.io</code>这种统一标识的域名，可以绑定自己的个性化域名。</p>
-<ol>
-<li><p>没有域名的话要先买个域名，百度云阿里云腾讯云之类的都能买，我个人用的是<a href="https://homenew.console.aliyun.com/home/dashboard/ProductAndService">阿里云</a>。</p>
-<p>登陆后进入右上角的<code>控制台</code>，点<code>产品与服务</code> – <code>域名</code> –<code>域名注册</code>。</p>
-<p>把喜欢的域名买下来吧~</p>
-</li>
-<li><p>解析域名：在域名控制台界面下，点击<code>解析</code>。</p>
-<p><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/blog_files/img/Pic-Github/Blogconstruction20210418093157.png"></p>
-<p>在解析设置界面，点击<code>添加记录</code>，添加两条记录：</p>
-<p><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/blog_files/img/Pic-Github/Blogconstruction20210418093651.png"></p>
-<p><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/blog_files/img/Pic-Github/Blogconstruction20210418093743.png"></p>
-<p>记录值这里是：<code>用户名.github.io</code>这个现在可以直接访问的部分仓库路径。</p>
-</li>
-<li><p>回到你的Github博客仓库中，选择<code>Settings</code> – <code>Pages</code>，在<code>Custom domain</code>这里， 输入你购买的域名后保存。</p>
-<p><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/blog_files/img/Pic-Github/Blogconstruction20210418094423.png"></p>
-<p>这里的<code>www.</code>输不输都行。</p>
-</li>
-<li><p>在本地blog文件夹中，blog/source目录下，创建一个记事本文件，输入你购买的域名。</p>
-<p><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/blog_files/img/Pic-Github/Blogconstruction20210418095345.png"></p>
-<p>这里的域名建议不带<code>www.</code>，如果带上以后必须有完整的<code>www.balabala..</code>才能访问，如果不带，以后域名有没有<code>www.</code>都能访问。</p>
-<p>文件命名为<code>CNAME</code>，保存类型为<code>所有文件(*.*)</code>。</p>
-</li>
-<li><p>最后，将我们改动的配置同步到Github中就行了：在本地blog目录下，进入Git Bash命令行(cmd和powershell也行)，输入：</p>
-<figure class="highlight plain"><table><tbody><tr><td class="code"><pre><span class="line">hexo clean </span><br><span class="line">hexo g</span><br><span class="line">hexo d</span><br></pre></td></tr></tbody></table></figure>
-
-<p>现在，打开浏览器输入你自己的域名，就可以直接进入你的博客了~</p>
-</li>
-</ol>
-<h2 id="更换主题"><a href="#更换主题" class="headerlink" title="更换主题"></a>更换主题</h2><p>之前随便选的Hexo主题或许不合心意，但不用care，因为我们还可以更换其他主题。</p>
-<p>可以在<a href="https://hexo.io/themes/">Theme</a>中Pick心水的主题。我个人用的是<a href="https://shen-yu.gitee.io/">Ayer</a>，这位博主的写的主题配置教程很nice。其他常用的，比如Next主题，也很棒。</p>
-<ol>
-<li>如果Theme的博主有相关教程，按说明进行安装配置；如果没有的话，先去Github里下载下来，放在本地的<code>blog\themes</code>目录下：<img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/blog_files/img/Pic-Github/Blogconstruction20210418105207.png"></li>
-</ol>
-<ol start="2">
-<li><p>在本地blog目录下，打开站点配置文件<code>_config.yml</code>，修改theme为你选的主题名，比如ayer。这里注意要与<code>blog\themes</code>目录下该主题命名相同。</p>
-<p><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/blog_files/img/Pic-Github/Blogconstruction20210418105658.png"></p>
-</li>
-<li><p>一般关于该主题的使用教程会在Theme博主的Blog里给出；如果没有的话，搜下有无相关教程，或者自行研究一下本地<code>blog\themes\主题名</code>目录下的主题配置文件<code>_config.yml</code>，主题相关的主要配置都在该文件中。</p>
-<p>关于主题文件夹的目录说明，可以参考<a href="https://hexo.io/zh-cn/docs/themes.html">主题hexo</a>。</p>
-</li>
-<li><p>最后，再次部署网站，还是：</p>
-<figure class="highlight c"><table><tbody><tr><td class="code"><pre><span class="line">hexo s <span class="comment">//本地预览测试：可以先打开本地服务器，在localhost:4000中看看效果</span></span><br><span class="line">hexo clean <span class="comment">//清除缓存</span></span><br><span class="line">hexo g <span class="comment">//生成</span></span><br><span class="line">hexo d <span class="comment">//部署</span></span><br></pre></td></tr></tbody></table></figure></li>
-</ol>
-<h2 id="hexo私人定制"><a href="#hexo私人定制" class="headerlink" title="hexo私人定制"></a>hexo私人定制</h2><p>工欲善其事，必先利其器。在进行一些更高级的私人配置前，我们有必要先了解一下blog文件夹里的文件都是用来干啥的。</p>
-<h3 id="hexo目录说明"><a href="#hexo目录说明" class="headerlink" title="hexo目录说明"></a>hexo目录说明</h3><p>这是我blog文件夹下的目录，由于使用了一段时间，因此也有些私设，请大致参考。</p>
-<figure class="highlight plain"><table><tbody><tr><td class="code"><pre><span class="line">|──_config.yml</span><br><span class="line">|──package.json</span><br><span class="line">|──.deploy_git</span><br><span class="line">|──node_modules</span><br><span class="line">|──public</span><br><span class="line">|──scaffolds</span><br><span class="line">|──source</span><br><span class="line">      |──_posts</span><br><span class="line">      |──categories</span><br><span class="line">      |──pictures</span><br><span class="line">      |──tags</span><br><span class="line">|──themes</span><br><span class="line">      |──landscape</span><br><span class="line">      |──ayer</span><br></pre></td></tr></tbody></table></figure>
-<h4 id="1-config-yml"><a href="#1-config-yml" class="headerlink" title="1. _config.yml"></a>1. _config.yml</h4><p>   站点配置文件，初始化时自动创建。</p>
-<p>   具体配置可参考<a href="https://hexo.io/zh-cn/docs/configuration.html">配置hexo</a></p>
-<h4 id="2-package-json"><a href="#2-package-json" class="headerlink" title="2. package.json"></a>2. package.json</h4><p>   应用程序文件，初始化时自动创建。</p>
-<p>   可以查看hexo版本以及安装的扩展版本。</p>
-<h4 id="3-deploy-git"><a href="#3-deploy-git" class="headerlink" title="3. .deploy_git"></a>3. .deploy_git</h4><p>   对应Github博客仓库中的内容 = 最近一次成功上传到Github上的public文件夹内容。在部署到Github后自动创建。</p>
-<p>   可能出现的与public内容不一致，是由于重新生成但未上传所致。简而言之，public是<code>hexo g</code>生成静态页面的内容，而.deploy_git中是<code>hexo d</code>部署到Github中的内容。</p>
-<h4 id="4-node-modules"><a href="#4-node-modules" class="headerlink" title="4. node_modules"></a>4. node_modules</h4><p>   存放安装的Hexo扩展，还有node .js的各种库。</p>
-<h4 id="5-public"><a href="#5-public" class="headerlink" title="5. public"></a>5. public</h4><p>   执行<code>hexo g</code>命令后，Hexo会解析source文件夹和当前的Theme，从而生成静态网页，该内容存放于public文件夹中。</p>
-<h4 id="6-scaffolds"><a href="#6-scaffolds" class="headerlink" title="6. scaffolds"></a>6. scaffolds</h4><p>   模板文件夹。<br>   内有页面模板<code>page.md</code>、文章模板<code>post.md</code>、草稿模板<code>draft.md</code>三个文件。<br>   具体可参考<a href="https://hexo.io/zh-cn/docs/templates.html">模板hexo</a>。</p>
-<h4 id="7-source"><a href="#7-source" class="headerlink" title="7. source"></a>7. source</h4><p>   存放用户资源。</p>
-<ol>
-<li><p>_post</p>
-<p>存放文章。<br>其中markdown文件(md)、html文件、org文件在<code>hexo g</code>生成页面过程中会被解析并拷贝到public文件夹中，最终通过<code>hexo d</code>发布。</p>
-</li>
-<li><p>其他_balabala文件夹/文件</p>
-<p>生成时将会被忽略。</p>
-<p>因此可以在此目录下创建_drafts文件夹来存放草稿。</p>
-</li>
-<li><p>其他非_balabala文件夹/文件</p>
-<p>生成时会被拷贝到public中。</p>
-<p>除了文章外，还会有图片、标签等用户资源，可以使用<code>hexo new page pilipili</code>来新建子目录<code>pilipili</code>。</p>
-<p>比如我的目录下就有categories、pictures、tags等子目录。</p>
-</li>
-</ol>
-<h4 id="themes"><a href="#themes" class="headerlink" title="themes"></a>themes</h4><p>   主题文件夹。<br>   我使用的是Ayer主题，因此在我的themes文件夹下，除了默认主题lanscape外，还有ayer文件夹。</p>
-<h3 id="可以考虑的定制"><a href="#可以考虑的定制" class="headerlink" title="可以考虑的定制"></a>可以考虑的定制</h3><h4 id="1-对-config-yml进行修改"><a href="#1-对-config-yml进行修改" class="headerlink" title="1. 对_config.yml进行修改"></a>1. 对_config.yml进行修改</h4><p>   对blog目录下的站点配置文件_config.yml进行个性化修改，具体可以参考<a href="https://hexo.io/zh-cn/docs/configuration.html">配置hexo</a>。</p>
-<h5 id="网站Site："><a href="#网站Site：" class="headerlink" title="网站Site："></a>网站Site：</h5><p>我们可以对文件中的site部分进行修改，比如：</p>
-<p><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/blog_files/img/Pic-Github/Blogconstruction20210418121141.png"></p>
-<h5 id="网址URL"><a href="#网址URL" class="headerlink" title="网址URL"></a>网址URL</h5><p>将url改成自己的网站域名，如：<code>http://apollomao.com</code>。</p>
-<p>还可以对网址的永久链接格式进行修改，具体可参考<a href="https://hexo.io/zh-cn/docs/permalinks">永久链接</a></p>
-<h4 id="2-对scaffolds文件夹中的模板文件进行修改"><a href="#2-对scaffolds文件夹中的模板文件进行修改" class="headerlink" title="2. 对scaffolds文件夹中的模板文件进行修改"></a>2. 对scaffolds文件夹中的模板文件进行修改</h4><p>所谓模板，即就是预定义，可以在每创建一篇文章后，预定义文章头部，省事。</p>
-<p>比如，我的文章模板<code>post.md</code>为：</p>
-<p><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/blog_files/img/Pic-Github/Blogconstruction/Hexo20210418230721.png"></p>
-<p>那么我每次<code>hexo new post balabala</code>生成新的文章，该文章的头部就会是：</p>
-<p><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/blog_files/img/Pic-Github/Blogconstruction/Hexo20210418230825.png"></p>
-<p>只需要按照需求补充一下tages、categories等值即可：</p>
-<p><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/blog_files/img/Pic-Github/Blogconstruction/Hexo20210418231042.png"></p>
-<p>网页模板<code>page.md</code>和草稿模板<code>draft.md</code>也可参考<code>post.md</code>进行设置。创建命令分别是<code>hexo new page balabala</code>和<code>hexo new draft balabala</code>。</p>
-<h4 id="3-其他"><a href="#3-其他" class="headerlink" title="3. 其他"></a>3. 其他</h4><p>还有一些常见的定制策略，比如加背景、加侧栏菜单、加背景音乐、加404界面等等，部分功能可能主题自带的，其他感兴趣的可以自行搜索~（开头的<a href="https://www.cnblogs.com/shwee/p/11421156.html">参考教程5</a>中包含一些，我没有尝试，仅供参考）</p>
-<h2 id="图床"><a href="#图床" class="headerlink" title="图床"></a>图床</h2><p>图床是可以上传图片的服务器。常用的图床有很多，可以参考开头的<a href="https://www.jianshu.com/p/bff6638e450f">图床工具推荐</a>选择合适的图床和图床工具。</p>
-<p>我个人用的是Github + PicGo的组合，因为省钱233</p>
-<p>具体安装教程可以参考开头的<a href="https://sunhwee.com/posts/1788dd4a.html">PicGo+GitHub：你的最佳免费图床选择-洪卫</a>。</p>
-<p>附上我的PicGo配置仅供参考：</p>
-<p><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/blog_files/img/Pic-Github/Blogconstruction/Hexo20210419001244.png"></p>
-<p>需要注意的是，与参考教程不同，在配置PicGo阶段，设定分支名需要与Github仓库中<code>Settings</code>–<code>Pages</code>–<code>Source</code>–<code>Branch</code>相对应，而不是统一设master。</p>
-<ul>
-<li>Note<ul>
-<li>PicGo为了稳定期间最好别装测试版。</li>
-<li>不要试图装watermark插件，别问我怎么知道的… orz</li>
-</ul>
-</li>
-</ul>
-<h1 id="牛刀小试"><a href="#牛刀小试" class="headerlink" title="牛刀小试"></a>牛刀小试</h1><p>现在我们来正经发一篇文章。</p>
-<h2 id="Markdown基础"><a href="#Markdown基础" class="headerlink" title="Markdown基础"></a>Markdown基础</h2><p>博客文章主要用Markdown编写，有很多写作工具，我个人用的是VSCode。</p>
-<p>零基础的同学可以参考<a href="https://zhuanlan.zhihu.com/p/56943330">使用vscode开始Markdown写作之旅</a>进行学习，亲测很好用~</p>
-<p>附上其中的基础语法仅供参考：</p>
-<p><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/blog_files/img/Pic-Github/Blogconstruction/Hexo20210419002530.png"></p>
-<p>等你正式开始写文章的时候，具体一些用法还可以参考<a href="http://itmyhome.com/markdown/index.html">Learning-Markdown (Markdown 入门参考)</a></p>
-<ul>
-<li>最后再贴出来一个范例：</li>
-</ul>
-<p><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/blog_files/img/Pic-Github/Blogconstruction/Hexo20210419003218.png"></p>
-<p>这部分除了基础语法，我还用到了插入链接 <code>[title](网址)</code>，以及插入图片 <code>![title](图床地址or本地链接)</code>(直接从PicGo图床里复制就行)。</p>
-<h2 id="正经发布一篇文章"><a href="#正经发布一篇文章" class="headerlink" title="正经发布一篇文章"></a>正经发布一篇文章</h2><p>get了最基础的markdown语法后，我们来走一遍完整流程。</p>
-<ol>
-<li><p>创建一篇文章”博客简介”</p>
-<p>在本地blog目录下，右键进入Git Bash，输入：</p>
-<figure class="highlight plain"><table><tbody><tr><td class="code"><pre><span class="line">hexo new post "博客简介"</span><br></pre></td></tr></tbody></table></figure>
-<p><strong>注意</strong>：</p>
-<ul>
-<li><p>post是默认值可以省略。</p>
-</li>
-<li><p>如果title有空格，必须要加双引号，否则双引号可以省略。</p>
-</li>
-</ul>
-</li>
-<li><p>编辑文章</p>
-<p>在 blog\source_posts 路径下生成了<code>博客简介.md</code>文件，用vscode打开，编辑自己的文章。</p>
-<p>比如我的博客简介是这么写的（仅供参考）：</p>
-<p><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/blog_files/img/Pic-Github/Blogconstruction/Hexo20210419093855.png"></p>
-<ul>
-<li><p>可以在文章任意位置添加<code>&lt;!--more--&gt;</code>，首页只会显示more前的内容，more后的内容点击阅读全文后展示。</p>
-</li>
-<li><p>如果想给文章添加分类和标签，可以在文章头部补充，比如我是这么写的：<br><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/blog_files/img/Pic-Github/Blogconstruction/Hexo20210419093519.png"></p>
-</li>
-</ul>
-</li>
-<li><p>本地预览</p>
-<p>写好文章后保存。</p>
-<p><code>hexo s</code>启动本地服务器，在 <a href="http://localhost:4000/">http://localhost:4000</a> 进行预览测试。</p>
-</li>
-<li><p>发布文章<br>Finally!<br>输入以下命令，将写好的“博客简介”发布到网站上吧~</p>
-<figure class="highlight plain"><table><tbody><tr><td class="code"><pre><span class="line">hexo clean</span><br><span class="line">hexo g</span><br><span class="line">hexo d</span><br></pre></td></tr></tbody></table></figure>
-<p>此时，在浏览器访问自己的博客域名，就可以看到我们写的第一篇正经文章啦~ <span class="github-emoji"><span>☀</span><img src="https://github.githubassets.com/images/icons/emoji/unicode/2600.png?v8" aria-hidden="true" onerror="this.parent.classList.add('github-emoji-fallback')"></span><span class="github-emoji"><span>😼</span><img src="https://github.githubassets.com/images/icons/emoji/unicode/1f63c.png?v8" aria-hidden="true" onerror="this.parent.classList.add('github-emoji-fallback')"></span></p>
-<p><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/blog_files/img/Pic-Github/Blogconstruction/Hexo20210419101933.png"><br><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/blog_files/img/Pic-Github/Blogconstruction/Hexo20210419101753.png"></p>
-<ul>
-<li>附上<a href="https://sunhwee.com/posts/a927e90e.html#toc-heading-5">Markdown Emoji表情语法速查表</a></li>
-</ul>
-</li>
-</ol>
-<h1 id="后记"><a href="#后记" class="headerlink" title="后记"></a>后记</h1><p>Anyway，终于搞完了~</p>
-<p>4.12号开始搭，断断续续搞，也遇到了不少bug，4.14才搭的差不多，然后这篇教程又断断续续写了4天 orz</p>
-<p>希望能对你有所帮助，欢迎批评指正，爱你ღ( ´･ᴗ･` )</p>
-<hr>
-<p>阿波罗猫</p>
-<p>20210419</p>
-]]></content>
-      <categories>
-        <category>教程</category>
-      </categories>
-      <tags>
-        <tag>教程</tag>
-        <tag>Hexo</tag>
       </tags>
   </entry>
   <entry>
@@ -1973,8 +1858,291 @@
         <category>科研</category>
       </categories>
       <tags>
-        <tag>SLAM</tag>
         <tag>科研</tag>
+        <tag>SLAM</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>Hexo+Github博客搭建教程</title>
+    <url>/Hexo-Github%E5%8D%9A%E5%AE%A2%E6%90%AD%E5%BB%BA%E6%95%99%E7%A8%8B/</url>
+    <content><![CDATA[<h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>新手小白，第一次搭博客，先向前辈们大佬们隔空致敬。</p>
+<p>搭建博客有很多种方法，我选择的是Hexo静态博客框架，利用Github Page服务器，比较节省时间和金钱，可以更加专注于内容本身。</p>
+<span id="more"></span>
+
+<p>首先附上参考链接：</p>
+<table>
+<thead>
+<tr>
+<th align="center">类型</th>
+<th align="left">链接</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">概述</td>
+<td align="left">1. <a href="https://zoomyale.com/2016/why_blogging/">为什么要在老掉牙的独立博客上写东西</a></td>
+</tr>
+<tr>
+<td align="center">参考教程</td>
+<td align="left">1. <a href="https://godweiyang.com/2018/04/13/hexo-blog/">超详细Hexo+Github博客搭建小白教程-韦阳</a><br>2. <a href="https://zhuanlan.zhihu.com/p/26625249">GitHub+Hexo 搭建个人网站详细教程 - 知乎</a><br>3. <a href="https://www.cnblogs.com/shwee/p/11421156.html">Hexo+Github: 个人博客网站搭建完全教程- 博客园</a><br>4. <a href="https://segmentfault.com/a/1190000021979631">超级详细Hexo+GitHub+阿里云域名的博客搭建教程，新手也能轻松学会</a><br>5. <a href="https://www.cnblogs.com/shwee/p/11421156.html">Hexo+Github: 个人博客网站搭建完全教程</a><br>6. <a href="https://winney07.github.io/2018/08/02/%E5%9C%A8Hexo%E5%8D%9A%E5%AE%A2%E4%B8%AD%E5%8F%91%E5%B8%83%E6%96%87%E7%AB%A0/">在Hexo博客中发布文章</a></td>
+</tr>
+<tr>
+<td align="center">个性化</td>
+<td align="left">1. <a href="https://shen-yu.gitee.io/2019/ayer/">Ayer主题</a><br>2. <a href="https://yuchen-lea.github.io/2016-01-18-hexo-dir-struct/">hexo目录结构小探</a></td>
+</tr>
+<tr>
+<td align="center">写作</td>
+<td align="left">1. <a href="http://itmyhome.com/markdown/index.html">Markdown 入门参考</a><br>2. <a href="https://zhuanlan.zhihu.com/p/56943330">使用vscode开始Markdown写作之旅 - 知乎</a><br>3. <a href="https://hexo.io/zh-cn/docs/">Hexo-文档</a></td>
+</tr>
+<tr>
+<td align="center">图床</td>
+<td align="left">1. <a href="https://www.jianshu.com/p/bff6638e450f">图床工具推荐</a><br>2. <a href="https://sunhwee.com/posts/1788dd4a.html">PicGo+GitHub：你的最佳免费图床选择-洪卫</a></td>
+</tr>
+</tbody></table>
+<h1 id="搭建博客框架"><a href="#搭建博客框架" class="headerlink" title="搭建博客框架"></a>搭建博客框架</h1><h2 id="安装Node-js"><a href="#安装Node-js" class="headerlink" title="安装Node.js"></a>安装Node.js</h2><p>Hexo基于Node.js，首先要下载<a href="https://nodejs.org/en/download/">Node.js安装包</a>（建议选LTS版本，current版本或许无法安装一些插件），改一下安装路径，其他安装选项选择默认就行。</p>
+<p>安装完成后，<code>win+R</code>打开命令行，输入<code>node -v</code>和<code>npm -v</code>，显示版本号则安装成功。</p>
+<h2 id="添加镜像"><a href="#添加镜像" class="headerlink" title="添加镜像"></a>添加镜像</h2><p>如果没有梯子，npm部分可以用阿里国内镜像加速。</p>
+<figure class="highlight plain"><table><tbody><tr><td class="code"><pre><span class="line">npm config set registry https://registry.npm.taobao.org</span><br></pre></td></tr></tbody></table></figure>
+
+<h2 id="安装Git"><a href="#安装Git" class="headerlink" title="安装Git"></a>安装Git</h2><p>为了将本地网页文件上传到Github上，需要安装分布式版本控制工具<a href="https://git-scm.com/download/win">Git</a>。</p>
+<p>有兴趣深入了解Git的话，可以参考廖雪峰老师的<a href="https://www.liaoxuefeng.com/wiki/896043488029600">Git教程</a></p>
+<p>安装完成后在命令行输入git –version验证是否安装成功。</p>
+<h2 id="Github部分"><a href="#Github部分" class="headerlink" title="Github部分"></a>Github部分</h2><p>每个程序猿都该有个Github啦，毕竟这就是猿的浪漫了~如果没有也没有关系，你可以从现在开始拥有这份独特的浪漫。</p>
+<ol>
+<li><p>注册一个<a href="https://github.com/">Github</a>账号，强烈建议名字正常一点。</p>
+</li>
+<li><p>新建一个仓库：</p>
+<div align="center">
+<img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/blog_files/img/Pic-Github-Picbed20210415174145.png" width="300/">
+</div></li>
+<li><p>仓库基本配置如下：</p>
+<p>这里要注意的是：仓库的命名一定要跟用户名一样！</p>
+<div align="center">
+<img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/blog_files/img/Pic-Github-Picbed20210415222443.png">
+</div></li>
+<li><p>在新建好的仓库界面选择<code>setting</code>–<code>Pages</code>–<code>Choose a theme</code>，这里的主题可以随便选一个，后期可以换成别的。</p>
+</li>
+<li><p>刷新一下，<code>Pages</code>界面会出现你自己的网页链接，比如：<code>Your site is ready to be published at http://OrderAngel.com/OrderAngel.github.io</code></p>
+<p>虽然简陋，但是这就是你的博客啦~</p>
+</li>
+</ol>
+<h2 id="安装Hexo，生成静态框架"><a href="#安装Hexo，生成静态框架" class="headerlink" title="安装Hexo，生成静态框架"></a>安装Hexo，生成静态框架</h2><p>Hexo是一款基于Node.js的静态博客框架，生成的静态网页可以借助Github服务器发布。</p>
+<ol>
+<li><p>在合适的地方（这里说的一定不是C盘!）新建一个文件夹,用于存放博客文件，比如<code>E:\Study\Apollocat\blog</code>。</p>
+</li>
+<li><p>在该目录下右键，点击<code>Git Bash Here</code>，如果右键没有就直接搜Git bash，<code>cd</code>过去也行。</p>
+</li>
+<li><p>在该目录下输入<code>npm i hexo-cli -g</code>安装Hexo，或许有报错，直接无视就行。</p>
+</li>
+<li><p>安装完输入<code>hexo v</code>出现版本号则安装成功。</p>
+</li>
+<li><p>输入<code>hexo init</code>初始化文件夹，接着输入<code>nmp install</code>安装必要组件。</p>
+</li>
+<li><p>为了检测网站雏形，输入<code>hexo new "hello world"</code>新建文章。打开<code>E:\Study\Apollocat\blog\source\_posts</code>目录，可以看到一个<code>hello world.md</code>，这就是你新建的文章文件。</p>
+</li>
+<li><p>输入<code>hexo g</code>生成静态网页，再输入<code>hexo s</code>打开本地服务器。（Actually, 不生成静态网页，直接输入<code>hexo s</code>进行预览测试也可以）</p>
+<p>这时用浏览器打开<code>localhost:4000</code>就能看到你的第一篇博客了，即便它只有一个标题，且只是静态的。</p>
+<p>最后<code>ctrl+c</code>关闭本地服务器。</p>
+</li>
+</ol>
+<h2 id="链接Github与本地Git"><a href="#链接Github与本地Git" class="headerlink" title="链接Github与本地Git"></a>链接Github与本地Git</h2><p>我们的网站在本地搭建完毕，如果想要发布到Github上就需要用到Git了。前面我们已经在本地安装Git了，现在需要将你的本地Git与Github链接，该步骤我们通过设置ssh秘钥来完成。</p>
+<ol>
+<li><p>鼠标右键打开Git Bash，设置本地Git的用户名和邮箱，注意要与Github相同，别输错了：</p>
+<figure class="highlight plain"><table><tbody><tr><td class="code"><pre><span class="line">git config --global user.name "GitHub用户名"</span><br><span class="line">git config --global user.email "GitHub注册邮箱"</span><br></pre></td></tr></tbody></table></figure>
+<p>可以用以下两条命令，检查一下你有没有输对:</p>
+<figure class="highlight plain"><table><tbody><tr><td class="code"><pre><span class="line">git config user.name</span><br><span class="line">git config user.email</span><br></pre></td></tr></tbody></table></figure></li>
+<li><p>生成ssh秘钥：</p>
+<p>ssh简单而言是一个秘钥，<code>id_rsa</code>是本地电脑的私人秘钥，<code>id_rsa.pub</code>是公共秘钥。公钥放在Github上，当链接本地与Github时，会根据公钥匹配私钥，匹配上则成功链接，之后可以用Git上传本地文件到Github上。</p>
+<p>为啥需要设置ssh秘钥？由于Github要求每次上传文件的都是合法用户，因此每次上传都需要输入账号和密码来进行验证。这里设置ssh秘钥就是为了省去手动验证的步骤，上传时由Git自行匹配私钥与公钥完成验证。</p>
+<p>输入命令生成ssh秘钥：</p>
+<figure class="highlight plain"><table><tbody><tr><td class="code"><pre><span class="line">ssh-keygen -t rsa -C "GitHub注册邮箱"</span><br></pre></td></tr></tbody></table></figure>
+<p>直接回车，默认不设密码。</p>
+</li>
+<li><p>找到生成的.ssh文件夹中的id_rsa.pub秘钥，复制全部内容。</p>
+<p><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/blog_files/img/Pic-Github-Picbed20210416095437.png"><br>回到Github，打开<code>Settings</code>（是头像处的settings）– <code>SSH and GPG Keys</code> – <code>New SSH Key</code>：</p>
+<p><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/blog_files/img/Pic-Github-Picbed20210416101521.png"></p>
+<p>Title随便写，Key部分将刚才复制的id_rsa.pub秘钥粘进去，最后点<code>Add SHH Key</code>。</p>
+</li>
+<li><p>在本地的Git Bash里检测Github公钥是否成功设置，输入<code>ssh git@github.com</code>，如果输出部分出现你的用户名，则设置成功。</p>
+<p><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/blog_files/img/Pic-Github-Picbed20210416102021.png"></p>
+</li>
+</ol>
+<h2 id="发布网站"><a href="#发布网站" class="headerlink" title="发布网站"></a>发布网站</h2><p>此时我们的网站已经在本地搭好了，而且本地Git也和Github成功链接，接下来要做的就是把本地搭的网站发布出去，让网站可以被其他人访问。</p>
+<ol>
+<li><p>打开本地blog根目录下的站点配置文件_config.yml，该文件用于配置博客的基本信息。</p>
+<p>需要注意的是，theme文件夹中有个同名文件，我们称之为主题配置文件，用于配置博客的主题信息。</p>
+</li>
+<li><p>修改站点配置文件_config.yml的最后一行配置并保存：</p>
+<p><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/blog_files/img/Pic-Github/Blogconstruction20210416105511.png"></p>
+<p>这里的<code>repository</code>可以简写为<code>repo</code>，是你Github上创建的博客仓库的路径。</p>
+<p><strong>注意</strong>：这里的branch可以设置为main或者master，但务必与Github仓库中<code>Settings</code>–<code>Pages</code>–<code>Source</code>–<code>Branch</code>相匹配，否则即使上传成功也看不到你的网站。</p>
+<p>修改deploy其实是在给网站部署命令<code>hexo d</code>做相应配置，使用该命令进行部署时，hexo就能知道要把blog部署到Github的博客仓库中。</p>
+</li>
+<li><p>安装Git部署插件：</p>
+<figure class="highlight plain"><table><tbody><tr><td class="code"><pre><span class="line">npm install hexo-deployer-git --save</span><br></pre></td></tr></tbody></table></figure></li>
+<li><p>分别输入以下三条命令：</p>
+<figure class="highlight c"><table><tbody><tr><td class="code"><pre><span class="line">hexo clean <span class="comment">//清除缓存，若是网页正常情况下可以忽略这条命令</span></span><br><span class="line">hexo g <span class="comment">//生成静态网页</span></span><br><span class="line">hexo d <span class="comment">//部署</span></span><br></pre></td></tr></tbody></table></figure>
+<p>之后打开浏览器，输入部分博客仓库路径<code>OrderAngel.github.io</code>，就能看到你发布的博客了。</p>
+</li>
+</ol>
+<h1 id="优化博客框架"><a href="#优化博客框架" class="headerlink" title="优化博客框架"></a>优化博客框架</h1><h2 id="绑定域名"><a href="#绑定域名" class="headerlink" title="绑定域名"></a>绑定域名</h2><p>如果嫌弃<code>balabala.github.io</code>这种统一标识的域名，可以绑定自己的个性化域名。</p>
+<ol>
+<li><p>没有域名的话要先买个域名，百度云阿里云腾讯云之类的都能买，我个人用的是<a href="https://homenew.console.aliyun.com/home/dashboard/ProductAndService">阿里云</a>。</p>
+<p>登陆后进入右上角的<code>控制台</code>，点<code>产品与服务</code> – <code>域名</code> –<code>域名注册</code>。</p>
+<p>把喜欢的域名买下来吧~</p>
+</li>
+<li><p>解析域名：在域名控制台界面下，点击<code>解析</code>。</p>
+<p><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/blog_files/img/Pic-Github/Blogconstruction20210418093157.png"></p>
+<p>在解析设置界面，点击<code>添加记录</code>，添加两条记录：</p>
+<p><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/blog_files/img/Pic-Github/Blogconstruction20210418093651.png"></p>
+<p><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/blog_files/img/Pic-Github/Blogconstruction20210418093743.png"></p>
+<p>记录值这里是：<code>用户名.github.io</code>这个现在可以直接访问的部分仓库路径。</p>
+</li>
+<li><p>回到你的Github博客仓库中，选择<code>Settings</code> – <code>Pages</code>，在<code>Custom domain</code>这里， 输入你购买的域名后保存。</p>
+<p><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/blog_files/img/Pic-Github/Blogconstruction20210418094423.png"></p>
+<p>这里的<code>www.</code>输不输都行。</p>
+</li>
+<li><p>在本地blog文件夹中，blog/source目录下，创建一个记事本文件，输入你购买的域名。</p>
+<p><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/blog_files/img/Pic-Github/Blogconstruction20210418095345.png"></p>
+<p>这里的域名建议不带<code>www.</code>，如果带上以后必须有完整的<code>www.balabala..</code>才能访问，如果不带，以后域名有没有<code>www.</code>都能访问。</p>
+<p>文件命名为<code>CNAME</code>，保存类型为<code>所有文件(*.*)</code>。</p>
+</li>
+<li><p>最后，将我们改动的配置同步到Github中就行了：在本地blog目录下，进入Git Bash命令行(cmd和powershell也行)，输入：</p>
+<figure class="highlight plain"><table><tbody><tr><td class="code"><pre><span class="line">hexo clean </span><br><span class="line">hexo g</span><br><span class="line">hexo d</span><br></pre></td></tr></tbody></table></figure>
+
+<p>现在，打开浏览器输入你自己的域名，就可以直接进入你的博客了~</p>
+</li>
+</ol>
+<h2 id="更换主题"><a href="#更换主题" class="headerlink" title="更换主题"></a>更换主题</h2><p>之前随便选的Hexo主题或许不合心意，但不用care，因为我们还可以更换其他主题。</p>
+<p>可以在<a href="https://hexo.io/themes/">Theme</a>中Pick心水的主题。我个人用的是<a href="https://shen-yu.gitee.io/">Ayer</a>，这位博主的写的主题配置教程很nice。其他常用的，比如Next主题，也很棒。</p>
+<ol>
+<li>如果Theme的博主有相关教程，按说明进行安装配置；如果没有的话，先去Github里下载下来，放在本地的<code>blog\themes</code>目录下：<img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/blog_files/img/Pic-Github/Blogconstruction20210418105207.png"></li>
+</ol>
+<ol start="2">
+<li><p>在本地blog目录下，打开站点配置文件<code>_config.yml</code>，修改theme为你选的主题名，比如ayer。这里注意要与<code>blog\themes</code>目录下该主题命名相同。</p>
+<p><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/blog_files/img/Pic-Github/Blogconstruction20210418105658.png"></p>
+</li>
+<li><p>一般关于该主题的使用教程会在Theme博主的Blog里给出；如果没有的话，搜下有无相关教程，或者自行研究一下本地<code>blog\themes\主题名</code>目录下的主题配置文件<code>_config.yml</code>，主题相关的主要配置都在该文件中。</p>
+<p>关于主题文件夹的目录说明，可以参考<a href="https://hexo.io/zh-cn/docs/themes.html">主题hexo</a>。</p>
+</li>
+<li><p>最后，再次部署网站，还是：</p>
+<figure class="highlight c"><table><tbody><tr><td class="code"><pre><span class="line">hexo s <span class="comment">//本地预览测试：可以先打开本地服务器，在localhost:4000中看看效果</span></span><br><span class="line">hexo clean <span class="comment">//清除缓存</span></span><br><span class="line">hexo g <span class="comment">//生成</span></span><br><span class="line">hexo d <span class="comment">//部署</span></span><br></pre></td></tr></tbody></table></figure></li>
+</ol>
+<h2 id="hexo私人定制"><a href="#hexo私人定制" class="headerlink" title="hexo私人定制"></a>hexo私人定制</h2><p>工欲善其事，必先利其器。在进行一些更高级的私人配置前，我们有必要先了解一下blog文件夹里的文件都是用来干啥的。</p>
+<h3 id="hexo目录说明"><a href="#hexo目录说明" class="headerlink" title="hexo目录说明"></a>hexo目录说明</h3><p>这是我blog文件夹下的目录，由于使用了一段时间，因此也有些私设，请大致参考。</p>
+<figure class="highlight plain"><table><tbody><tr><td class="code"><pre><span class="line">|──_config.yml</span><br><span class="line">|──package.json</span><br><span class="line">|──.deploy_git</span><br><span class="line">|──node_modules</span><br><span class="line">|──public</span><br><span class="line">|──scaffolds</span><br><span class="line">|──source</span><br><span class="line">      |──_posts</span><br><span class="line">      |──categories</span><br><span class="line">      |──pictures</span><br><span class="line">      |──tags</span><br><span class="line">|──themes</span><br><span class="line">      |──landscape</span><br><span class="line">      |──ayer</span><br></pre></td></tr></tbody></table></figure>
+<h4 id="1-config-yml"><a href="#1-config-yml" class="headerlink" title="1. _config.yml"></a>1. _config.yml</h4><p>   站点配置文件，初始化时自动创建。</p>
+<p>   具体配置可参考<a href="https://hexo.io/zh-cn/docs/configuration.html">配置hexo</a></p>
+<h4 id="2-package-json"><a href="#2-package-json" class="headerlink" title="2. package.json"></a>2. package.json</h4><p>   应用程序文件，初始化时自动创建。</p>
+<p>   可以查看hexo版本以及安装的扩展版本。</p>
+<h4 id="3-deploy-git"><a href="#3-deploy-git" class="headerlink" title="3. .deploy_git"></a>3. .deploy_git</h4><p>   对应Github博客仓库中的内容 = 最近一次成功上传到Github上的public文件夹内容。在部署到Github后自动创建。</p>
+<p>   可能出现的与public内容不一致，是由于重新生成但未上传所致。简而言之，public是<code>hexo g</code>生成静态页面的内容，而.deploy_git中是<code>hexo d</code>部署到Github中的内容。</p>
+<h4 id="4-node-modules"><a href="#4-node-modules" class="headerlink" title="4. node_modules"></a>4. node_modules</h4><p>   存放安装的Hexo扩展，还有node .js的各种库。</p>
+<h4 id="5-public"><a href="#5-public" class="headerlink" title="5. public"></a>5. public</h4><p>   执行<code>hexo g</code>命令后，Hexo会解析source文件夹和当前的Theme，从而生成静态网页，该内容存放于public文件夹中。</p>
+<h4 id="6-scaffolds"><a href="#6-scaffolds" class="headerlink" title="6. scaffolds"></a>6. scaffolds</h4><p>   模板文件夹。<br>   内有页面模板<code>page.md</code>、文章模板<code>post.md</code>、草稿模板<code>draft.md</code>三个文件。<br>   具体可参考<a href="https://hexo.io/zh-cn/docs/templates.html">模板hexo</a>。</p>
+<h4 id="7-source"><a href="#7-source" class="headerlink" title="7. source"></a>7. source</h4><p>   存放用户资源。</p>
+<ol>
+<li><p>_post</p>
+<p>存放文章。<br>其中markdown文件(md)、html文件、org文件在<code>hexo g</code>生成页面过程中会被解析并拷贝到public文件夹中，最终通过<code>hexo d</code>发布。</p>
+</li>
+<li><p>其他_balabala文件夹/文件</p>
+<p>生成时将会被忽略。</p>
+<p>因此可以在此目录下创建_drafts文件夹来存放草稿。</p>
+</li>
+<li><p>其他非_balabala文件夹/文件</p>
+<p>生成时会被拷贝到public中。</p>
+<p>除了文章外，还会有图片、标签等用户资源，可以使用<code>hexo new page pilipili</code>来新建子目录<code>pilipili</code>。</p>
+<p>比如我的目录下就有categories、pictures、tags等子目录。</p>
+</li>
+</ol>
+<h4 id="themes"><a href="#themes" class="headerlink" title="themes"></a>themes</h4><p>   主题文件夹。<br>   我使用的是Ayer主题，因此在我的themes文件夹下，除了默认主题lanscape外，还有ayer文件夹。</p>
+<h3 id="可以考虑的定制"><a href="#可以考虑的定制" class="headerlink" title="可以考虑的定制"></a>可以考虑的定制</h3><h4 id="1-对-config-yml进行修改"><a href="#1-对-config-yml进行修改" class="headerlink" title="1. 对_config.yml进行修改"></a>1. 对_config.yml进行修改</h4><p>   对blog目录下的站点配置文件_config.yml进行个性化修改，具体可以参考<a href="https://hexo.io/zh-cn/docs/configuration.html">配置hexo</a>。</p>
+<h5 id="网站Site："><a href="#网站Site：" class="headerlink" title="网站Site："></a>网站Site：</h5><p>我们可以对文件中的site部分进行修改，比如：</p>
+<p><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/blog_files/img/Pic-Github/Blogconstruction20210418121141.png"></p>
+<h5 id="网址URL"><a href="#网址URL" class="headerlink" title="网址URL"></a>网址URL</h5><p>将url改成自己的网站域名，如：<code>http://apollomao.com</code>。</p>
+<p>还可以对网址的永久链接格式进行修改，具体可参考<a href="https://hexo.io/zh-cn/docs/permalinks">永久链接</a></p>
+<h4 id="2-对scaffolds文件夹中的模板文件进行修改"><a href="#2-对scaffolds文件夹中的模板文件进行修改" class="headerlink" title="2. 对scaffolds文件夹中的模板文件进行修改"></a>2. 对scaffolds文件夹中的模板文件进行修改</h4><p>所谓模板，即就是预定义，可以在每创建一篇文章后，预定义文章头部，省事。</p>
+<p>比如，我的文章模板<code>post.md</code>为：</p>
+<p><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/blog_files/img/Pic-Github/Blogconstruction/Hexo20210418230721.png"></p>
+<p>那么我每次<code>hexo new post balabala</code>生成新的文章，该文章的头部就会是：</p>
+<p><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/blog_files/img/Pic-Github/Blogconstruction/Hexo20210418230825.png"></p>
+<p>只需要按照需求补充一下tages、categories等值即可：</p>
+<p><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/blog_files/img/Pic-Github/Blogconstruction/Hexo20210418231042.png"></p>
+<p>网页模板<code>page.md</code>和草稿模板<code>draft.md</code>也可参考<code>post.md</code>进行设置。创建命令分别是<code>hexo new page balabala</code>和<code>hexo new draft balabala</code>。</p>
+<h4 id="3-其他"><a href="#3-其他" class="headerlink" title="3. 其他"></a>3. 其他</h4><p>还有一些常见的定制策略，比如加背景、加侧栏菜单、加背景音乐、加404界面等等，部分功能可能主题自带的，其他感兴趣的可以自行搜索~（开头的<a href="https://www.cnblogs.com/shwee/p/11421156.html">参考教程5</a>中包含一些，我没有尝试，仅供参考）</p>
+<h2 id="图床"><a href="#图床" class="headerlink" title="图床"></a>图床</h2><p>图床是可以上传图片的服务器。常用的图床有很多，可以参考开头的<a href="https://www.jianshu.com/p/bff6638e450f">图床工具推荐</a>选择合适的图床和图床工具。</p>
+<p>我个人用的是Github + PicGo的组合，因为省钱233</p>
+<p>具体安装教程可以参考开头的<a href="https://sunhwee.com/posts/1788dd4a.html">PicGo+GitHub：你的最佳免费图床选择-洪卫</a>。</p>
+<p>附上我的PicGo配置仅供参考：</p>
+<p><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/blog_files/img/Pic-Github/Blogconstruction/Hexo20210419001244.png"></p>
+<p>需要注意的是，与参考教程不同，在配置PicGo阶段，设定分支名需要与Github仓库中<code>Settings</code>–<code>Pages</code>–<code>Source</code>–<code>Branch</code>相对应，而不是统一设master。</p>
+<ul>
+<li>Note<ul>
+<li>PicGo为了稳定期间最好别装测试版。</li>
+<li>不要试图装watermark插件，别问我怎么知道的… orz</li>
+</ul>
+</li>
+</ul>
+<h1 id="牛刀小试"><a href="#牛刀小试" class="headerlink" title="牛刀小试"></a>牛刀小试</h1><p>现在我们来正经发一篇文章。</p>
+<h2 id="Markdown基础"><a href="#Markdown基础" class="headerlink" title="Markdown基础"></a>Markdown基础</h2><p>博客文章主要用Markdown编写，有很多写作工具，我个人用的是VSCode。</p>
+<p>零基础的同学可以参考<a href="https://zhuanlan.zhihu.com/p/56943330">使用vscode开始Markdown写作之旅</a>进行学习，亲测很好用~</p>
+<p>附上其中的基础语法仅供参考：</p>
+<p><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/blog_files/img/Pic-Github/Blogconstruction/Hexo20210419002530.png"></p>
+<p>等你正式开始写文章的时候，具体一些用法还可以参考<a href="http://itmyhome.com/markdown/index.html">Learning-Markdown (Markdown 入门参考)</a></p>
+<ul>
+<li>最后再贴出来一个范例：</li>
+</ul>
+<p><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/blog_files/img/Pic-Github/Blogconstruction/Hexo20210419003218.png"></p>
+<p>这部分除了基础语法，我还用到了插入链接 <code>[title](网址)</code>，以及插入图片 <code>![title](图床地址or本地链接)</code>(直接从PicGo图床里复制就行)。</p>
+<h2 id="正经发布一篇文章"><a href="#正经发布一篇文章" class="headerlink" title="正经发布一篇文章"></a>正经发布一篇文章</h2><p>get了最基础的markdown语法后，我们来走一遍完整流程。</p>
+<ol>
+<li><p>创建一篇文章”博客简介”</p>
+<p>在本地blog目录下，右键进入Git Bash，输入：</p>
+<figure class="highlight plain"><table><tbody><tr><td class="code"><pre><span class="line">hexo new post "博客简介"</span><br></pre></td></tr></tbody></table></figure>
+<p><strong>注意</strong>：</p>
+<ul>
+<li><p>post是默认值可以省略。</p>
+</li>
+<li><p>如果title有空格，必须要加双引号，否则双引号可以省略。</p>
+</li>
+</ul>
+</li>
+<li><p>编辑文章</p>
+<p>在 blog\source_posts 路径下生成了<code>博客简介.md</code>文件，用vscode打开，编辑自己的文章。</p>
+<p>比如我的博客简介是这么写的（仅供参考）：</p>
+<p><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/blog_files/img/Pic-Github/Blogconstruction/Hexo20210419093855.png"></p>
+<ul>
+<li><p>可以在文章任意位置添加<code>&lt;!--more--&gt;</code>，首页只会显示more前的内容，more后的内容点击阅读全文后展示。</p>
+</li>
+<li><p>如果想给文章添加分类和标签，可以在文章头部补充，比如我是这么写的：<br><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/blog_files/img/Pic-Github/Blogconstruction/Hexo20210419093519.png"></p>
+</li>
+</ul>
+</li>
+<li><p>本地预览</p>
+<p>写好文章后保存。</p>
+<p><code>hexo s</code>启动本地服务器，在 <a href="http://localhost:4000/">http://localhost:4000</a> 进行预览测试。</p>
+</li>
+<li><p>发布文章<br>Finally!<br>输入以下命令，将写好的“博客简介”发布到网站上吧~</p>
+<figure class="highlight plain"><table><tbody><tr><td class="code"><pre><span class="line">hexo clean</span><br><span class="line">hexo g</span><br><span class="line">hexo d</span><br></pre></td></tr></tbody></table></figure>
+<p>此时，在浏览器访问自己的博客域名，就可以看到我们写的第一篇正经文章啦~ <span class="github-emoji"><span>☀</span><img src="https://github.githubassets.com/images/icons/emoji/unicode/2600.png?v8" aria-hidden="true" onerror="this.parent.classList.add('github-emoji-fallback')"></span><span class="github-emoji"><span>😼</span><img src="https://github.githubassets.com/images/icons/emoji/unicode/1f63c.png?v8" aria-hidden="true" onerror="this.parent.classList.add('github-emoji-fallback')"></span></p>
+<p><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/blog_files/img/Pic-Github/Blogconstruction/Hexo20210419101933.png"><br><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/blog_files/img/Pic-Github/Blogconstruction/Hexo20210419101753.png"></p>
+<ul>
+<li>附上<a href="https://sunhwee.com/posts/a927e90e.html#toc-heading-5">Markdown Emoji表情语法速查表</a></li>
+</ul>
+</li>
+</ol>
+<h1 id="后记"><a href="#后记" class="headerlink" title="后记"></a>后记</h1><p>Anyway，终于搞完了~</p>
+<p>4.12号开始搭，断断续续搞，也遇到了不少bug，4.14才搭的差不多，然后这篇教程又断断续续写了4天 orz</p>
+<p>希望能对你有所帮助，欢迎批评指正，爱你ღ( ´･ᴗ･` )</p>
+<hr>
+<p>阿波罗猫</p>
+<p>20210419</p>
+]]></content>
+      <categories>
+        <category>教程</category>
+      </categories>
+      <tags>
+        <tag>教程</tag>
+        <tag>Hexo</tag>
       </tags>
   </entry>
   <entry>
@@ -2301,8 +2469,8 @@
         <category>科研</category>
       </categories>
       <tags>
-        <tag>SLAM</tag>
         <tag>科研</tag>
+        <tag>SLAM</tag>
       </tags>
   </entry>
   <entry>
