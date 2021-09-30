@@ -1,180 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
-    <title>EE5907-CA1</title>
-    <url>/EE5907-CA1/</url>
-    <content><![CDATA[<h1 id="数据"><a href="#数据" class="headerlink" title="数据"></a>数据</h1><h2 id="1-数据描述"><a href="#1-数据描述" class="headerlink" title="1. 数据描述"></a>1. 数据描述</h2><ol>
-<li><p>数据集：SPAM E-mail Database。包含4601封邮件，每个样本有57维特征和一个标签（1=spam，0=!spam）</p>
-</li>
-<li><p>具体：</p>
-</li>
-</ol>
-<ul>
-<li>Xtrain<ul>
-<li>3065x57 double</li>
-</ul>
-</li>
-<li>ytrain<ul>
-<li>3065x1 double</li>
-</ul>
-</li>
-<li>Xtest<ul>
-<li>1536x57 double</li>
-</ul>
-</li>
-<li>ytest<ul>
-<li>1536x1 double</li>
-</ul>
-</li>
-</ul>
-<ol start="3">
-<li>描述：<a href="https://web.stanford.edu/~hastie/ElemStatLearn/datasets/spam.info.txt">详情</a> </li>
-</ol>
-<ul>
-<li><p>包括：</p>
-<ul>
-<li>Spam      1813  (39.4%)</li>
-<li>Non-Spam  2788  (60.6%)</li>
-</ul>
-</li>
-<li><p>特征：</p>
-<ul>
-<li>48 个word_freq_WORD类型的连续实数[0,100]属性 = 电子邮件中匹配WORD的单词的百分比<ul>
-<li>即100 *(“word”在邮件中出现的次数)/电子邮件的总字数。在本例中，“word”是由非字母数字字符或字符串结束符限定的任何字母数字字符字符串。</li>
-</ul>
-</li>
-<li>6 个char_freq_CHAR类型的连续实数[0,100]属性 = 电子邮件中匹配CHAR的字符百分比<ul>
-<li>即100 *(“char”出现次数)/电子邮件中的字符总数</li>
-</ul>
-</li>
-<li>1 个连续实数[1，…]属性类型为capital_run_length_average = 连续大写字母序列的平均长度</li>
-<li>1 个连续整数[1，…]属性类型为capital_run_length_longest = 最长连续大写字母序列的长度</li>
-<li>1 个连续整数[1，…]属性类型为capital_run_length_total = 连续的大写字母序列的长度之和 = 电子邮件中大写字母的总数</li>
-</ul>
-</li>
-<li><p>缺失：None</p>
-</li>
-</ul>
-<h2 id="2-数据处理"><a href="#2-数据处理" class="headerlink" title="2. 数据处理"></a>2. 数据处理</h2><p>可以尝试对特征进行不同的预处理：</p>
-<ol>
-<li>log-transform：对于每个特征使用ln(xij + 0.1)进行转换</li>
-<li>binarization: 对特征进行二值化，如果大于0就设置为1，否则设置为0</li>
-</ol>
-<h1 id="Beta-binomial朴素贝叶斯"><a href="#Beta-binomial朴素贝叶斯" class="headerlink" title="Beta-binomial朴素贝叶斯"></a>Beta-binomial朴素贝叶斯</h1><h2 id="题目描述："><a href="#题目描述：" class="headerlink" title="题目描述："></a>题目描述：</h2><p>在数据处理部分的<strong>二值化数据</strong>上拟合一个beta-二项朴素贝叶斯分类器。</p>
-<p>由于存在大量的垃圾邮件和非垃圾邮件，您不需要在类标签上假设任何先验。换句话说，<strong>类别标签的先验λ可以用ML估计</strong>，在测试时可以用λ ML作为插值估计。</p>
-<p>另一方面，需要为特征分布假设Beta(α,α)，对于每个α={0,0.5,1,1.5,2,…,100}，在训练数据上拟合分类器并计算其错误率(即，电子邮件分类错误的百分比)。</p>
-<p>对于特征（比如计算p(x|y)），请使用朴素贝叶斯（如后验预测）训练并测试。</p>
-<p>报告至少需要包含以下内容：</p>
-<ul>
-<li>绘制关于α的训练和测试的错误率</li>
-<li>当α改变时，你观察到的训练和测试的错误率</li>
-<li>α=1,10,100时，训练和测试的错误率</li>
-</ul>
-<h2 id="思路"><a href="#思路" class="headerlink" title="思路"></a>思路</h2><p>1: class 1=spam；</p>
-<p>0: class2=!spam</p>
-<ul>
-<li><p>特征xn经过二项处理后，只有0，1</p>
-</li>
-<li><p>数据（x,y）是58二项分布；</p>
-</li>
-<li><p>在训练集上建模：</p>
-<p>特征xn是二项，使用每一类的训练样本的特征xn，使用“beta-二项后验预测公式”计算估计x的第n维特征的pdf，即我们会得到class1:2，feature1:57这2*57个二项特征对数似然（放到2x57维矩阵中，每个元素(a,b)表示当y=a时，xb的概率密度）；</p>
-<p>以及ML估计的类别先验的对数；</p>
-</li>
-<li><p>训练+测试（分别在训练集和测试集上进行）：</p>
-<p>针对每一个训练/测试数据，分别计算给定特征条件下，类别为1或0的概率。</p>
-<p>即，57个特征对应的二项特征对数似然之和+ML估计类别先验对数；</p>
-<p>将y=1的概率和y=0的概率对比，选择大概率的作为估计的标签y。</p>
-</li>
-<li><p>错误率：</p>
-<p>对于估计的标签计算分错的样本数量/总样本；</p>
-<p>这个操作对测试集和验证集分别搞一遍</p>
-<h2 id="结果"><a href="#结果" class="headerlink" title="结果"></a>结果</h2><p><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/study/paper/20210928161328.png"></p>
-</li>
-</ul>
-<h1 id="高斯朴素贝叶斯"><a href="#高斯朴素贝叶斯" class="headerlink" title="高斯朴素贝叶斯"></a>高斯朴素贝叶斯</h1><h2 id="题目"><a href="#题目" class="headerlink" title="题目"></a>题目</h2><p>在数据处理部分的<strong>log转换数据</strong>上拟合一个高斯朴素贝叶斯分类器。</p>
-<p>由于存在大量的垃圾邮件和非垃圾邮件，您不需要在类标签上假设任何先验。换句话说，<strong>类别标签的先验λ可以用ML估计</strong>，在测试时可以用λ ML作为插值估计。</p>
-<p>对于本练习，只需使用ML估计每个特征的类条件均值和方差（eta），并使用ML估计作为测试的插值估计</p>
-<p>报告至少需要包含以下内容：</p>
-<ul>
-<li>关于log转换数据的训练和测试的错误率</li>
-</ul>
-<h2 id="思路-1"><a href="#思路-1" class="headerlink" title="思路"></a>思路</h2><p>单变量高斯的ML估计可以得到μ_ML和σ^2_ML</p>
-<p>因为#class=2，λ的ML估计可以用二项的N1/N；</p>
-<p>eta是给定class=j时，特征的pdf=N(μ_ML,σ^2_ML)</p>
-<p>和上一题类似，还是要先获得eta矩阵，矩阵中的每个元素(i,j)对应给定j类别时，第i维特征的条件概率。该值由ML估计的正态分布得到。</p>
-<h2 id="结果-1"><a href="#结果-1" class="headerlink" title="结果"></a>结果</h2><p><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/study/paper/20210928161435.png"></p>
-<h1 id="逻辑回归"><a href="#逻辑回归" class="headerlink" title="逻辑回归"></a>逻辑回归</h1><p>##题目<br>对于<strong>log转换数据</strong>，拟合一个l2正则的逻辑回归模型（牛顿方法+l2正则+从l2正则中排除偏移项）。</p>
-<p>对于每个正则参数值λ={1,2,…,9,10,15,20,…95,100}，在训练集上拟合逻辑回归模型，并在测试集上计算它的错误率。</p>
-<p>报告至少需要包含以下内容：</p>
-<ul>
-<li>绘制关于λ的训练和测试的错误率</li>
-<li>当λ改变时，你观察到的训练和测试的错误率</li>
-<li>λ=1,10,100时，训练和测试的错误率</li>
-</ul>
-<p>不要忘记在逻辑回归中包括偏倚项，而在l2正则化中排除偏移项。</p>
-<h2 id="思路-2"><a href="#思路-2" class="headerlink" title="思路"></a>思路</h2><ul>
-<li><p>变量</p>
-<ul>
-<li>W：(D+1)x1</li>
-<li>w：Dx1</li>
-<li>X：Nx(D+1)</li>
-<li>Xi：(D+1)X1（每个样本的特征）Xi=[1,xi]</li>
-<li>μ：里面的Xi和W都是D+1维的，Nx1</li>
-<li>y：Nx1</li>
-</ul>
-</li>
-<li><p>函数</p>
-<ul>
-<li>求μ(W,Xi)—(特征矩阵，w)</li>
-<li>求NLLreg(特征矩阵,W，λ)</li>
-<li>求greg(特征矩阵,类别矩阵,w,λ)</li>
-<li>求Hreg(特征矩阵,类别矩阵,w，λ)</li>
-</ul>
-</li>
-</ul>
-<p>数据预处理</p>
-<p>初始化：给X加一维’1’；步长1；阈值0.01</p>
-<p>大循环：λ；</p>
-<p>初始化w0—57+1维0向量（这个不是偏移向量）</p>
-<p>中循环：while NLL&lt;阈值【目的是get：W】</p>
-<ol>
-<li> k+1</li>
-<li> greg</li>
-<li>hreg</li>
-<li>W[k+1]—-要存记录</li>
-<li>NLL</li>
-</ol>
-<p>end</p>
-<p>用W预测：训练集+测试集（k，#样本数）</p>
-<p>end</p>
-<p>计算错误率</p>
-<p>画图</p>
-<h2 id="结果-2"><a href="#结果-2" class="headerlink" title="结果"></a>结果</h2><p><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/study/paper/20210928161533.png"></p>
-<h1 id="k最近邻居"><a href="#k最近邻居" class="headerlink" title="k最近邻居"></a>k最近邻居</h1><h2 id="题目-1"><a href="#题目-1" class="headerlink" title="题目"></a>题目</h2><p>在<strong>log转换数据</strong>上，实现KNN分类器。用欧式距离来测量邻居之间的距离。</p>
-<p>对于每个K={1, 2, …9,10,15,20,…95,100}，计算训练和测试的错误率。</p>
-<p>报告至少需要包含以下内容：</p>
-<ul>
-<li>绘制关于K的训练和测试的错误率</li>
-<li>当K改变时，你观察到的训练和测试的错误率</li>
-<li>K=1,10,100时，训练和测试的错误率</li>
-</ul>
-<h2 id="思路-3"><a href="#思路-3" class="headerlink" title="思路"></a>思路</h2><p>先搞个函数来计算两个特征之间的距离；<br>再搞个函数来计算新样本和矩阵（训练集）中每个样本的距离</p>
-<p>测试和训练时调用算距离函数，生成距离矩阵，每个点(i，j)表示新样本i和训练集样本j之间的距离。</p>
-<p>对于每一个新样本，根据不同的K，得到距离该样本最近的K个训练点，对比其中类0和类1的比例，将新样本的标签预测为占比大的那个类。</p>
-<p>训练集上的测试或许可以有一些tricky，因为生产的距离矩阵是对称的，且对角线值为0。</p>
-<p>训练集：dist—3065<em>3065<br>测试集：dist—1536</em>3065</p>
-<h2 id="结果-3"><a href="#结果-3" class="headerlink" title="结果"></a>结果</h2><p><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/study/paper/20210928161622.png"></p>
-]]></content>
-      <categories>
-        <category>project</category>
-      </categories>
-      <tags>
-        <tag>课程</tag>
-        <tag>matlab</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>ubuntu18.04+VINS-MONO+RealsenseD453i 配置教程</title>
     <url>/ubuntu18-04-VINS-MONO-RealsenseD453i-%E9%85%8D%E7%BD%AE%E6%95%99%E7%A8%8B/</url>
     <content><![CDATA[<h1 id="VINS-MONO"><a href="#VINS-MONO" class="headerlink" title="VINS-MONO"></a>VINS-MONO</h1><p>主要参考链接：<br><a href="https://blog.csdn.net/github_53583003/article/details/111187288">Ubuntu18配置VINS-MONO</a></p>
@@ -303,379 +129,6 @@
       <tags>
         <tag>教程</tag>
         <tag>SLAM</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>本科知识整理</title>
-    <url>/%E6%9C%AC%E7%A7%91%E7%9F%A5%E8%AF%86%E6%95%B4%E7%90%86/</url>
-    <content><![CDATA[<h1 id="算法设计与分析"><a href="#算法设计与分析" class="headerlink" title="算法设计与分析"></a>算法设计与分析</h1><p>《算法设计与分析第三版-王晓东》</p>
-<ol>
-<li>算法引论<ol>
-<li>算法与程序</li>
-<li>表达算法的抽象机制</li>
-<li>描述算法</li>
-<li>算法复杂性分析</li>
-</ol>
-</li>
-<li>递归与分治策略<ol>
-<li>递归的概念</li>
-<li>分治法的基本思想</li>
-<li>二分搜索技术</li>
-<li>大整数的乘法</li>
-<li>Strassen矩阵乘法</li>
-<li>棋盘覆盖</li>
-<li>合并排序</li>
-<li>快速排序</li>
-<li>线性时间选择</li>
-<li>最接近点对问题</li>
-<li>循环赛日程表</li>
-</ol>
-</li>
-<li>动态规划<ol>
-<li> 矩阵连乘问题</li>
-<li> 动态规划算法的基本要素</li>
-<li> 最长公共子序列</li>
-<li> 凸多边形最优三角划分</li>
-<li> 多边形游戏</li>
-<li> 图像压缩</li>
-<li> 电路布线</li>
-<li> 流水作业调度</li>
-<li> 0-1背包问题</li>
-<li>最优二叉搜索树</li>
-</ol>
-</li>
-<li>贪心算法<ol>
-<li> 活动安排问题</li>
-<li>贪心算法的基本要素<ol>
-<li> 贪心选择性质</li>
-<li> 最优子结构性质</li>
-<li> 贪心算法与动态规划算法的差异</li>
-</ol>
-</li>
-<li>最优装载</li>
-<li>哈夫曼编码<ol>
-<li>前编码</li>
-<li>构造哈弗曼编码</li>
-<li>哈夫曼算法的正确性</li>
-</ol>
-</li>
-<li>单源最短路径<ol>
-<li>算法基本思想</li>
-<li>算法的正确性和计算复杂性</li>
-</ol>
-</li>
-<li>最小生成树<ol>
-<li>最小生成树性质</li>
-<li>Prim算法</li>
-<li>Kruskal算法</li>
-<li>多机调度问题</li>
-<li>贪心算法的理论基础<ol>
-<li>拟阵</li>
-<li>带权拟阵的贪心算法</li>
-<li>任务时间表问题</li>
-</ol>
-</li>
-</ol>
-</li>
-</ol>
-</li>
-<li>回溯法<ol>
-<li>回溯法的算法框架<ol>
-<li>问题的解空间</li>
-<li>回溯法的基本思想</li>
-<li>递归回溯</li>
-<li>迭代回溯</li>
-<li>子集树与排列数</li>
-</ol>
-</li>
-<li>装载问题</li>
-<li>批处理作业调度</li>
-<li>符号三角形问题</li>
-<li>n后问题</li>
-<li>0-1背包问题</li>
-<li>最大团问题</li>
-<li>图的m着色问题</li>
-<li>旅行售货员问题</li>
-<li>圆排列问题</li>
-<li>电路板排列问题</li>
-<li>连续邮资问题</li>
-<li>回溯法的效率分析</li>
-</ol>
-</li>
-<li>分支限界法<ol>
-<li>分支限界法的基本思想</li>
-<li>单源最短路径问题</li>
-<li>装载问题</li>
-<li>布线问题</li>
-<li>0-1背包问题</li>
-<li>最大团问题</li>
-<li>旅行售货员问题</li>
-<li>电路板排列问题</li>
-<li>批处理作业调度</li>
-</ol>
-</li>
-<li>概率算法<ol>
-<li> 随机数</li>
-<li>数值概率算法<ol>
-<li> 用随机投点法计算π值</li>
-<li> 计算定积分</li>
-<li> 解非线性方程组</li>
-</ol>
-</li>
-<li>舍伍德算法<ol>
-<li>线性时间选择算法</li>
-<li>跳跃表</li>
-</ol>
-</li>
-<li>拉斯维加斯算法<ol>
-<li>n后问题</li>
-<li>整数因子分解</li>
-</ol>
-</li>
-<li>蒙特卡罗算法<ol>
-<li>蒙特卡罗算法的基本思想</li>
-<li>主元素问题</li>
-<li>素数测试</li>
-</ol>
-</li>
-</ol>
-</li>
-<li>NP完全性理论<ol>
-<li>计算模型<ol>
-<li>随机存取机RAM</li>
-<li>随机存取存储程序机RASP</li>
-<li>RAM，模型的变形与简化</li>
-<li>图灵机</li>
-<li>图灵机模型与RAM模型的关系</li>
-<li>问题变换与计算复杂性归约</li>
-</ol>
-</li>
-<li>P类与NP类问题<ol>
-<li>非确定性图灵机</li>
-<li>P类与NP类语言</li>
-<li>多项式时间验证</li>
-</ol>
-</li>
-<li>NP完全问题<ol>
-<li>多项式时间变换</li>
-<li>COok定理</li>
-</ol>
-</li>
-<li>一些典型的NP完全问题<ol>
-<li>合取范式的可满足性问题</li>
-<li>3元合取范式的可满足性问题</li>
-<li>团问题</li>
-<li>顶点覆盖问题</li>
-<li>子集和问题</li>
-<li>哈密顿回路问题</li>
-<li>旅行售货员问题</li>
-</ol>
-</li>
-</ol>
-</li>
-<li> 近似算法</li>
-<li>近似算法的性能</li>
-<li>顶点覆盖问题的近似算法</li>
-<li>旅行售货员问题的近似算法<ol>
-<li>具有三角不等式性质的旅行售货员问题</li>
-<li>一般的旅行售货员问题</li>
-</ol>
-</li>
-<li>集合覆盖问题的近似算法</li>
-<li>子集和问题的近似算法<ol>
-<li>子集和问题的指数时间算法</li>
-<li>子集和问题的完全多项式时间近似格式</li>
-</ol>
-</li>
-<li>算法优化策略<ol>
-<li>算法设计策略的比较与选择<ol>
-<li>最大子段和问题的简单算法</li>
-<li>最大子段和问题的分治算法</li>
-<li>最大子段和问题的动态规划算法</li>
-<li>最大子段和问题与动态规划算法的推广</li>
-</ol>
-</li>
-<li>动态规划加速原理<ol>
-<li>货物储运问题</li>
-<li>算法及其优化</li>
-</ol>
-</li>
-<li>问题的算法特性<ol>
-<li>贪心策略</li>
-<li>对贪心策略的改进</li>
-<li>算法三部曲</li>
-<li>算法实现</li>
-<li>算法复杂性</li>
-</ol>
-</li>
-<li>优化数据结构<ol>
-<li>带权区间最短路问题</li>
-<li>算法设计思想</li>
-<li>算法实现方案</li>
-<li>并查集</li>
-<li>可并优先队列</li>
-</ol>
-</li>
-<li>优化搜索策略</li>
-</ol>
-</li>
-<li>在线算法设计<ol>
-<li> 在线算法设计的基本概念</li>
-<li> 页调度问题</li>
-<li> 势函数分析</li>
-<li>k服务问题竞争比的下界<ol>
-<li> 平衡算法</li>
-<li> 对称移动算法</li>
-</ol>
-</li>
-<li> Steiner树问题</li>
-<li> 在线任务调度</li>
-<li> 负载平衡</li>
-</ol>
-</li>
-</ol>
-<h1 id="概率论"><a href="#概率论" class="headerlink" title="概率论"></a>概率论</h1><p>《概率论与数理统计应用第二版-施雨+概率统计辅导书-魏平、王宁》</p>
-<ol>
-<li>随机事件与概率<ol>
-<li>随机事件</li>
-<li>概率</li>
-<li>古典概率的计算</li>
-<li>条件概率 事件的相互独立性</li>
-</ol>
-</li>
-<li>随机变量与概率分布<ol>
-<li>一维随机变量</li>
-<li>二维随机变量</li>
-<li>条件分布</li>
-<li>随机变量的相互独立性</li>
-<li>随机变量的函数的概率分布</li>
-</ol>
-</li>
-<li>随机变量的数字特性<ol>
-<li>数学期望</li>
-<li>方差</li>
-<li>协方差与相关系数</li>
-<li>条件期望与条件方差</li>
-</ol>
-</li>
-<li>大数定律与中心极限定理<ol>
-<li>大数定律</li>
-<li>中心极限定理</li>
-</ol>
-</li>
-<li>数理统计学的基本概念<ol>
-<li>总体与样本</li>
-<li>样本分布</li>
-<li>统计量</li>
-<li>抽样分布</li>
-</ol>
-</li>
-<li>参数估计<ol>
-<li>点估计</li>
-<li>估计量与评选标准</li>
-<li>区间估计</li>
-<li>正态总体参数的区间估计</li>
-</ol>
-</li>
-<li>假设检验<ol>
-<li>假设检验的基本概念</li>
-<li>正态总体参数的假设检验</li>
-<li>单边假设检验</li>
-<li>多数假设的大样本检验</li>
-<li>分布假设检验</li>
-</ol>
-</li>
-<li>方差分析<ol>
-<li>单因素方差分析</li>
-<li>双因素方差分析</li>
-</ol>
-</li>
-<li>回归分析<ol>
-<li>一元线性回归</li>
-<li>可线性化的一元非线性回归</li>
-<li>多元线性回归</li>
-</ol>
-</li>
-<li>随机过程的基本知识<ol>
-<li> 随机过程的概念和记号</li>
-<li> 随机过程的概率特性</li>
-<li> 随机过程的基本类型</li>
-<li> 泊松过程与布朗运动</li>
-</ol>
-</li>
-<li>平稳过程<ol>
-<li> 平稳过程的概念</li>
-<li> 平稳过程的性质</li>
-<li> 平稳过程的谱密度</li>
-<li> 各态历经性</li>
-</ol>
-</li>
-<li>附录<ol>
-<li> 标准正态分布表</li>
-<li> 泊松分布表</li>
-<li> t分布表</li>
-<li> X^2分布表</li>
-<li> F分布表</li>
-</ol>
-</li>
-</ol>
-]]></content>
-      <categories>
-        <category>学习</category>
-      </categories>
-      <tags>
-        <tag>学习</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>博客简介</title>
-    <url>/%E5%8D%9A%E5%AE%A2%E7%AE%80%E4%BB%8B/</url>
-    <content><![CDATA[<h1 id="介绍"><a href="#介绍" class="headerlink" title="介绍"></a>介绍</h1><p>Hi, guys！</p>
-<p>这里是 阿波罗猫 的博客——四界。</p>
-<p>主要作用是记录个人生活，整理所学知识，放飞自我， 天天向上！</p>
-<p>这里先许下一个心愿：<strong>希望未来能顺利毕业！</strong></p>
-<span id="more"></span>
-<h1 id="说明"><a href="#说明" class="headerlink" title="说明"></a>说明</h1><table>
-<thead>
-<tr>
-<th align="center"><strong>侧栏名称</strong></th>
-<th align="center"><strong>简介</strong></th>
-</tr>
-</thead>
-<tbody><tr>
-<td align="center"><strong>主页</strong></td>
-<td align="center">博客主页</td>
-</tr>
-<tr>
-<td align="center"><strong>归档</strong></td>
-<td align="center">罗列所有文章</td>
-</tr>
-<tr>
-<td align="center"><strong>分类</strong></td>
-<td align="center">按类型分类文章</td>
-</tr>
-<tr>
-<td align="center"><strong>标签</strong></td>
-<td align="center">按标签分类文章</td>
-</tr>
-<tr>
-<td align="center"><strong>随笔</strong></td>
-<td align="center">日常相关的吐槽</td>
-</tr>
-<tr>
-<td align="center"><strong>关于我</strong></td>
-<td align="center">个人简历</td>
-</tr>
-</tbody></table>
-<h1 id="关于“四界”"><a href="#关于“四界”" class="headerlink" title="关于“四界”"></a>关于“四界”</h1><p>“四界”这个名字来自于我初高中时的自产小说，小说内容就不说了，满满都是中二，而且还坑了2333。</p>
-<p>Anyway，这个博客名字可以理解为致敬青春吧。</p>
-<p>祝愿我的未来无论走出多远，归来仍是少年。</p>
-]]></content>
-      <categories>
-        <category>生活</category>
-      </categories>
-      <tags>
-        <tag>生活</tag>
       </tags>
   </entry>
   <entry>
@@ -1287,6 +740,553 @@
       </tags>
   </entry>
   <entry>
+    <title>博客简介</title>
+    <url>/%E5%8D%9A%E5%AE%A2%E7%AE%80%E4%BB%8B/</url>
+    <content><![CDATA[<h1 id="介绍"><a href="#介绍" class="headerlink" title="介绍"></a>介绍</h1><p>Hi, guys！</p>
+<p>这里是 阿波罗猫 的博客——四界。</p>
+<p>主要作用是记录个人生活，整理所学知识，放飞自我， 天天向上！</p>
+<p>这里先许下一个心愿：<strong>希望未来能顺利毕业！</strong></p>
+<span id="more"></span>
+<h1 id="说明"><a href="#说明" class="headerlink" title="说明"></a>说明</h1><table>
+<thead>
+<tr>
+<th align="center"><strong>侧栏名称</strong></th>
+<th align="center"><strong>简介</strong></th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center"><strong>主页</strong></td>
+<td align="center">博客主页</td>
+</tr>
+<tr>
+<td align="center"><strong>归档</strong></td>
+<td align="center">罗列所有文章</td>
+</tr>
+<tr>
+<td align="center"><strong>分类</strong></td>
+<td align="center">按类型分类文章</td>
+</tr>
+<tr>
+<td align="center"><strong>标签</strong></td>
+<td align="center">按标签分类文章</td>
+</tr>
+<tr>
+<td align="center"><strong>随笔</strong></td>
+<td align="center">日常相关的吐槽</td>
+</tr>
+<tr>
+<td align="center"><strong>关于我</strong></td>
+<td align="center">个人简历</td>
+</tr>
+</tbody></table>
+<h1 id="关于“四界”"><a href="#关于“四界”" class="headerlink" title="关于“四界”"></a>关于“四界”</h1><p>“四界”这个名字来自于我初高中时的自产小说，小说内容就不说了，满满都是中二，而且还坑了2333。</p>
+<p>Anyway，这个博客名字可以理解为致敬青春吧。</p>
+<p>祝愿我的未来无论走出多远，归来仍是少年。</p>
+]]></content>
+      <categories>
+        <category>生活</category>
+      </categories>
+      <tags>
+        <tag>生活</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>EE5907-CA1</title>
+    <url>/EE5907-CA1/</url>
+    <content><![CDATA[<h1 id="数据"><a href="#数据" class="headerlink" title="数据"></a>数据</h1><h2 id="1-数据描述"><a href="#1-数据描述" class="headerlink" title="1. 数据描述"></a>1. 数据描述</h2><ol>
+<li><p>数据集：SPAM E-mail Database。包含4601封邮件，每个样本有57维特征和一个标签（1=spam，0=!spam）</p>
+</li>
+<li><p>具体：</p>
+</li>
+</ol>
+<ul>
+<li>Xtrain<ul>
+<li>3065x57 double</li>
+</ul>
+</li>
+<li>ytrain<ul>
+<li>3065x1 double</li>
+</ul>
+</li>
+<li>Xtest<ul>
+<li>1536x57 double</li>
+</ul>
+</li>
+<li>ytest<ul>
+<li>1536x1 double</li>
+</ul>
+</li>
+</ul>
+<ol start="3">
+<li>描述：<a href="https://web.stanford.edu/~hastie/ElemStatLearn/datasets/spam.info.txt">详情</a> </li>
+</ol>
+<ul>
+<li><p>包括：</p>
+<ul>
+<li>Spam      1813  (39.4%)</li>
+<li>Non-Spam  2788  (60.6%)</li>
+</ul>
+</li>
+<li><p>特征：</p>
+<ul>
+<li>48 个word_freq_WORD类型的连续实数[0,100]属性 = 电子邮件中匹配WORD的单词的百分比<ul>
+<li>即100 *(“word”在邮件中出现的次数)/电子邮件的总字数。在本例中，“word”是由非字母数字字符或字符串结束符限定的任何字母数字字符字符串。</li>
+</ul>
+</li>
+<li>6 个char_freq_CHAR类型的连续实数[0,100]属性 = 电子邮件中匹配CHAR的字符百分比<ul>
+<li>即100 *(“char”出现次数)/电子邮件中的字符总数</li>
+</ul>
+</li>
+<li>1 个连续实数[1，…]属性类型为capital_run_length_average = 连续大写字母序列的平均长度</li>
+<li>1 个连续整数[1，…]属性类型为capital_run_length_longest = 最长连续大写字母序列的长度</li>
+<li>1 个连续整数[1，…]属性类型为capital_run_length_total = 连续的大写字母序列的长度之和 = 电子邮件中大写字母的总数</li>
+</ul>
+</li>
+<li><p>缺失：None</p>
+</li>
+</ul>
+<h2 id="2-数据处理"><a href="#2-数据处理" class="headerlink" title="2. 数据处理"></a>2. 数据处理</h2><p>可以尝试对特征进行不同的预处理：</p>
+<ol>
+<li>log-transform：对于每个特征使用ln(xij + 0.1)进行转换</li>
+<li>binarization: 对特征进行二值化，如果大于0就设置为1，否则设置为0</li>
+</ol>
+<h1 id="Beta-binomial朴素贝叶斯"><a href="#Beta-binomial朴素贝叶斯" class="headerlink" title="Beta-binomial朴素贝叶斯"></a>Beta-binomial朴素贝叶斯</h1><h2 id="题目描述："><a href="#题目描述：" class="headerlink" title="题目描述："></a>题目描述：</h2><p>在数据处理部分的<strong>二值化数据</strong>上拟合一个beta-二项朴素贝叶斯分类器。</p>
+<p>由于存在大量的垃圾邮件和非垃圾邮件，您不需要在类标签上假设任何先验。换句话说，<strong>类别标签的先验λ可以用ML估计</strong>，在测试时可以用λ ML作为插值估计。</p>
+<p>另一方面，需要为特征分布假设Beta(α,α)，对于每个α={0,0.5,1,1.5,2,…,100}，在训练数据上拟合分类器并计算其错误率(即，电子邮件分类错误的百分比)。</p>
+<p>对于特征（比如计算p(x|y)），请使用朴素贝叶斯（如后验预测）训练并测试。</p>
+<p>报告至少需要包含以下内容：</p>
+<ul>
+<li>绘制关于α的训练和测试的错误率</li>
+<li>当α改变时，你观察到的训练和测试的错误率</li>
+<li>α=1,10,100时，训练和测试的错误率</li>
+</ul>
+<h2 id="思路"><a href="#思路" class="headerlink" title="思路"></a>思路</h2><p>1: class 1=spam；</p>
+<p>0: class2=!spam</p>
+<ul>
+<li><p>特征xn经过二项处理后，只有0，1</p>
+</li>
+<li><p>数据（x,y）是58二项分布；</p>
+</li>
+<li><p>在训练集上建模：</p>
+<p>特征xn是二项，使用每一类的训练样本的特征xn，使用“beta-二项后验预测公式”计算估计x的第n维特征的pdf，即我们会得到class1:2，feature1:57这2*57个二项特征对数似然（放到2x57维矩阵中，每个元素(a,b)表示当y=a时，xb的概率密度）；</p>
+<p>以及ML估计的类别先验的对数；</p>
+</li>
+<li><p>训练+测试（分别在训练集和测试集上进行）：</p>
+<p>针对每一个训练/测试数据，分别计算给定特征条件下，类别为1或0的概率。</p>
+<p>即，57个特征对应的二项特征对数似然之和+ML估计类别先验对数；</p>
+<p>将y=1的概率和y=0的概率对比，选择大概率的作为估计的标签y。</p>
+</li>
+<li><p>错误率：</p>
+<p>对于估计的标签计算分错的样本数量/总样本；</p>
+<p>这个操作对测试集和验证集分别搞一遍</p>
+<h2 id="结果"><a href="#结果" class="headerlink" title="结果"></a>结果</h2><p><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/study/paper/20210928161328.png"></p>
+</li>
+</ul>
+<h1 id="高斯朴素贝叶斯"><a href="#高斯朴素贝叶斯" class="headerlink" title="高斯朴素贝叶斯"></a>高斯朴素贝叶斯</h1><h2 id="题目"><a href="#题目" class="headerlink" title="题目"></a>题目</h2><p>在数据处理部分的<strong>log转换数据</strong>上拟合一个高斯朴素贝叶斯分类器。</p>
+<p>由于存在大量的垃圾邮件和非垃圾邮件，您不需要在类标签上假设任何先验。换句话说，<strong>类别标签的先验λ可以用ML估计</strong>，在测试时可以用λ ML作为插值估计。</p>
+<p>对于本练习，只需使用ML估计每个特征的类条件均值和方差（eta），并使用ML估计作为测试的插值估计</p>
+<p>报告至少需要包含以下内容：</p>
+<ul>
+<li>关于log转换数据的训练和测试的错误率</li>
+</ul>
+<h2 id="思路-1"><a href="#思路-1" class="headerlink" title="思路"></a>思路</h2><p>单变量高斯的ML估计可以得到μ_ML和σ^2_ML</p>
+<p>因为#class=2，λ的ML估计可以用二项的N1/N；</p>
+<p>eta是给定class=j时，特征的pdf=N(μ_ML,σ^2_ML)</p>
+<p>和上一题类似，还是要先获得eta矩阵，矩阵中的每个元素(i,j)对应给定j类别时，第i维特征的条件概率。该值由ML估计的正态分布得到。</p>
+<h2 id="结果-1"><a href="#结果-1" class="headerlink" title="结果"></a>结果</h2><p><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/study/paper/20210928161435.png"></p>
+<h1 id="逻辑回归"><a href="#逻辑回归" class="headerlink" title="逻辑回归"></a>逻辑回归</h1><p>##题目<br>对于<strong>log转换数据</strong>，拟合一个l2正则的逻辑回归模型（牛顿方法+l2正则+从l2正则中排除偏移项）。</p>
+<p>对于每个正则参数值λ={1,2,…,9,10,15,20,…95,100}，在训练集上拟合逻辑回归模型，并在测试集上计算它的错误率。</p>
+<p>报告至少需要包含以下内容：</p>
+<ul>
+<li>绘制关于λ的训练和测试的错误率</li>
+<li>当λ改变时，你观察到的训练和测试的错误率</li>
+<li>λ=1,10,100时，训练和测试的错误率</li>
+</ul>
+<p>不要忘记在逻辑回归中包括偏倚项，而在l2正则化中排除偏移项。</p>
+<h2 id="思路-2"><a href="#思路-2" class="headerlink" title="思路"></a>思路</h2><ul>
+<li><p>变量</p>
+<ul>
+<li>W：(D+1)x1</li>
+<li>w：Dx1</li>
+<li>X：Nx(D+1)</li>
+<li>Xi：(D+1)X1（每个样本的特征）Xi=[1,xi]</li>
+<li>μ：里面的Xi和W都是D+1维的，Nx1</li>
+<li>y：Nx1</li>
+</ul>
+</li>
+<li><p>函数</p>
+<ul>
+<li>求μ(W,Xi)—(特征矩阵，w)</li>
+<li>求NLLreg(特征矩阵,W，λ)</li>
+<li>求greg(特征矩阵,类别矩阵,w,λ)</li>
+<li>求Hreg(特征矩阵,类别矩阵,w，λ)</li>
+</ul>
+</li>
+</ul>
+<p>数据预处理</p>
+<p>初始化：给X加一维’1’；步长1；阈值0.01</p>
+<p>大循环：λ；</p>
+<p>初始化w0—57+1维0向量（这个不是偏移向量）</p>
+<p>中循环：while NLL&lt;阈值【目的是get：W】</p>
+<ol>
+<li> k+1</li>
+<li> greg</li>
+<li>hreg</li>
+<li>W[k+1]—-要存记录</li>
+<li>NLL</li>
+</ol>
+<p>end</p>
+<p>用W预测：训练集+测试集（k，#样本数）</p>
+<p>end</p>
+<p>计算错误率</p>
+<p>画图</p>
+<h2 id="结果-2"><a href="#结果-2" class="headerlink" title="结果"></a>结果</h2><p><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/study/paper/20210928161533.png"></p>
+<h1 id="k最近邻居"><a href="#k最近邻居" class="headerlink" title="k最近邻居"></a>k最近邻居</h1><h2 id="题目-1"><a href="#题目-1" class="headerlink" title="题目"></a>题目</h2><p>在<strong>log转换数据</strong>上，实现KNN分类器。用欧式距离来测量邻居之间的距离。</p>
+<p>对于每个K={1, 2, …9,10,15,20,…95,100}，计算训练和测试的错误率。</p>
+<p>报告至少需要包含以下内容：</p>
+<ul>
+<li>绘制关于K的训练和测试的错误率</li>
+<li>当K改变时，你观察到的训练和测试的错误率</li>
+<li>K=1,10,100时，训练和测试的错误率</li>
+</ul>
+<h2 id="思路-3"><a href="#思路-3" class="headerlink" title="思路"></a>思路</h2><p>先搞个函数来计算两个特征之间的距离；<br>再搞个函数来计算新样本和矩阵（训练集）中每个样本的距离</p>
+<p>测试和训练时调用算距离函数，生成距离矩阵，每个点(i，j)表示新样本i和训练集样本j之间的距离。</p>
+<p>对于每一个新样本，根据不同的K，得到距离该样本最近的K个训练点，对比其中类0和类1的比例，将新样本的标签预测为占比大的那个类。</p>
+<p>训练集上的测试或许可以有一些tricky，因为生产的距离矩阵是对称的，且对角线值为0。</p>
+<p>训练集：dist—3065<em>3065<br>测试集：dist—1536</em>3065</p>
+<h2 id="结果-3"><a href="#结果-3" class="headerlink" title="结果"></a>结果</h2><p><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/study/paper/20210928161622.png"></p>
+]]></content>
+      <categories>
+        <category>project</category>
+      </categories>
+      <tags>
+        <tag>课程</tag>
+        <tag>matlab</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>本科知识整理</title>
+    <url>/%E6%9C%AC%E7%A7%91%E7%9F%A5%E8%AF%86%E6%95%B4%E7%90%86/</url>
+    <content><![CDATA[<h1 id="算法设计与分析"><a href="#算法设计与分析" class="headerlink" title="算法设计与分析"></a>算法设计与分析</h1><p>《算法设计与分析第三版-王晓东》</p>
+<ol>
+<li>算法引论<ol>
+<li>算法与程序</li>
+<li>表达算法的抽象机制</li>
+<li>描述算法</li>
+<li>算法复杂性分析</li>
+</ol>
+</li>
+<li>递归与分治策略<ol>
+<li>递归的概念</li>
+<li>分治法的基本思想</li>
+<li>二分搜索技术</li>
+<li>大整数的乘法</li>
+<li>Strassen矩阵乘法</li>
+<li>棋盘覆盖</li>
+<li>合并排序</li>
+<li>快速排序</li>
+<li>线性时间选择</li>
+<li>最接近点对问题</li>
+<li>循环赛日程表</li>
+</ol>
+</li>
+<li>动态规划<ol>
+<li> 矩阵连乘问题</li>
+<li> 动态规划算法的基本要素</li>
+<li> 最长公共子序列</li>
+<li> 凸多边形最优三角划分</li>
+<li> 多边形游戏</li>
+<li> 图像压缩</li>
+<li> 电路布线</li>
+<li> 流水作业调度</li>
+<li> 0-1背包问题</li>
+<li>最优二叉搜索树</li>
+</ol>
+</li>
+<li>贪心算法<ol>
+<li> 活动安排问题</li>
+<li>贪心算法的基本要素<ol>
+<li> 贪心选择性质</li>
+<li> 最优子结构性质</li>
+<li> 贪心算法与动态规划算法的差异</li>
+</ol>
+</li>
+<li>最优装载</li>
+<li>哈夫曼编码<ol>
+<li>前编码</li>
+<li>构造哈弗曼编码</li>
+<li>哈夫曼算法的正确性</li>
+</ol>
+</li>
+<li>单源最短路径<ol>
+<li>算法基本思想</li>
+<li>算法的正确性和计算复杂性</li>
+</ol>
+</li>
+<li>最小生成树<ol>
+<li>最小生成树性质</li>
+<li>Prim算法</li>
+<li>Kruskal算法</li>
+<li>多机调度问题</li>
+<li>贪心算法的理论基础<ol>
+<li>拟阵</li>
+<li>带权拟阵的贪心算法</li>
+<li>任务时间表问题</li>
+</ol>
+</li>
+</ol>
+</li>
+</ol>
+</li>
+<li>回溯法<ol>
+<li>回溯法的算法框架<ol>
+<li>问题的解空间</li>
+<li>回溯法的基本思想</li>
+<li>递归回溯</li>
+<li>迭代回溯</li>
+<li>子集树与排列数</li>
+</ol>
+</li>
+<li>装载问题</li>
+<li>批处理作业调度</li>
+<li>符号三角形问题</li>
+<li>n后问题</li>
+<li>0-1背包问题</li>
+<li>最大团问题</li>
+<li>图的m着色问题</li>
+<li>旅行售货员问题</li>
+<li>圆排列问题</li>
+<li>电路板排列问题</li>
+<li>连续邮资问题</li>
+<li>回溯法的效率分析</li>
+</ol>
+</li>
+<li>分支限界法<ol>
+<li>分支限界法的基本思想</li>
+<li>单源最短路径问题</li>
+<li>装载问题</li>
+<li>布线问题</li>
+<li>0-1背包问题</li>
+<li>最大团问题</li>
+<li>旅行售货员问题</li>
+<li>电路板排列问题</li>
+<li>批处理作业调度</li>
+</ol>
+</li>
+<li>概率算法<ol>
+<li> 随机数</li>
+<li>数值概率算法<ol>
+<li> 用随机投点法计算π值</li>
+<li> 计算定积分</li>
+<li> 解非线性方程组</li>
+</ol>
+</li>
+<li>舍伍德算法<ol>
+<li>线性时间选择算法</li>
+<li>跳跃表</li>
+</ol>
+</li>
+<li>拉斯维加斯算法<ol>
+<li>n后问题</li>
+<li>整数因子分解</li>
+</ol>
+</li>
+<li>蒙特卡罗算法<ol>
+<li>蒙特卡罗算法的基本思想</li>
+<li>主元素问题</li>
+<li>素数测试</li>
+</ol>
+</li>
+</ol>
+</li>
+<li>NP完全性理论<ol>
+<li>计算模型<ol>
+<li>随机存取机RAM</li>
+<li>随机存取存储程序机RASP</li>
+<li>RAM，模型的变形与简化</li>
+<li>图灵机</li>
+<li>图灵机模型与RAM模型的关系</li>
+<li>问题变换与计算复杂性归约</li>
+</ol>
+</li>
+<li>P类与NP类问题<ol>
+<li>非确定性图灵机</li>
+<li>P类与NP类语言</li>
+<li>多项式时间验证</li>
+</ol>
+</li>
+<li>NP完全问题<ol>
+<li>多项式时间变换</li>
+<li>COok定理</li>
+</ol>
+</li>
+<li>一些典型的NP完全问题<ol>
+<li>合取范式的可满足性问题</li>
+<li>3元合取范式的可满足性问题</li>
+<li>团问题</li>
+<li>顶点覆盖问题</li>
+<li>子集和问题</li>
+<li>哈密顿回路问题</li>
+<li>旅行售货员问题</li>
+</ol>
+</li>
+</ol>
+</li>
+<li> 近似算法</li>
+<li>近似算法的性能</li>
+<li>顶点覆盖问题的近似算法</li>
+<li>旅行售货员问题的近似算法<ol>
+<li>具有三角不等式性质的旅行售货员问题</li>
+<li>一般的旅行售货员问题</li>
+</ol>
+</li>
+<li>集合覆盖问题的近似算法</li>
+<li>子集和问题的近似算法<ol>
+<li>子集和问题的指数时间算法</li>
+<li>子集和问题的完全多项式时间近似格式</li>
+</ol>
+</li>
+<li>算法优化策略<ol>
+<li>算法设计策略的比较与选择<ol>
+<li>最大子段和问题的简单算法</li>
+<li>最大子段和问题的分治算法</li>
+<li>最大子段和问题的动态规划算法</li>
+<li>最大子段和问题与动态规划算法的推广</li>
+</ol>
+</li>
+<li>动态规划加速原理<ol>
+<li>货物储运问题</li>
+<li>算法及其优化</li>
+</ol>
+</li>
+<li>问题的算法特性<ol>
+<li>贪心策略</li>
+<li>对贪心策略的改进</li>
+<li>算法三部曲</li>
+<li>算法实现</li>
+<li>算法复杂性</li>
+</ol>
+</li>
+<li>优化数据结构<ol>
+<li>带权区间最短路问题</li>
+<li>算法设计思想</li>
+<li>算法实现方案</li>
+<li>并查集</li>
+<li>可并优先队列</li>
+</ol>
+</li>
+<li>优化搜索策略</li>
+</ol>
+</li>
+<li>在线算法设计<ol>
+<li> 在线算法设计的基本概念</li>
+<li> 页调度问题</li>
+<li> 势函数分析</li>
+<li>k服务问题竞争比的下界<ol>
+<li> 平衡算法</li>
+<li> 对称移动算法</li>
+</ol>
+</li>
+<li> Steiner树问题</li>
+<li> 在线任务调度</li>
+<li> 负载平衡</li>
+</ol>
+</li>
+</ol>
+<h1 id="概率论"><a href="#概率论" class="headerlink" title="概率论"></a>概率论</h1><p>《概率论与数理统计应用第二版-施雨+概率统计辅导书-魏平、王宁》</p>
+<ol>
+<li>随机事件与概率<ol>
+<li>随机事件</li>
+<li>概率</li>
+<li>古典概率的计算</li>
+<li>条件概率 事件的相互独立性</li>
+</ol>
+</li>
+<li>随机变量与概率分布<ol>
+<li>一维随机变量</li>
+<li>二维随机变量</li>
+<li>条件分布</li>
+<li>随机变量的相互独立性</li>
+<li>随机变量的函数的概率分布</li>
+</ol>
+</li>
+<li>随机变量的数字特性<ol>
+<li>数学期望</li>
+<li>方差</li>
+<li>协方差与相关系数</li>
+<li>条件期望与条件方差</li>
+</ol>
+</li>
+<li>大数定律与中心极限定理<ol>
+<li>大数定律</li>
+<li>中心极限定理</li>
+</ol>
+</li>
+<li>数理统计学的基本概念<ol>
+<li>总体与样本</li>
+<li>样本分布</li>
+<li>统计量</li>
+<li>抽样分布</li>
+</ol>
+</li>
+<li>参数估计<ol>
+<li>点估计</li>
+<li>估计量与评选标准</li>
+<li>区间估计</li>
+<li>正态总体参数的区间估计</li>
+</ol>
+</li>
+<li>假设检验<ol>
+<li>假设检验的基本概念</li>
+<li>正态总体参数的假设检验</li>
+<li>单边假设检验</li>
+<li>多数假设的大样本检验</li>
+<li>分布假设检验</li>
+</ol>
+</li>
+<li>方差分析<ol>
+<li>单因素方差分析</li>
+<li>双因素方差分析</li>
+</ol>
+</li>
+<li>回归分析<ol>
+<li>一元线性回归</li>
+<li>可线性化的一元非线性回归</li>
+<li>多元线性回归</li>
+</ol>
+</li>
+<li>随机过程的基本知识<ol>
+<li> 随机过程的概念和记号</li>
+<li> 随机过程的概率特性</li>
+<li> 随机过程的基本类型</li>
+<li> 泊松过程与布朗运动</li>
+</ol>
+</li>
+<li>平稳过程<ol>
+<li> 平稳过程的概念</li>
+<li> 平稳过程的性质</li>
+<li> 平稳过程的谱密度</li>
+<li> 各态历经性</li>
+</ol>
+</li>
+<li>附录<ol>
+<li> 标准正态分布表</li>
+<li> 泊松分布表</li>
+<li> t分布表</li>
+<li> X^2分布表</li>
+<li> F分布表</li>
+</ol>
+</li>
+</ol>
+]]></content>
+      <categories>
+        <category>学习</category>
+      </categories>
+      <tags>
+        <tag>学习</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>Hexo+Github博客搭建教程</title>
     <url>/Hexo-Github%E5%8D%9A%E5%AE%A2%E6%90%AD%E5%BB%BA%E6%95%99%E7%A8%8B/</url>
     <content><![CDATA[<h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>新手小白，第一次搭博客，先向前辈们大佬们隔空致敬。</p>
@@ -1573,8 +1573,9 @@
     <title>V-SLAM整理1</title>
     <url>/V-SLAM%E6%95%B4%E7%90%861/</url>
     <content><![CDATA[<p>VSLAM学习素材是高翔老师的《视觉SLAM十四讲第二版》。这是我首次接触SLAM，感觉还算有趣。学士学完了，但是还需要系统的梳理一遍知识体系。</p>
-<p>内容比较多，放在两个博客里记述，第一部分是基础知识，第二部分是SLAM实践。</p>
+<p>内容比较多，放在两个博客里记述，第一部分是基础知识，第二部分是SLAM的前端，第三部分是SLAM的后端，第四部分是SLAM中的回环检测和建图。</p>
 <p>好了，废话不多说，开始吧~</p>
+<hr>
 <h1 id="第1讲-预备知识"><a href="#第1讲-预备知识" class="headerlink" title="第1讲 预备知识"></a>第1讲 预备知识</h1><p>没啥内容，略过</p>
 <hr>
 <h1 id="第2将-初始SLAM"><a href="#第2将-初始SLAM" class="headerlink" title="第2将 初始SLAM"></a>第2将 初始SLAM</h1><h2 id="2-2-经典视觉SLAM框架"><a href="#2-2-经典视觉SLAM框架" class="headerlink" title="2.2 经典视觉SLAM框架"></a>2.2 经典视觉SLAM框架</h2><p>一图以蔽之：<br><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/study/paper/20210928163420.png"></p>
@@ -1706,7 +1707,7 @@
 <li>∨：指代从矩阵到向量</li>
 </ul>
 <p><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/study/paper/20210929092531.png"></p>
-<h1 id="4-2-指数与对数映射"><a href="#4-2-指数与对数映射" class="headerlink" title="4.2 指数与对数映射"></a>4.2 指数与对数映射</h1><p>前面有提到so(3)和SO(3)之间可以用exp来转换，这章主要是说so(3)、se(3)和SO(3)、SE(3)之间的转换（也就是这个exp）究竟是如何计算的。</p>
+<h2 id="4-2-指数与对数映射"><a href="#4-2-指数与对数映射" class="headerlink" title="4.2 指数与对数映射"></a>4.2 指数与对数映射</h2><p>前面有提到so(3)和SO(3)之间可以用exp来转换，这章主要是说so(3)、se(3)和SO(3)、SE(3)之间的转换（也就是这个exp）究竟是如何计算的。</p>
 <p>有趣的是，SO(3)对应旋转矩阵，而so(3)对应旋转向量。</p>
 <h3 id="4-2-1-SO-3-上的指数映射"><a href="#4-2-1-SO-3-上的指数映射" class="headerlink" title="4.2.1 SO(3)上的指数映射"></a>4.2.1 SO(3)上的指数映射</h3><ul>
 <li>so(3)—&gt;SO(3)：通过指数映射，可以将so(3)中的任意一个向量对应到SO(3)中的一个旋转矩阵上。</li>
@@ -1815,7 +1816,7 @@
 <ul>
 <li><code>世界坐标Pw</code> –+外参T–&gt;</li>
 <li><code>相机坐标Pc</code> —&gt; </li>
-<li><code>归一化坐标</code> –+畸变–+内参α,β,c,f–&gt; </li>
+<li><code>归一化坐标</code> –+畸变–+内参K(α,β,c,f)–&gt; </li>
 <li><code>像素坐标Puv</code></li>
 </ul>
 <h3 id="5-1-3-双目相机模型"><a href="#5-1-3-双目相机模型" class="headerlink" title="5.1.3 双目相机模型"></a>5.1.3 双目相机模型</h3><p>双目相机的原理是同步采集左右相机图像，计算图像<code>视差</code>，计算每个像素点的深度。</p>
@@ -1968,6 +1969,334 @@
 <li>调用g2o进行优化，返回结果</li>
 </ol>
 ]]></content>
+      <categories>
+        <category>科研</category>
+      </categories>
+      <tags>
+        <tag>SLAM</tag>
+        <tag>科研</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>V-SLAM整理2</title>
+    <url>/V-SLAM%E6%95%B4%E7%90%862/</url>
+    <content><![CDATA[<h1 id="第7讲-视觉里程计1"><a href="#第7讲-视觉里程计1" class="headerlink" title="第7讲 视觉里程计1"></a>第7讲 视觉里程计1</h1><p>视觉里程计，也就是前端，核心是根据相邻图像的信息估计相机运动，给后端提供很好的估计值。</p>
+<p>主要算法：</p>
+<ul>
+<li>特征点法</li>
+<li>直接法</li>
+</ul>
+<h2 id="7-1-特征点法"><a href="#7-1-特征点法" class="headerlink" title="7.1 特征点法"></a>7.1 特征点法</h2><p>主流方法。</p>
+<p>我们需要知道如何提取、匹配图像特征点，然后估计两帧之间的相机运动和场景结构，从而实现一个两帧间的视觉里程计。</p>
+<h3 id="7-1-1-特征点"><a href="#7-1-1-特征点" class="headerlink" title="7.1.1 特征点"></a>7.1.1 特征点</h3><p>所谓特征，就是图像里比较有代表性的点，这些点在相机小量运动之后也能保持稳定。例如角点、边缘、区块。在SLAM中，特征=路标。</p>
+<ul>
+<li>角点特征（早期）<ul>
+<li>Harris角点、FAST角点、GFTT角点等</li>
+</ul>
+</li>
+<li>局部图像特征<ul>
+<li>SIFT、SURF、<strong>ORB</strong>等</li>
+</ul>
+</li>
+</ul>
+<p>特征点：关键点 + 描述子（提取特征点=提取关键点并计算描述子）</p>
+<ul>
+<li>关键点：特征点在图像中的位置（大小、方向、评分）</li>
+<li>描述子：描述关键点周围像素信息的向量</li>
+</ul>
+<h3 id="7-1-2-ORB特征"><a href="#7-1-2-ORB特征" class="headerlink" title="7.1.2 ORB特征"></a>7.1.2 ORB特征</h3><p>ORB特征：在平移、旋转、缩放变换下表现良好，同时高效</p>
+<ul>
+<li>Oriented FAST关键点提取：找出图像中的角点，计算特征点的主方向</li>
+<li>改进后的BRIEF描述子：对前一步提取出的特征点的周围图像区域进行描述</li>
+</ul>
+<h4 id="1-FAST-关键点"><a href="#1-FAST-关键点" class="headerlink" title="1) FAST 关键点"></a>1) FAST 关键点</h4><ol>
+<li>FAST角点主要检测局部像素灰度变化明显的地方。</li>
+</ol>
+<p><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/study/paper/20210929223949.png"></p>
+<p>缺点：</p>
+<ul>
+<li>重复性（相同特征点可以在不同的图像中找到）不强</li>
+<li>分布不均</li>
+<li>不具有方向信息</li>
+<li>不具有尺度信息</li>
+</ul>
+<hr>
+<ol start="2">
+<li>ORB改进版——Oriented FAST：加上尺度和旋转的描述。</li>
+</ol>
+<ul>
+<li>尺度：图像金字塔，每层检测角点</li>
+<li>旋转：灰度质心法—get关键点的方向信息——几何中心指向质心</li>
+</ul>
+<p><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/study/paper/20210929224335.png"></p>
+<h4 id="2-BRIEF-描述子"><a href="#2-BRIEF-描述子" class="headerlink" title="2) BRIEF 描述子"></a>2) BRIEF 描述子</h4><p>BRIEF：一种二进制描述子，用0和1来编码特征点附近两个随机像素的大小关系。</p>
+<p>Steer BRIEF：ORB改进后的BRIEF，利用关键点的方向信息，计算旋转之后的Steer BRIEF特征。这样一来描述子也能具有旋转不变形。</p>
+<ul>
+<li>描述子距离表示了两个特征的相似程度，对于BRIEF描述子，可以使用汉明距离。</li>
+</ul>
+<h3 id="7-1-3-特征匹配"><a href="#7-1-3-特征匹配" class="headerlink" title="7.1.3 特征匹配"></a>7.1.3 特征匹配</h3><p>确定当前图像路标与之前图像中的路标之间的对应关系。</p>
+<p>主要问题：场景中的重复纹理导致误匹配。</p>
+<p>方法：</p>
+<ul>
+<li>暴力匹配<ul>
+<li>计算每个特征点与其他特征点的描述子距离，选取最近的作为匹配点</li>
+</ul>
+</li>
+<li>快速近似最近邻（FLANN）</li>
+</ul>
+<h2 id="7-2-编程：特征提取和匹配"><a href="#7-2-编程：特征提取和匹配" class="headerlink" title="7.2 编程：特征提取和匹配"></a>7.2 编程：特征提取和匹配</h2><p>opencv</p>
+<h3 id="7-2-1-OpenCV的ORB特征"><a href="#7-2-1-OpenCV的ORB特征" class="headerlink" title="7.2.1 OpenCV的ORB特征"></a>7.2.1 OpenCV的ORB特征</h3><p>提取并匹配两种图像的ORB特征：</p>
+<ol>
+<li>读取图像</li>
+<li>初始化</li>
+<li>检测Oriented FAST角点位置</li>
+<li>根据角点位置计算BRIEF描述子</li>
+<li>对两张图像中的BRIEF描述子进行匹配，使用汉明距离</li>
+<li>匹配点对筛选：汉明距离小于最小距离的两倍，否则算是误匹配</li>
+<li>绘制匹配结果<h3 id="7-2-2-手写ORB特征"><a href="#7-2-2-手写ORB特征" class="headerlink" title="7.2.2 手写ORB特征"></a>7.2.2 手写ORB特征</h3>编译该程序要求CPU支持SSE指令集</li>
+</ol>
+<h3 id="7-2-3-计算相机运动"><a href="#7-2-3-计算相机运动" class="headerlink" title="7.2.3 计算相机运动"></a>7.2.3 计算相机运动</h3><p>已有<code>匹配好的点对</code>，接下来要根据点对来<code>估计相机运动</code>：</p>
+<ol>
+<li>单目：对极几何</li>
+<li>双目/RGBD：ICP</li>
+<li>一组3d一组2d：PnP</li>
+</ol>
+<p>需要注意的是，这里的匹配点对是来自<strong>两帧</strong>的，估计的相机运动也是<strong>两帧之间</strong>的相机运动。</p>
+<h2 id="7-3-2D-2D：对极几何"><a href="#7-3-2D-2D：对极几何" class="headerlink" title="7.3 2D-2D：对极几何"></a>7.3 2D-2D：对极几何</h2><p>已知匹配的投影点对位置，求相机的位姿（R, t）。</p>
+<h3 id="7-3-1-对级约束"><a href="#7-3-1-对级约束" class="headerlink" title="7.3.1 对级约束"></a>7.3.1 对级约束</h3><p><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/study/paper/20210930002342.png"></p>
+<ul>
+<li>l1, l2：极线</li>
+<li>e1, e2：极点</li>
+<li>O1O2P：极平面</li>
+<li>O1O2：基线</li>
+</ul>
+<p><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/study/paper/20210930002827.png"></p>
+<p><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/study/paper/20210930002919.png"></p>
+<p>推导得到<code>对级约束</code>：其中x1，x2是像素点的归一化平面坐标</p>
+<p><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/study/paper/20210930003051.png"></p>
+<p>对级约束的几何意义是O1，P，O2三者共面。</p>
+<p>进一步化简对级约束：</p>
+<ul>
+<li><code>基础矩阵F</code></li>
+<li><code>本质矩阵E</code></li>
+</ul>
+<p><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/study/paper/20210930003316.png"></p>
+<ul>
+<li>对级约束给出了两个匹配点的空间位置关系</li>
+</ul>
+<p><strong>相机位姿估计问题</strong>：</p>
+<ul>
+<li>根据匹配点的像素位置（p1, p2）求出<code>E</code>或者<code>F</code> （内参K已知情况下，主要用E）</li>
+<li>根据E或者F求出<code>R,t</code></li>
+</ul>
+<h3 id="7-3-2-本质矩阵E"><a href="#7-3-2-本质矩阵E" class="headerlink" title="7.3.2 本质矩阵E"></a>7.3.2 本质矩阵E</h3><p>E=t^R</p>
+<p>E具有尺度等价性，实际上由5个自由度。</p>
+<p><code>八代法</code>估计E：8对匹配点组成矩阵，满足秩为8的条件，解方程得到E</p>
+<p><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/study/paper/20210930005101.png"><br><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/study/paper/20210930004840.png"></p>
+<hr>
+<p>根据E求R,t：<code>奇异分解SVD</code></p>
+<p><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/study/paper/20210930005337.png"></p>
+<p>得到4个可能解，只有一个解对应的P在两个相机中都具有正的深度，是正确解</p>
+<h3 id="7-3-3-单应矩阵"><a href="#7-3-3-单应矩阵" class="headerlink" title="7.3.3 单应矩阵"></a>7.3.3 单应矩阵</h3><p>单应矩阵H：描述了两个平面之间的映射关系，通常用于描述处于共同平面上的一些点在两张图像之间的变换关系。</p>
+<p><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/study/paper/20210930010300.png"></p>
+<p><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/study/paper/20210930113354.png"></p>
+<p><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/study/paper/20210930113417.png"></p>
+<p>1对匹配点构造两项约束，<code>4对匹配点</code>可以得到8项约束，计算出8个自由度的单应矩阵：</p>
+<p><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/study/paper/20210930010838.png"></p>
+<p>解得H，分解（数值法、解析法）后得到R,t。</p>
+<ul>
+<li>单应性在SLAM中的应用：if 特征点共面/相机发生<code>纯旋转</code>，基础矩阵的自由度下降，即<code>退化</code>，这种时候如果还用8点法求解基础矩阵，多余的自由度将会主要由噪声决定。这种时候我们可以同时估计基础矩阵F和单应矩阵H，选择重投影误差较小的作为最终的运动估计矩阵。</li>
+</ul>
+<h2 id="7-4-编程：对级约束求解相机运动"><a href="#7-4-编程：对级约束求解相机运动" class="headerlink" title="7.4 编程：对级约束求解相机运动"></a>7.4 编程：对级约束求解相机运动</h2><p>opencv</p>
+<p>单目初始化不能只有纯旋转，必须有一定平移。</p>
+<p><code>随机采样一致性RANSAC</code>：当数据带有错误匹配时可以用</p>
+<h2 id="7-5-三角测量"><a href="#7-5-三角测量" class="headerlink" title="7.5 三角测量"></a>7.5 三角测量</h2><p>通过对极几何得到相机的运动R,t之后，需要用这个运动估计特征点的空间位置。</p>
+<p>但是在单目SLAM里，单张图片无法获取像素的深度信息，需要用<code>三角测量法</code>来估计地图点的深度。</p>
+<p>也就是说，目前已知R,t，想求解两个特征点的深度s1和s2.</p>
+<p>三角测量：在不同位置对同一个路标点（特征点）进行观察，从观察到的位置推断路标点的距离。</p>
+<p><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/study/paper/20210930014541.png"></p>
+<p>本来两条直线的交点P就是空间点了，但是由于存在噪声，这两条直线往往无法相交，可以通过最小二乘来求解。</p>
+<h2 id="7-6-编程：三角测量"><a href="#7-6-编程：三角测量" class="headerlink" title="7.6 编程：三角测量"></a>7.6 编程：三角测量</h2><h3 id="7-6-1-三角测量代码"><a href="#7-6-1-三角测量代码" class="headerlink" title="7.6.1 三角测量代码"></a>7.6.1 三角测量代码</h3><p>之前对极几何求解的<code>相机位姿</code> + <code>三角化</code>，得到特征点的空间位置。</p>
+<h3 id="7-6-2-讨论"><a href="#7-6-2-讨论" class="headerlink" title="7.6.2 讨论"></a>7.6.2 讨论</h3><p>纯旋转不能用三角测量，故如果相机原地旋转导致视差很小，可能出现追踪失败、尺度不正确等问题。</p>
+<p>视差问题：三角化存在一个矛盾点，增大平移，可能导致匹配失效，平移太小，导致三角化精度不够。</p>
+<p><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/study/paper/20210930015330.png"></p>
+<p>延迟三角化。</p>
+<h2 id="7-7-3D-2D：PnP"><a href="#7-7-3D-2D：PnP" class="headerlink" title="7.7 3D-2D：PnP"></a>7.7 3D-2D：PnP</h2><p>2D-2D对极几何缺点：</p>
+<ul>
+<li>需要8+点对<ul>
+<li>如果3D-2D，只需要2+1点对</li>
+</ul>
+</li>
+<li>初始化问题</li>
+<li>纯旋转问题</li>
+<li>尺度问题</li>
+</ul>
+<p>因此，双目/RGBD直接用PnP估计相机运动，单目先初始化再用PnP。</p>
+<p>PnP：</p>
+<ul>
+<li>已知3D点的空间位置和它在相机上的投影点，求相机的外参（R, t）【大多数情况】</li>
+<li>已知相机坐标A中的3D点位置，和相机B中的2D点位置，求两个相机的相对运动，（和2D特征点的空间位置）</li>
+</ul>
+<p>PnP求解方法：</p>
+<ul>
+<li>代数法<ul>
+<li>P3P</li>
+<li>直接线性变换DLT</li>
+<li>EPnP</li>
+<li>UPnP</li>
+</ul>
+</li>
+<li>优化法<ul>
+<li>非线性优化——BA</li>
+</ul>
+</li>
+</ul>
+<h3 id="7-7-1-直接线性变换DLT"><a href="#7-7-1-直接线性变换DLT" class="headerlink" title="7.7.1 直接线性变换DLT"></a>7.7.1 直接线性变换DLT</h3><p>已知空间点P坐标和它的投影点x1，估计相机位姿R, t</p>
+<p><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/study/paper/20210930113119.png"></p>
+<p><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/study/paper/20210930113456.png"></p>
+<p>1个特征点（或者说1对3D-2d匹配点）可以提供2个关于t的线性约束，<code>6对匹配点</code>提供12个约束，可以求解12个未知t。</p>
+<p>求出来T矩阵，但是左边3X3的矩阵块不一定满足旋转矩阵R的约束，因此要用<code>QR分解</code>找一个最好的旋转矩阵来对它进行近似：</p>
+<p><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/study/paper/20210930114031.png"></p>
+<h3 id="7-7-2-P3P"><a href="#7-7-2-P3P" class="headerlink" title="7.7.2 P3P"></a>7.7.2 P3P</h3><p>上面的DLT用了6对匹配点，这里的P3P只需要用4对，3个来算，1个验证。</p>
+<p>已知3个3D点ABC（已知其世界坐标系下的3D坐标），和匹配的3个2D点abc，估计相机外参。</p>
+<p><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/study/paper/20210930114515.png"></p>
+<p><strong>思路是利用几何性质，将3D-2D转换成3D-3D问题再求解：</strong></p>
+<ul>
+<li>转换</li>
+</ul>
+<p>已知：<img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/study/paper/20210930115352.png"></p>
+<p>未知：<img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/study/paper/20210930115319.png"></p>
+<p><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/study/paper/20210930115227.png"></p>
+<p>可以用<code>吴氏消元法</code>+<code>验证点</code>解得a,b,c在世界坐标系下的3D坐标【这里书上写的是ABC在相机坐标下的3D坐标，感觉不太对】，然后就变成了3D-3D问题。</p>
+<ul>
+<li>求解3D-3D：<code>ICP</code></li>
+</ul>
+<h3 id="7-7-3-最小化重投影误差求解PnP"><a href="#7-7-3-最小化重投影误差求解PnP" class="headerlink" title="7.7.3 最小化重投影误差求解PnP"></a>7.7.3 最小化重投影误差求解PnP</h3><ul>
+<li>线性方法：先求相机位姿，再求空间点位置（如2D-2D对极几何+三角化）<ul>
+<li>线性方法利用多个匹配点来拉平噪声造成的误差？</li>
+<li><strong>【疑问】：线性方法有没有考虑误差的影响？？？</strong></li>
+</ul>
+</li>
+<li>非线性方法：将相机位姿和空间点放在一起来优化——Bundle Adjustment<ul>
+<li>非线性方法直接对实际和估计的误差进行最小化</li>
+</ul>
+</li>
+</ul>
+<p>前面也说过PnP的2D-3D来源可以是两种：相机在某个位姿下将空间的3D点投影到2D平面，这种情况下我们只要估计相机位姿就行；另一种跟2D-2D有点像，两个匹配点分别来自两帧，只是一个是3D的一个是2D的，这种时候除了估计相机位姿，还要估计2D点的空间位置。</p>
+<hr>
+<ul>
+<li><strong>优化位姿</strong></li>
+</ul>
+<p>下面讲解如何在PnP中构建一个BA问题来对<code>相机位姿</code>进行优化：</p>
+<p>已知空间点P及其投影p，目标是估计相机位姿R，t。由于相机位姿未知且存在噪声，su=KTP存在误差，构建最小二乘问题，寻找最好的相机位姿来最小化误差。该误差项是3D点的投影位置和观测的投影位置作差，故被称为<code>重投影误差</code>：</p>
+<p><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/study/paper/20210930142440.png"></p>
+<p><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/study/paper/20210930123534.png"></p>
+<p>高斯牛顿/阻尼牛顿来求解，重点是J（重投影误差关于<code>相机位姿对应的李代数</code>的一阶导数）</p>
+<p><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/study/paper/20210930135757.png"></p>
+<ul>
+<li>P在世界坐标系下：[X,Y,Z]^T</li>
+<li>P在相机坐标系下：P’=(TP)=[X’, Y’, Z’]^T</li>
+<li>P’的投影(u,v)：su=KP’</li>
+</ul>
+<p><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/study/paper/20210930140705.png"></p>
+<p>J 的求解可以参考”如何使用扰动模型来求李代数的导数”：</p>
+<p><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/study/paper/20210930140204.png"></p>
+<p>第一项是误差关于变换后点的导数：</p>
+<p><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/study/paper/20210930140248.png"></p>
+<p>第二项是变换后的点关于李代数的导数：</p>
+<p><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/study/paper/20210930141755.png"></p>
+<p>最终得到<code>雅克比矩阵J</code>：</p>
+<p><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/study/paper/20210930141046.png"></p>
+<hr>
+<ul>
+<li><strong>优化特征点的空间关系</strong>：</li>
+</ul>
+<p>这里J是重投影误差关于<code>空间点P</code>的一阶导数：</p>
+<p><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/study/paper/20210930141610.png"></p>
+<p>第一项如上：</p>
+<p><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/study/paper/20210930140248.png"></p>
+<p>第二项：P’=RP+t，求导后只剩下R</p>
+<p>最终得到<code>雅克比矩阵J</code>：</p>
+<p><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/study/paper/20210930141714.png"></p>
+<h2 id="7-8-编程：求解PnP"><a href="#7-8-编程：求解PnP" class="headerlink" title="7.8 编程：求解PnP"></a>7.8 编程：求解PnP</h2><h3 id="7-8-1-使用EPnP求解位姿"><a href="#7-8-1-使用EPnP求解位姿" class="headerlink" title="7.8.1 使用EPnP求解位姿"></a>7.8.1 使用EPnP求解位姿</h3><p>线性优化</p>
+<p>OpenCV中的EPnP</p>
+<h3 id="7-8-2-手写位姿估计"><a href="#7-8-2-手写位姿估计" class="headerlink" title="7.8.2 手写位姿估计"></a>7.8.2 手写位姿估计</h3><p>非线性优化</p>
+<p>手写高斯牛顿法的PnP</p>
+<h3 id="7-8-3-使用g2o进行BA优化"><a href="#7-8-3-使用g2o进行BA优化" class="headerlink" title="7.8.3 使用g2o进行BA优化"></a>7.8.3 使用g2o进行BA优化</h3><p>非线性优化</p>
+<p>调用g2o</p>
+<p>第一个相机的位姿固定为0，根据1组3D点和第2个图像中的2D投影来估计第二个相机位姿。</p>
+<p><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/study/paper/20210930142416.png"></p>
+<h2 id="7-9-3D-3D：ICP"><a href="#7-9-3D-3D：ICP" class="headerlink" title="7.9 3D-3D：ICP"></a>7.9 3D-3D：ICP</h2><p>已知一组匹配好的3D点P,P’，求解P’——&gt;P的欧式变换R,t。</p>
+<p><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/study/paper/20210930142846.png"></p>
+<p><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/study/paper/20210930142856.png"></p>
+<p>值得注意的是，3D-3D的位姿估计问题中没有相机模型，因为两组3D点变换与相机没有关系。但是，如果将这两组点集分别看做两个帧图像的数据，那么这里的R,t就是两帧间的相机位姿了。</p>
+<p>迭代最近点ICP：</p>
+<ul>
+<li>激光SLAM中的ICP，两个点集之间并无匹配关系，因为激光数据的特征不丰富，因此只能认为距离最近的两个点为同一个点</li>
+<li>VSALM中的ICP，两个点集是匹配好的</li>
+</ul>
+<p>ICP求解：</p>
+<ul>
+<li>线性法：SVD</li>
+<li>非线性优化：BA</li>
+</ul>
+<h3 id="7-9-1-SVD方法"><a href="#7-9-1-SVD方法" class="headerlink" title="7.9.1 SVD方法"></a>7.9.1 SVD方法</h3><p>构建最小二乘问题：最小化点集中各对点的误差项之和</p>
+<p><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/study/paper/20210930143528.png"></p>
+<p>定义质心后，简化后的最小二乘问题：</p>
+<p><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/study/paper/20210930143733.png"></p>
+<p><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/study/paper/20210930143936.png"></p>
+<p>思路是最小化第一项，取t让第二项为0。</p>
+<p>步骤：</p>
+<p><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/study/paper/20210930144310.png"><br><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/study/paper/20210930144105.png"></p>
+<p>再化简这个优化目标函数，最终相当于要优化：</p>
+<p><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/study/paper/20210930144358.png"></p>
+<p>通过<code>SVD</code>可以解出上述问题中最优的R：</p>
+<p><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/study/paper/20210930144516.png"><br><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/study/paper/20210930144534.png"><br><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/study/paper/20210930144547.png"></p>
+<p>再求t就行。</p>
+<h3 id="7-9-2-非线性优化方法"><a href="#7-9-2-非线性优化方法" class="headerlink" title="7.9.2 非线性优化方法"></a>7.9.2 非线性优化方法</h3><p>BA法以迭代的方式最小化目标函数：</p>
+<p><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/study/paper/20210930144812.png"></p>
+<p><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/study/paper/20210930145336.png"></p>
+<p>然后用高斯牛顿等方法不断迭代找到极小值就行。</p>
+<p>点集匹配时求解ICP问题有个优势，是可以任意选定初始值（因为唯一解情况下极小值就是全局最优解）。</p>
+<p>但是事实上，如果特征已经匹配好了，往往使用线性方法直接解（因为存在解析解），而不是迭代。也就是说，ICP更多使用在匹配未知的情况下。</p>
+<h2 id="7-10-编程：求解ICP"><a href="#7-10-编程：求解ICP" class="headerlink" title="7.10 编程：求解ICP"></a>7.10 编程：求解ICP</h2><h3 id="7-10-1-编程：SVD方法"><a href="#7-10-1-编程：SVD方法" class="headerlink" title="7.10.1 编程：SVD方法"></a>7.10.1 编程：SVD方法</h3><p>Eigen调用SVD解出目标函数的解析解。</p>
+<h3 id="7-10-2-编程：非线性优化方法"><a href="#7-10-2-编程：非线性优化方法" class="headerlink" title="7.10.2 编程：非线性优化方法"></a>7.10.2 编程：非线性优化方法</h3><hr>
+<h1 id="第8讲-视觉里程计2"><a href="#第8讲-视觉里程计2" class="headerlink" title="第8讲 视觉里程计2"></a>第8讲 视觉里程计2</h1><p>特征点法缺点：</p>
+<ul>
+<li>关键点的提取与描述子计算非常耗时</li>
+<li>只使用特征点会丢失大部分也许有用的信息</li>
+<li>特征缺少的场景下匹配点不够计算相机运动</li>
+</ul>
+<h2 id="8-1-直接法的引出"><a href="#8-1-直接法的引出" class="headerlink" title="8.1 直接法的引出"></a>8.1 直接法的引出</h2><p>改良方案：</p>
+<ul>
+<li>光流法：保留特征点，只计算关键点，不计算描述子，将匹配描述子的步骤替换成<code>光流跟踪</code>，即使用<code>光流法</code>跟踪特征点的运动。<ul>
+<li>降低计算开销</li>
+<li>只改了特征匹配的方案（改为跟踪），但还是用对极几何、PnP或ICP来估计相机运动</li>
+</ul>
+</li>
+<li>直接法：不再使用特征点，只计算关键点，不计算描述子。同时使用<code>直接法</code>计算特征点在下一时刻图像中的位置。<ul>
+<li>直接法不要求提取到的点是角点，只需要根据图像的<code>像素灰度信息</code>来估计相机运动和点的投影。</li>
+<li>进一步降低计算开销</li>
+<li>全改，不需要匹配特征，直接<code>最小化光度误差</code></li>
+</ul>
+</li>
+</ul>
+<p>光流法也算是特征点法的一种。</p>
+<p>直接法是从光流法演变而来的。</p>
+<p>可用于的结构：</p>
+<ul>
+<li>直接法：<ul>
+<li>稠密</li>
+<li>半稠密</li>
+<li>稀疏</li>
+</ul>
+</li>
+<li>特征点法：<ul>
+<li>稀疏</li>
+</ul>
+</li>
+</ul>
+<h2 id="8-2-2D光流"><a href="#8-2-2D光流" class="headerlink" title="8.2 2D光流"></a>8.2 2D光流</h2><h3 id="1-Lucas-Kanade光流"><a href="#1-Lucas-Kanade光流" class="headerlink" title="1) Lucas-Kanade光流"></a>1) Lucas-Kanade光流</h3><h2 id="8-3-编程：LK光流"><a href="#8-3-编程：LK光流" class="headerlink" title="8.3 编程：LK光流"></a>8.3 编程：LK光流</h2><h3 id="8-3-1-使用LK光流"><a href="#8-3-1-使用LK光流" class="headerlink" title="8.3.1 使用LK光流"></a>8.3.1 使用LK光流</h3><h3 id="8-3-2-用高斯牛顿法实现光流"><a href="#8-3-2-用高斯牛顿法实现光流" class="headerlink" title="8.3.2 用高斯牛顿法实现光流"></a>8.3.2 用高斯牛顿法实现光流</h3><h3 id="8-3-3-光流实践小结"><a href="#8-3-3-光流实践小结" class="headerlink" title="8.3.3 光流实践小结"></a>8.3.3 光流实践小结</h3><h2 id="8-4-直接法"><a href="#8-4-直接法" class="headerlink" title="8.4 直接法"></a>8.4 直接法</h2><h3 id="8-4-1-直接法的推导"><a href="#8-4-1-直接法的推导" class="headerlink" title="8.4.1 直接法的推导"></a>8.4.1 直接法的推导</h3><h3 id="8-4-2-直接法的讨论"><a href="#8-4-2-直接法的讨论" class="headerlink" title="8.4.2 直接法的讨论"></a>8.4.2 直接法的讨论</h3><h2 id="8-5-编程：直接法"><a href="#8-5-编程：直接法" class="headerlink" title="8.5 编程：直接法"></a>8.5 编程：直接法</h2><h3 id="8-5-1-单层直接法"><a href="#8-5-1-单层直接法" class="headerlink" title="8.5.1 单层直接法"></a>8.5.1 单层直接法</h3><h3 id="8-5-2-多层直接法"><a href="#8-5-2-多层直接法" class="headerlink" title="8.5.2 多层直接法"></a>8.5.2 多层直接法</h3><h3 id="8-5-3-结果讨论"><a href="#8-5-3-结果讨论" class="headerlink" title="8.5.3 结果讨论"></a>8.5.3 结果讨论</h3><h3 id="8-5-4-直接法优缺点总结"><a href="#8-5-4-直接法优缺点总结" class="headerlink" title="8.5.4 直接法优缺点总结"></a>8.5.4 直接法优缺点总结</h3>]]></content>
       <categories>
         <category>科研</category>
       </categories>

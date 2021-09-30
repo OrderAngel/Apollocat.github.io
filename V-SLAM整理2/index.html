@@ -1,0 +1,852 @@
+<!DOCTYPE html>
+
+
+<html lang="zh-Hans">
+
+
+<head>
+  <meta charset="utf-8" />
+   
+  <meta name="keywords" content="记录，学习，娱乐，博客" />
+   
+  <meta name="description" content="四界云官" />
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+  <title>
+    V-SLAM整理2 |  四界
+  </title>
+  <meta name="generator" content="hexo-theme-ayer">
+  
+  <link rel="shortcut icon" href="/greencat2.ico" />
+  
+  
+<link rel="stylesheet" href="/dist/main.css">
+
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/Shen-Yu/cdn/css/remixicon.min.css">
+  
+<link rel="stylesheet" href="/css/custom.css">
+
+  
+  <script src="https://cdn.jsdelivr.net/npm/pace-js@1.0.2/pace.min.js"></script>
+  
+  
+
+  
+
+
+<style>.github-emoji { position: relative; display: inline-block; width: 1.2em; min-height: 1.2em; overflow: hidden; vertical-align: top; color: transparent; }  .github-emoji > span { position: relative; z-index: 10; }  .github-emoji img, .github-emoji .fancybox { margin: 0 !important; padding: 0 !important; border: none !important; outline: none !important; text-decoration: none !important; user-select: none !important; cursor: auto !important; }  .github-emoji img { height: 1.2em !important; width: 1.2em !important; position: absolute !important; left: 50% !important; top: 50% !important; transform: translate(-50%, -50%) !important; user-select: none !important; cursor: auto !important; } .github-emoji-fallback { color: inherit; } .github-emoji-fallback img { opacity: 0 !important; }</style>
+</head>
+
+</html>
+
+<body>
+  <div id="app">
+    
+      
+      <canvas width="1777" height="841"
+        style="position: fixed; left: 0px; top: 0px; z-index: 99999; pointer-events: none;"></canvas>
+      
+    <main class="content on">
+      <section class="outer">
+  <article
+  id="post-V-SLAM整理2"
+  class="article article-type-post"
+  itemscope
+  itemprop="blogPost"
+  data-scroll-reveal
+>
+  <div class="article-inner">
+    
+    <header class="article-header">
+       
+<h1 class="article-title sea-center" style="border-left:0" itemprop="name">
+  V-SLAM整理2
+</h1>
+ 
+
+      
+    </header>
+     
+    <div class="article-meta">
+      <a href="/V-SLAM%E6%95%B4%E7%90%862/" class="article-date">
+  <time datetime="2021-09-29T11:25:57.000Z" itemprop="datePublished">2021-09-29</time>
+</a> 
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/%E7%A7%91%E7%A0%94/">科研</a>
+  </div>
+  
+<div class="word_count">
+    <span class="post-time">
+        <span class="post-meta-item-icon">
+            <i class="ri-quill-pen-line"></i>
+            <span class="post-meta-item-text"> Word count:</span>
+            <span class="post-count">3.7k</span>
+        </span>
+    </span>
+
+    <span class="post-time">
+        &nbsp; | &nbsp;
+        <span class="post-meta-item-icon">
+            <i class="ri-book-open-line"></i>
+            <span class="post-meta-item-text"> Reading time≈</span>
+            <span class="post-count">13 min</span>
+        </span>
+    </span>
+</div>
+ 
+    </div>
+      
+    <div class="tocbot"></div>
+
+
+
+
+  
+    <div class="article-entry" itemprop="articleBody">
+       
+  <h1 id="第7讲-视觉里程计1"><a href="#第7讲-视觉里程计1" class="headerlink" title="第7讲 视觉里程计1"></a>第7讲 视觉里程计1</h1><p>视觉里程计，也就是前端，核心是根据相邻图像的信息估计相机运动，给后端提供很好的估计值。</p>
+<p>主要算法：</p>
+<ul>
+<li>特征点法</li>
+<li>直接法</li>
+</ul>
+<h2 id="7-1-特征点法"><a href="#7-1-特征点法" class="headerlink" title="7.1 特征点法"></a>7.1 特征点法</h2><p>主流方法。</p>
+<p>我们需要知道如何提取、匹配图像特征点，然后估计两帧之间的相机运动和场景结构，从而实现一个两帧间的视觉里程计。</p>
+<h3 id="7-1-1-特征点"><a href="#7-1-1-特征点" class="headerlink" title="7.1.1 特征点"></a>7.1.1 特征点</h3><p>所谓特征，就是图像里比较有代表性的点，这些点在相机小量运动之后也能保持稳定。例如角点、边缘、区块。在SLAM中，特征=路标。</p>
+<ul>
+<li>角点特征（早期）<ul>
+<li>Harris角点、FAST角点、GFTT角点等</li>
+</ul>
+</li>
+<li>局部图像特征<ul>
+<li>SIFT、SURF、<strong>ORB</strong>等</li>
+</ul>
+</li>
+</ul>
+<p>特征点：关键点 + 描述子（提取特征点=提取关键点并计算描述子）</p>
+<ul>
+<li>关键点：特征点在图像中的位置（大小、方向、评分）</li>
+<li>描述子：描述关键点周围像素信息的向量</li>
+</ul>
+<h3 id="7-1-2-ORB特征"><a href="#7-1-2-ORB特征" class="headerlink" title="7.1.2 ORB特征"></a>7.1.2 ORB特征</h3><p>ORB特征：在平移、旋转、缩放变换下表现良好，同时高效</p>
+<ul>
+<li>Oriented FAST关键点提取：找出图像中的角点，计算特征点的主方向</li>
+<li>改进后的BRIEF描述子：对前一步提取出的特征点的周围图像区域进行描述</li>
+</ul>
+<h4 id="1-FAST-关键点"><a href="#1-FAST-关键点" class="headerlink" title="1) FAST 关键点"></a>1) FAST 关键点</h4><ol>
+<li>FAST角点主要检测局部像素灰度变化明显的地方。</li>
+</ol>
+<p><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/study/paper/20210929223949.png"></p>
+<p>缺点：</p>
+<ul>
+<li>重复性（相同特征点可以在不同的图像中找到）不强</li>
+<li>分布不均</li>
+<li>不具有方向信息</li>
+<li>不具有尺度信息</li>
+</ul>
+<hr>
+<ol start="2">
+<li>ORB改进版——Oriented FAST：加上尺度和旋转的描述。</li>
+</ol>
+<ul>
+<li>尺度：图像金字塔，每层检测角点</li>
+<li>旋转：灰度质心法—get关键点的方向信息——几何中心指向质心</li>
+</ul>
+<p><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/study/paper/20210929224335.png"></p>
+<h4 id="2-BRIEF-描述子"><a href="#2-BRIEF-描述子" class="headerlink" title="2) BRIEF 描述子"></a>2) BRIEF 描述子</h4><p>BRIEF：一种二进制描述子，用0和1来编码特征点附近两个随机像素的大小关系。</p>
+<p>Steer BRIEF：ORB改进后的BRIEF，利用关键点的方向信息，计算旋转之后的Steer BRIEF特征。这样一来描述子也能具有旋转不变形。</p>
+<ul>
+<li>描述子距离表示了两个特征的相似程度，对于BRIEF描述子，可以使用汉明距离。</li>
+</ul>
+<h3 id="7-1-3-特征匹配"><a href="#7-1-3-特征匹配" class="headerlink" title="7.1.3 特征匹配"></a>7.1.3 特征匹配</h3><p>确定当前图像路标与之前图像中的路标之间的对应关系。</p>
+<p>主要问题：场景中的重复纹理导致误匹配。</p>
+<p>方法：</p>
+<ul>
+<li>暴力匹配<ul>
+<li>计算每个特征点与其他特征点的描述子距离，选取最近的作为匹配点</li>
+</ul>
+</li>
+<li>快速近似最近邻（FLANN）</li>
+</ul>
+<h2 id="7-2-编程：特征提取和匹配"><a href="#7-2-编程：特征提取和匹配" class="headerlink" title="7.2 编程：特征提取和匹配"></a>7.2 编程：特征提取和匹配</h2><p>opencv</p>
+<h3 id="7-2-1-OpenCV的ORB特征"><a href="#7-2-1-OpenCV的ORB特征" class="headerlink" title="7.2.1 OpenCV的ORB特征"></a>7.2.1 OpenCV的ORB特征</h3><p>提取并匹配两种图像的ORB特征：</p>
+<ol>
+<li>读取图像</li>
+<li>初始化</li>
+<li>检测Oriented FAST角点位置</li>
+<li>根据角点位置计算BRIEF描述子</li>
+<li>对两张图像中的BRIEF描述子进行匹配，使用汉明距离</li>
+<li>匹配点对筛选：汉明距离小于最小距离的两倍，否则算是误匹配</li>
+<li>绘制匹配结果<h3 id="7-2-2-手写ORB特征"><a href="#7-2-2-手写ORB特征" class="headerlink" title="7.2.2 手写ORB特征"></a>7.2.2 手写ORB特征</h3>编译该程序要求CPU支持SSE指令集</li>
+</ol>
+<h3 id="7-2-3-计算相机运动"><a href="#7-2-3-计算相机运动" class="headerlink" title="7.2.3 计算相机运动"></a>7.2.3 计算相机运动</h3><p>已有<code>匹配好的点对</code>，接下来要根据点对来<code>估计相机运动</code>：</p>
+<ol>
+<li>单目：对极几何</li>
+<li>双目/RGBD：ICP</li>
+<li>一组3d一组2d：PnP</li>
+</ol>
+<p>需要注意的是，这里的匹配点对是来自<strong>两帧</strong>的，估计的相机运动也是<strong>两帧之间</strong>的相机运动。</p>
+<h2 id="7-3-2D-2D：对极几何"><a href="#7-3-2D-2D：对极几何" class="headerlink" title="7.3 2D-2D：对极几何"></a>7.3 2D-2D：对极几何</h2><p>已知匹配的投影点对位置，求相机的位姿（R, t）。</p>
+<h3 id="7-3-1-对级约束"><a href="#7-3-1-对级约束" class="headerlink" title="7.3.1 对级约束"></a>7.3.1 对级约束</h3><p><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/study/paper/20210930002342.png"></p>
+<ul>
+<li>l1, l2：极线</li>
+<li>e1, e2：极点</li>
+<li>O1O2P：极平面</li>
+<li>O1O2：基线</li>
+</ul>
+<p><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/study/paper/20210930002827.png"></p>
+<p><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/study/paper/20210930002919.png"></p>
+<p>推导得到<code>对级约束</code>：其中x1，x2是像素点的归一化平面坐标</p>
+<p><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/study/paper/20210930003051.png"></p>
+<p>对级约束的几何意义是O1，P，O2三者共面。</p>
+<p>进一步化简对级约束：</p>
+<ul>
+<li><code>基础矩阵F</code></li>
+<li><code>本质矩阵E</code></li>
+</ul>
+<p><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/study/paper/20210930003316.png"></p>
+<ul>
+<li>对级约束给出了两个匹配点的空间位置关系</li>
+</ul>
+<p><strong>相机位姿估计问题</strong>：</p>
+<ul>
+<li>根据匹配点的像素位置（p1, p2）求出<code>E</code>或者<code>F</code> （内参K已知情况下，主要用E）</li>
+<li>根据E或者F求出<code>R,t</code></li>
+</ul>
+<h3 id="7-3-2-本质矩阵E"><a href="#7-3-2-本质矩阵E" class="headerlink" title="7.3.2 本质矩阵E"></a>7.3.2 本质矩阵E</h3><p>E=t^R</p>
+<p>E具有尺度等价性，实际上由5个自由度。</p>
+<p><code>八代法</code>估计E：8对匹配点组成矩阵，满足秩为8的条件，解方程得到E</p>
+<p><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/study/paper/20210930005101.png"><br><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/study/paper/20210930004840.png"></p>
+<hr>
+<p>根据E求R,t：<code>奇异分解SVD</code></p>
+<p><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/study/paper/20210930005337.png"></p>
+<p>得到4个可能解，只有一个解对应的P在两个相机中都具有正的深度，是正确解</p>
+<h3 id="7-3-3-单应矩阵"><a href="#7-3-3-单应矩阵" class="headerlink" title="7.3.3 单应矩阵"></a>7.3.3 单应矩阵</h3><p>单应矩阵H：描述了两个平面之间的映射关系，通常用于描述处于共同平面上的一些点在两张图像之间的变换关系。</p>
+<p><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/study/paper/20210930010300.png"></p>
+<p><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/study/paper/20210930113354.png"></p>
+<p><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/study/paper/20210930113417.png"></p>
+<p>1对匹配点构造两项约束，<code>4对匹配点</code>可以得到8项约束，计算出8个自由度的单应矩阵：</p>
+<p><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/study/paper/20210930010838.png"></p>
+<p>解得H，分解（数值法、解析法）后得到R,t。</p>
+<ul>
+<li>单应性在SLAM中的应用：if 特征点共面/相机发生<code>纯旋转</code>，基础矩阵的自由度下降，即<code>退化</code>，这种时候如果还用8点法求解基础矩阵，多余的自由度将会主要由噪声决定。这种时候我们可以同时估计基础矩阵F和单应矩阵H，选择重投影误差较小的作为最终的运动估计矩阵。</li>
+</ul>
+<h2 id="7-4-编程：对级约束求解相机运动"><a href="#7-4-编程：对级约束求解相机运动" class="headerlink" title="7.4 编程：对级约束求解相机运动"></a>7.4 编程：对级约束求解相机运动</h2><p>opencv</p>
+<p>单目初始化不能只有纯旋转，必须有一定平移。</p>
+<p><code>随机采样一致性RANSAC</code>：当数据带有错误匹配时可以用</p>
+<h2 id="7-5-三角测量"><a href="#7-5-三角测量" class="headerlink" title="7.5 三角测量"></a>7.5 三角测量</h2><p>通过对极几何得到相机的运动R,t之后，需要用这个运动估计特征点的空间位置。</p>
+<p>但是在单目SLAM里，单张图片无法获取像素的深度信息，需要用<code>三角测量法</code>来估计地图点的深度。</p>
+<p>也就是说，目前已知R,t，想求解两个特征点的深度s1和s2.</p>
+<p>三角测量：在不同位置对同一个路标点（特征点）进行观察，从观察到的位置推断路标点的距离。</p>
+<p><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/study/paper/20210930014541.png"></p>
+<p>本来两条直线的交点P就是空间点了，但是由于存在噪声，这两条直线往往无法相交，可以通过最小二乘来求解。</p>
+<h2 id="7-6-编程：三角测量"><a href="#7-6-编程：三角测量" class="headerlink" title="7.6 编程：三角测量"></a>7.6 编程：三角测量</h2><h3 id="7-6-1-三角测量代码"><a href="#7-6-1-三角测量代码" class="headerlink" title="7.6.1 三角测量代码"></a>7.6.1 三角测量代码</h3><p>之前对极几何求解的<code>相机位姿</code> + <code>三角化</code>，得到特征点的空间位置。</p>
+<h3 id="7-6-2-讨论"><a href="#7-6-2-讨论" class="headerlink" title="7.6.2 讨论"></a>7.6.2 讨论</h3><p>纯旋转不能用三角测量，故如果相机原地旋转导致视差很小，可能出现追踪失败、尺度不正确等问题。</p>
+<p>视差问题：三角化存在一个矛盾点，增大平移，可能导致匹配失效，平移太小，导致三角化精度不够。</p>
+<p><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/study/paper/20210930015330.png"></p>
+<p>延迟三角化。</p>
+<h2 id="7-7-3D-2D：PnP"><a href="#7-7-3D-2D：PnP" class="headerlink" title="7.7 3D-2D：PnP"></a>7.7 3D-2D：PnP</h2><p>2D-2D对极几何缺点：</p>
+<ul>
+<li>需要8+点对<ul>
+<li>如果3D-2D，只需要2+1点对</li>
+</ul>
+</li>
+<li>初始化问题</li>
+<li>纯旋转问题</li>
+<li>尺度问题</li>
+</ul>
+<p>因此，双目/RGBD直接用PnP估计相机运动，单目先初始化再用PnP。</p>
+<p>PnP：</p>
+<ul>
+<li>已知3D点的空间位置和它在相机上的投影点，求相机的外参（R, t）【大多数情况】</li>
+<li>已知相机坐标A中的3D点位置，和相机B中的2D点位置，求两个相机的相对运动，（和2D特征点的空间位置）</li>
+</ul>
+<p>PnP求解方法：</p>
+<ul>
+<li>代数法<ul>
+<li>P3P</li>
+<li>直接线性变换DLT</li>
+<li>EPnP</li>
+<li>UPnP</li>
+</ul>
+</li>
+<li>优化法<ul>
+<li>非线性优化——BA</li>
+</ul>
+</li>
+</ul>
+<h3 id="7-7-1-直接线性变换DLT"><a href="#7-7-1-直接线性变换DLT" class="headerlink" title="7.7.1 直接线性变换DLT"></a>7.7.1 直接线性变换DLT</h3><p>已知空间点P坐标和它的投影点x1，估计相机位姿R, t</p>
+<p><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/study/paper/20210930113119.png"></p>
+<p><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/study/paper/20210930113456.png"></p>
+<p>1个特征点（或者说1对3D-2d匹配点）可以提供2个关于t的线性约束，<code>6对匹配点</code>提供12个约束，可以求解12个未知t。</p>
+<p>求出来T矩阵，但是左边3X3的矩阵块不一定满足旋转矩阵R的约束，因此要用<code>QR分解</code>找一个最好的旋转矩阵来对它进行近似：</p>
+<p><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/study/paper/20210930114031.png"></p>
+<h3 id="7-7-2-P3P"><a href="#7-7-2-P3P" class="headerlink" title="7.7.2 P3P"></a>7.7.2 P3P</h3><p>上面的DLT用了6对匹配点，这里的P3P只需要用4对，3个来算，1个验证。</p>
+<p>已知3个3D点ABC（已知其世界坐标系下的3D坐标），和匹配的3个2D点abc，估计相机外参。</p>
+<p><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/study/paper/20210930114515.png"></p>
+<p><strong>思路是利用几何性质，将3D-2D转换成3D-3D问题再求解：</strong></p>
+<ul>
+<li>转换</li>
+</ul>
+<p>已知：<img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/study/paper/20210930115352.png"></p>
+<p>未知：<img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/study/paper/20210930115319.png"></p>
+<p><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/study/paper/20210930115227.png"></p>
+<p>可以用<code>吴氏消元法</code>+<code>验证点</code>解得a,b,c在世界坐标系下的3D坐标【这里书上写的是ABC在相机坐标下的3D坐标，感觉不太对】，然后就变成了3D-3D问题。</p>
+<ul>
+<li>求解3D-3D：<code>ICP</code></li>
+</ul>
+<h3 id="7-7-3-最小化重投影误差求解PnP"><a href="#7-7-3-最小化重投影误差求解PnP" class="headerlink" title="7.7.3 最小化重投影误差求解PnP"></a>7.7.3 最小化重投影误差求解PnP</h3><ul>
+<li>线性方法：先求相机位姿，再求空间点位置（如2D-2D对极几何+三角化）<ul>
+<li>线性方法利用多个匹配点来拉平噪声造成的误差？</li>
+<li><strong>【疑问】：线性方法有没有考虑误差的影响？？？</strong></li>
+</ul>
+</li>
+<li>非线性方法：将相机位姿和空间点放在一起来优化——Bundle Adjustment<ul>
+<li>非线性方法直接对实际和估计的误差进行最小化</li>
+</ul>
+</li>
+</ul>
+<p>前面也说过PnP的2D-3D来源可以是两种：相机在某个位姿下将空间的3D点投影到2D平面，这种情况下我们只要估计相机位姿就行；另一种跟2D-2D有点像，两个匹配点分别来自两帧，只是一个是3D的一个是2D的，这种时候除了估计相机位姿，还要估计2D点的空间位置。</p>
+<hr>
+<ul>
+<li><strong>优化位姿</strong></li>
+</ul>
+<p>下面讲解如何在PnP中构建一个BA问题来对<code>相机位姿</code>进行优化：</p>
+<p>已知空间点P及其投影p，目标是估计相机位姿R，t。由于相机位姿未知且存在噪声，su=KTP存在误差，构建最小二乘问题，寻找最好的相机位姿来最小化误差。该误差项是3D点的投影位置和观测的投影位置作差，故被称为<code>重投影误差</code>：</p>
+<p><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/study/paper/20210930142440.png"></p>
+<p><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/study/paper/20210930123534.png"></p>
+<p>高斯牛顿/阻尼牛顿来求解，重点是J（重投影误差关于<code>相机位姿对应的李代数</code>的一阶导数）</p>
+<p><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/study/paper/20210930135757.png"></p>
+<ul>
+<li>P在世界坐标系下：[X,Y,Z]^T</li>
+<li>P在相机坐标系下：P’=(TP)=[X’, Y’, Z’]^T</li>
+<li>P’的投影(u,v)：su=KP’</li>
+</ul>
+<p><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/study/paper/20210930140705.png"></p>
+<p>J 的求解可以参考”如何使用扰动模型来求李代数的导数”：</p>
+<p><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/study/paper/20210930140204.png"></p>
+<p>第一项是误差关于变换后点的导数：</p>
+<p><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/study/paper/20210930140248.png"></p>
+<p>第二项是变换后的点关于李代数的导数：</p>
+<p><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/study/paper/20210930141755.png"></p>
+<p>最终得到<code>雅克比矩阵J</code>：</p>
+<p><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/study/paper/20210930141046.png"></p>
+<hr>
+<ul>
+<li><strong>优化特征点的空间关系</strong>：</li>
+</ul>
+<p>这里J是重投影误差关于<code>空间点P</code>的一阶导数：</p>
+<p><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/study/paper/20210930141610.png"></p>
+<p>第一项如上：</p>
+<p><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/study/paper/20210930140248.png"></p>
+<p>第二项：P’=RP+t，求导后只剩下R</p>
+<p>最终得到<code>雅克比矩阵J</code>：</p>
+<p><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/study/paper/20210930141714.png"></p>
+<h2 id="7-8-编程：求解PnP"><a href="#7-8-编程：求解PnP" class="headerlink" title="7.8 编程：求解PnP"></a>7.8 编程：求解PnP</h2><h3 id="7-8-1-使用EPnP求解位姿"><a href="#7-8-1-使用EPnP求解位姿" class="headerlink" title="7.8.1 使用EPnP求解位姿"></a>7.8.1 使用EPnP求解位姿</h3><p>线性优化</p>
+<p>OpenCV中的EPnP</p>
+<h3 id="7-8-2-手写位姿估计"><a href="#7-8-2-手写位姿估计" class="headerlink" title="7.8.2 手写位姿估计"></a>7.8.2 手写位姿估计</h3><p>非线性优化</p>
+<p>手写高斯牛顿法的PnP</p>
+<h3 id="7-8-3-使用g2o进行BA优化"><a href="#7-8-3-使用g2o进行BA优化" class="headerlink" title="7.8.3 使用g2o进行BA优化"></a>7.8.3 使用g2o进行BA优化</h3><p>非线性优化</p>
+<p>调用g2o</p>
+<p>第一个相机的位姿固定为0，根据1组3D点和第2个图像中的2D投影来估计第二个相机位姿。</p>
+<p><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/study/paper/20210930142416.png"></p>
+<h2 id="7-9-3D-3D：ICP"><a href="#7-9-3D-3D：ICP" class="headerlink" title="7.9 3D-3D：ICP"></a>7.9 3D-3D：ICP</h2><p>已知一组匹配好的3D点P,P’，求解P’——&gt;P的欧式变换R,t。</p>
+<p><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/study/paper/20210930142846.png"></p>
+<p><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/study/paper/20210930142856.png"></p>
+<p>值得注意的是，3D-3D的位姿估计问题中没有相机模型，因为两组3D点变换与相机没有关系。但是，如果将这两组点集分别看做两个帧图像的数据，那么这里的R,t就是两帧间的相机位姿了。</p>
+<p>迭代最近点ICP：</p>
+<ul>
+<li>激光SLAM中的ICP，两个点集之间并无匹配关系，因为激光数据的特征不丰富，因此只能认为距离最近的两个点为同一个点</li>
+<li>VSALM中的ICP，两个点集是匹配好的</li>
+</ul>
+<p>ICP求解：</p>
+<ul>
+<li>线性法：SVD</li>
+<li>非线性优化：BA</li>
+</ul>
+<h3 id="7-9-1-SVD方法"><a href="#7-9-1-SVD方法" class="headerlink" title="7.9.1 SVD方法"></a>7.9.1 SVD方法</h3><p>构建最小二乘问题：最小化点集中各对点的误差项之和</p>
+<p><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/study/paper/20210930143528.png"></p>
+<p>定义质心后，简化后的最小二乘问题：</p>
+<p><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/study/paper/20210930143733.png"></p>
+<p><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/study/paper/20210930143936.png"></p>
+<p>思路是最小化第一项，取t让第二项为0。</p>
+<p>步骤：</p>
+<p><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/study/paper/20210930144310.png"><br><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/study/paper/20210930144105.png"></p>
+<p>再化简这个优化目标函数，最终相当于要优化：</p>
+<p><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/study/paper/20210930144358.png"></p>
+<p>通过<code>SVD</code>可以解出上述问题中最优的R：</p>
+<p><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/study/paper/20210930144516.png"><br><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/study/paper/20210930144534.png"><br><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/study/paper/20210930144547.png"></p>
+<p>再求t就行。</p>
+<h3 id="7-9-2-非线性优化方法"><a href="#7-9-2-非线性优化方法" class="headerlink" title="7.9.2 非线性优化方法"></a>7.9.2 非线性优化方法</h3><p>BA法以迭代的方式最小化目标函数：</p>
+<p><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/study/paper/20210930144812.png"></p>
+<p><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/study/paper/20210930145336.png"></p>
+<p>然后用高斯牛顿等方法不断迭代找到极小值就行。</p>
+<p>点集匹配时求解ICP问题有个优势，是可以任意选定初始值（因为唯一解情况下极小值就是全局最优解）。</p>
+<p>但是事实上，如果特征已经匹配好了，往往使用线性方法直接解（因为存在解析解），而不是迭代。也就是说，ICP更多使用在匹配未知的情况下。</p>
+<h2 id="7-10-编程：求解ICP"><a href="#7-10-编程：求解ICP" class="headerlink" title="7.10 编程：求解ICP"></a>7.10 编程：求解ICP</h2><h3 id="7-10-1-编程：SVD方法"><a href="#7-10-1-编程：SVD方法" class="headerlink" title="7.10.1 编程：SVD方法"></a>7.10.1 编程：SVD方法</h3><p>Eigen调用SVD解出目标函数的解析解。</p>
+<h3 id="7-10-2-编程：非线性优化方法"><a href="#7-10-2-编程：非线性优化方法" class="headerlink" title="7.10.2 编程：非线性优化方法"></a>7.10.2 编程：非线性优化方法</h3><hr>
+<h1 id="第8讲-视觉里程计2"><a href="#第8讲-视觉里程计2" class="headerlink" title="第8讲 视觉里程计2"></a>第8讲 视觉里程计2</h1><p>特征点法缺点：</p>
+<ul>
+<li>关键点的提取与描述子计算非常耗时</li>
+<li>只使用特征点会丢失大部分也许有用的信息</li>
+<li>特征缺少的场景下匹配点不够计算相机运动</li>
+</ul>
+<h2 id="8-1-直接法的引出"><a href="#8-1-直接法的引出" class="headerlink" title="8.1 直接法的引出"></a>8.1 直接法的引出</h2><p>改良方案：</p>
+<ul>
+<li>光流法：保留特征点，只计算关键点，不计算描述子，将匹配描述子的步骤替换成<code>光流跟踪</code>，即使用<code>光流法</code>跟踪特征点的运动。<ul>
+<li>降低计算开销</li>
+<li>只改了特征匹配的方案（改为跟踪），但还是用对极几何、PnP或ICP来估计相机运动</li>
+</ul>
+</li>
+<li>直接法：不再使用特征点，只计算关键点，不计算描述子。同时使用<code>直接法</code>计算特征点在下一时刻图像中的位置。<ul>
+<li>直接法不要求提取到的点是角点，只需要根据图像的<code>像素灰度信息</code>来估计相机运动和点的投影。</li>
+<li>进一步降低计算开销</li>
+<li>全改，不需要匹配特征，直接<code>最小化光度误差</code></li>
+</ul>
+</li>
+</ul>
+<p>光流法也算是特征点法的一种。</p>
+<p>直接法是从光流法演变而来的。</p>
+<p>可用于的结构：</p>
+<ul>
+<li>直接法：<ul>
+<li>稠密</li>
+<li>半稠密</li>
+<li>稀疏</li>
+</ul>
+</li>
+<li>特征点法：<ul>
+<li>稀疏</li>
+</ul>
+</li>
+</ul>
+<h2 id="8-2-2D光流"><a href="#8-2-2D光流" class="headerlink" title="8.2 2D光流"></a>8.2 2D光流</h2><h3 id="1-Lucas-Kanade光流"><a href="#1-Lucas-Kanade光流" class="headerlink" title="1) Lucas-Kanade光流"></a>1) Lucas-Kanade光流</h3><h2 id="8-3-编程：LK光流"><a href="#8-3-编程：LK光流" class="headerlink" title="8.3 编程：LK光流"></a>8.3 编程：LK光流</h2><h3 id="8-3-1-使用LK光流"><a href="#8-3-1-使用LK光流" class="headerlink" title="8.3.1 使用LK光流"></a>8.3.1 使用LK光流</h3><h3 id="8-3-2-用高斯牛顿法实现光流"><a href="#8-3-2-用高斯牛顿法实现光流" class="headerlink" title="8.3.2 用高斯牛顿法实现光流"></a>8.3.2 用高斯牛顿法实现光流</h3><h3 id="8-3-3-光流实践小结"><a href="#8-3-3-光流实践小结" class="headerlink" title="8.3.3 光流实践小结"></a>8.3.3 光流实践小结</h3><h2 id="8-4-直接法"><a href="#8-4-直接法" class="headerlink" title="8.4 直接法"></a>8.4 直接法</h2><h3 id="8-4-1-直接法的推导"><a href="#8-4-1-直接法的推导" class="headerlink" title="8.4.1 直接法的推导"></a>8.4.1 直接法的推导</h3><h3 id="8-4-2-直接法的讨论"><a href="#8-4-2-直接法的讨论" class="headerlink" title="8.4.2 直接法的讨论"></a>8.4.2 直接法的讨论</h3><h2 id="8-5-编程：直接法"><a href="#8-5-编程：直接法" class="headerlink" title="8.5 编程：直接法"></a>8.5 编程：直接法</h2><h3 id="8-5-1-单层直接法"><a href="#8-5-1-单层直接法" class="headerlink" title="8.5.1 单层直接法"></a>8.5.1 单层直接法</h3><h3 id="8-5-2-多层直接法"><a href="#8-5-2-多层直接法" class="headerlink" title="8.5.2 多层直接法"></a>8.5.2 多层直接法</h3><h3 id="8-5-3-结果讨论"><a href="#8-5-3-结果讨论" class="headerlink" title="8.5.3 结果讨论"></a>8.5.3 结果讨论</h3><h3 id="8-5-4-直接法优缺点总结"><a href="#8-5-4-直接法优缺点总结" class="headerlink" title="8.5.4 直接法优缺点总结"></a>8.5.4 直接法优缺点总结</h3> 
+      <!-- reward -->
+      
+    </div>
+    
+
+    <!-- copyright -->
+    
+    <footer class="article-footer">
+       
+<div class="share-btn">
+      <span class="share-sns share-outer">
+        <i class="ri-share-forward-line"></i>
+        分享
+      </span>
+      <div class="share-wrap">
+        <i class="arrow"></i>
+        <div class="share-icons">
+          
+          <a class="weibo share-sns" href="javascript:;" data-type="weibo">
+            <i class="ri-weibo-fill"></i>
+          </a>
+          <a class="weixin share-sns wxFab" href="javascript:;" data-type="weixin">
+            <i class="ri-wechat-fill"></i>
+          </a>
+          <a class="qq share-sns" href="javascript:;" data-type="qq">
+            <i class="ri-qq-fill"></i>
+          </a>
+          <a class="douban share-sns" href="javascript:;" data-type="douban">
+            <i class="ri-douban-line"></i>
+          </a>
+          <!-- <a class="qzone share-sns" href="javascript:;" data-type="qzone">
+            <i class="icon icon-qzone"></i>
+          </a> -->
+          
+          <a class="facebook share-sns" href="javascript:;" data-type="facebook">
+            <i class="ri-facebook-circle-fill"></i>
+          </a>
+          <a class="twitter share-sns" href="javascript:;" data-type="twitter">
+            <i class="ri-twitter-fill"></i>
+          </a>
+          <a class="google share-sns" href="javascript:;" data-type="google">
+            <i class="ri-google-fill"></i>
+          </a>
+        </div>
+      </div>
+</div>
+
+<div class="wx-share-modal">
+    <a class="modal-close" href="javascript:;"><i class="ri-close-circle-line"></i></a>
+    <p>扫一扫，分享到微信</p>
+    <div class="wx-qrcode">
+      <img src="//api.qrserver.com/v1/create-qr-code/?size=150x150&data=https://apollomao.com/V-SLAM%E6%95%B4%E7%90%862/" alt="微信分享二维码">
+    </div>
+</div>
+
+<div id="share-mask"></div>  
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/SLAM/" rel="tag">SLAM</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E7%A7%91%E7%A0%94/" rel="tag">科研</a></li></ul>
+
+    </footer>
+  </div>
+
+   
+  <nav class="article-nav">
+    
+    
+      <a href="/V-SLAM%E6%95%B4%E7%90%861/" class="article-nav-link">
+        <strong class="article-nav-caption">下一篇</strong>
+        <div class="article-nav-title">V-SLAM整理1</div>
+      </a>
+    
+  </nav>
+
+  
+   
+     
+</article>
+
+</section>
+      <footer class="footer">
+  <div class="outer">
+    <ul>
+      <li>
+        Copyrights &copy;
+        2021
+        <i class="ri-heart-fill heart_icon"></i> 阿波罗猫
+      </li>
+    </ul>
+    <ul>
+      <li>
+        
+        
+        
+        Powered by <a href="https://hexo.io" target="_blank">Hexo</a>
+        <span class="division">|</span>
+        Theme - <a href="https://github.com/Shen-Yu/hexo-theme-ayer" target="_blank">Ayer</a>
+        
+      </li>
+    </ul>
+    <ul>
+      <li>
+        
+      </li>
+    </ul>
+    <ul>
+      
+    </ul>
+    <ul>
+      
+    </ul>
+    <ul>
+      <li>
+        <!-- cnzz统计 -->
+        
+      </li>
+    </ul>
+  </div>
+</footer>
+      <div class="float_btns">
+        <div class="totop" id="totop">
+  <i class="ri-arrow-up-line"></i>
+</div>
+
+<div class="todark" id="todark">
+  <i class="ri-moon-line"></i>
+</div>
+
+      </div>
+    </main>
+    <aside class="sidebar on">
+      <button class="navbar-toggle"></button>
+<nav class="navbar">
+  
+  <div class="logo">
+    <a href="/"><img src="/images/bluecat.svg" alt="四界"></a>
+  </div>
+  
+  <ul class="nav nav-main">
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/">主页</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/archives">归档</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/categories">分类</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/tags">标签</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/tags/%E9%9A%8F%E7%AC%94/">随笔</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/2021/about">关于我</a>
+    </li>
+    
+  </ul>
+</nav>
+<nav class="navbar navbar-bottom">
+  <ul class="nav">
+    <li class="nav-item">
+      
+      <a class="nav-item-link nav-item-search"  title="Search">
+        <i class="ri-search-line"></i>
+      </a>
+      
+      
+    </li>
+  </ul>
+</nav>
+<div class="search-form-wrap">
+  <div class="local-search local-search-plugin">
+  <input type="search" id="local-search-input" class="local-search-input" placeholder="Search...">
+  <div id="local-search-result" class="local-search-result"></div>
+</div>
+</div>
+    </aside>
+    <div id="mask"></div>
+
+<!-- #reward -->
+<div id="reward">
+  <span class="close"><i class="ri-close-line"></i></span>
+  <p class="reward-p"><i class="ri-cup-line"></i>请我喝杯咖啡吧~</p>
+  <div class="reward-box">
+    
+    <div class="reward-item">
+      <img class="reward-img" src="https://cdn.jsdelivr.net/gh/Shen-Yu/cdn/img/alipay.jpg">
+      <span class="reward-type">支付宝</span>
+    </div>
+    
+    
+    <div class="reward-item">
+      <img class="reward-img" src="https://cdn.jsdelivr.net/gh/Shen-Yu/cdn/img/wechat.jpg">
+      <span class="reward-type">微信</span>
+    </div>
+    
+  </div>
+</div>
+    
+<script src="/js/jquery-2.0.3.min.js"></script>
+
+
+<script src="/js/lazyload.min.js"></script>
+
+<!-- Tocbot -->
+
+
+<script src="/js/tocbot.min.js"></script>
+
+<script>
+  tocbot.init({
+    tocSelector: '.tocbot',
+    contentSelector: '.article-entry',
+    headingSelector: 'h1, h2, h3, h4, h5, h6',
+    hasInnerContainers: true,
+    scrollSmooth: true,
+    scrollContainer: 'main',
+    positionFixedSelector: '.tocbot',
+    positionFixedClass: 'is-position-fixed',
+    fixedSidebarOffset: 'auto'
+  });
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/jquery-modal@0.9.2/jquery.modal.min.js"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/jquery-modal@0.9.2/jquery.modal.min.css">
+<script src="https://cdn.jsdelivr.net/npm/justifiedGallery@3.7.0/dist/js/jquery.justifiedGallery.min.js"></script>
+
+<script src="/dist/main.js"></script>
+
+<!-- ImageViewer -->
+
+<!-- Root element of PhotoSwipe. Must have class pswp. -->
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+
+    <!-- Background of PhotoSwipe. 
+         It's a separate element as animating opacity is faster than rgba(). -->
+    <div class="pswp__bg"></div>
+
+    <!-- Slides wrapper with overflow:hidden. -->
+    <div class="pswp__scroll-wrap">
+
+        <!-- Container that holds slides. 
+            PhotoSwipe keeps only 3 of them in the DOM to save memory.
+            Don't modify these 3 pswp__item elements, data is added later on. -->
+        <div class="pswp__container">
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+        </div>
+
+        <!-- Default (PhotoSwipeUI_Default) interface on top of sliding area. Can be changed. -->
+        <div class="pswp__ui pswp__ui--hidden">
+
+            <div class="pswp__top-bar">
+
+                <!--  Controls are self-explanatory. Order can be changed. -->
+
+                <div class="pswp__counter"></div>
+
+                <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+
+                <button class="pswp__button pswp__button--share" style="display:none" title="Share"></button>
+
+                <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+
+                <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+
+                <!-- Preloader demo http://codepen.io/dimsemenov/pen/yyBWoR -->
+                <!-- element will get class pswp__preloader--active when preloader is running -->
+                <div class="pswp__preloader">
+                    <div class="pswp__preloader__icn">
+                        <div class="pswp__preloader__cut">
+                            <div class="pswp__preloader__donut"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+                <div class="pswp__share-tooltip"></div>
+            </div>
+
+            <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+            </button>
+
+            <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+            </button>
+
+            <div class="pswp__caption">
+                <div class="pswp__caption__center"></div>
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/default-skin/default-skin.min.css">
+<script src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe-ui-default.min.js"></script>
+
+<script>
+    function viewer_init() {
+        let pswpElement = document.querySelectorAll('.pswp')[0];
+        let $imgArr = document.querySelectorAll(('.article-entry img:not(.reward-img)'))
+
+        $imgArr.forEach(($em, i) => {
+            $em.onclick = () => {
+                // slider展开状态
+                // todo: 这样不好，后面改成状态
+                if (document.querySelector('.left-col.show')) return
+                let items = []
+                $imgArr.forEach(($em2, i2) => {
+                    let img = $em2.getAttribute('data-idx', i2)
+                    let src = $em2.getAttribute('data-target') || $em2.getAttribute('src')
+                    let title = $em2.getAttribute('alt')
+                    // 获得原图尺寸
+                    const image = new Image()
+                    image.src = src
+                    items.push({
+                        src: src,
+                        w: image.width || $em2.width,
+                        h: image.height || $em2.height,
+                        title: title
+                    })
+                })
+                var gallery = new PhotoSwipe(pswpElement, PhotoSwipeUI_Default, items, {
+                    index: parseInt(i)
+                });
+                gallery.init()
+            }
+        })
+    }
+    viewer_init()
+</script>
+
+<!-- MathJax -->
+
+<!-- Katex -->
+
+<!-- busuanzi  -->
+
+<!-- ClickLove -->
+
+<!-- ClickBoom1 -->
+
+<!-- ClickBoom2 -->
+
+
+<script src="/js/clickBoom2.js"></script>
+
+
+<!-- CodeCopy -->
+
+
+<link rel="stylesheet" href="/css/clipboard.css">
+
+<script src="https://cdn.jsdelivr.net/npm/clipboard@2/dist/clipboard.min.js"></script>
+<script>
+  function wait(callback, seconds) {
+    var timelag = null;
+    timelag = window.setTimeout(callback, seconds);
+  }
+  !function (e, t, a) {
+    var initCopyCode = function(){
+      var copyHtml = '';
+      copyHtml += '<button class="btn-copy" data-clipboard-snippet="">';
+      copyHtml += '<i class="ri-file-copy-2-line"></i><span>COPY</span>';
+      copyHtml += '</button>';
+      $(".highlight .code pre").before(copyHtml);
+      $(".article pre code").before(copyHtml);
+      var clipboard = new ClipboardJS('.btn-copy', {
+        target: function(trigger) {
+          return trigger.nextElementSibling;
+        }
+      });
+      clipboard.on('success', function(e) {
+        let $btn = $(e.trigger);
+        $btn.addClass('copied');
+        let $icon = $($btn.find('i'));
+        $icon.removeClass('ri-file-copy-2-line');
+        $icon.addClass('ri-checkbox-circle-line');
+        let $span = $($btn.find('span'));
+        $span[0].innerText = 'COPIED';
+        
+        wait(function () { // 等待两秒钟后恢复
+          $icon.removeClass('ri-checkbox-circle-line');
+          $icon.addClass('ri-file-copy-2-line');
+          $span[0].innerText = 'COPY';
+        }, 2000);
+      });
+      clipboard.on('error', function(e) {
+        e.clearSelection();
+        let $btn = $(e.trigger);
+        $btn.addClass('copy-failed');
+        let $icon = $($btn.find('i'));
+        $icon.removeClass('ri-file-copy-2-line');
+        $icon.addClass('ri-time-line');
+        let $span = $($btn.find('span'));
+        $span[0].innerText = 'COPY FAILED';
+        
+        wait(function () { // 等待两秒钟后恢复
+          $icon.removeClass('ri-time-line');
+          $icon.addClass('ri-file-copy-2-line');
+          $span[0].innerText = 'COPY';
+        }, 2000);
+      });
+    }
+    initCopyCode();
+  }(window, document);
+</script>
+
+
+<!-- CanvasBackground -->
+
+
+    
+  </div>
+</body>
+
+</html>
