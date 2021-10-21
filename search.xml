@@ -1202,57 +1202,6 @@
       </tags>
   </entry>
   <entry>
-    <title>博客简介</title>
-    <url>/%E5%8D%9A%E5%AE%A2%E7%AE%80%E4%BB%8B/</url>
-    <content><![CDATA[<h1 id="介绍"><a href="#介绍" class="headerlink" title="介绍"></a>介绍</h1><p>Hi, guys！</p>
-<p>这里是 阿波罗猫 的博客——四界。</p>
-<p>主要作用是记录个人生活，整理所学知识，放飞自我， 天天向上！</p>
-<p>这里先许下一个心愿：<strong>希望未来能顺利毕业！</strong></p>
-<span id="more"></span>
-<h1 id="说明"><a href="#说明" class="headerlink" title="说明"></a>说明</h1><table>
-<thead>
-<tr>
-<th align="center"><strong>侧栏名称</strong></th>
-<th align="center"><strong>简介</strong></th>
-</tr>
-</thead>
-<tbody><tr>
-<td align="center"><strong>主页</strong></td>
-<td align="center">博客主页</td>
-</tr>
-<tr>
-<td align="center"><strong>归档</strong></td>
-<td align="center">罗列所有文章</td>
-</tr>
-<tr>
-<td align="center"><strong>分类</strong></td>
-<td align="center">按类型分类文章</td>
-</tr>
-<tr>
-<td align="center"><strong>标签</strong></td>
-<td align="center">按标签分类文章</td>
-</tr>
-<tr>
-<td align="center"><strong>随笔</strong></td>
-<td align="center">日常相关的吐槽</td>
-</tr>
-<tr>
-<td align="center"><strong>关于我</strong></td>
-<td align="center">个人简历</td>
-</tr>
-</tbody></table>
-<h1 id="关于“四界”"><a href="#关于“四界”" class="headerlink" title="关于“四界”"></a>关于“四界”</h1><p>“四界”这个名字来自于我初高中时的自产小说，小说内容就不说了，满满都是中二，而且还坑了2333。</p>
-<p>Anyway，这个博客名字可以理解为致敬青春吧。</p>
-<p>祝愿我的未来无论走出多远，归来仍是少年。</p>
-]]></content>
-      <categories>
-        <category>生活</category>
-      </categories>
-      <tags>
-        <tag>生活</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>本科知识整理</title>
     <url>/%E6%9C%AC%E7%A7%91%E7%9F%A5%E8%AF%86%E6%95%B4%E7%90%86/</url>
     <content><![CDATA[<h1 id="算法设计与分析"><a href="#算法设计与分析" class="headerlink" title="算法设计与分析"></a>算法设计与分析</h1><p>《算法设计与分析第三版-王晓东》</p>
@@ -1572,6 +1521,57 @@
       </categories>
       <tags>
         <tag>学习</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>博客简介</title>
+    <url>/%E5%8D%9A%E5%AE%A2%E7%AE%80%E4%BB%8B/</url>
+    <content><![CDATA[<h1 id="介绍"><a href="#介绍" class="headerlink" title="介绍"></a>介绍</h1><p>Hi, guys！</p>
+<p>这里是 阿波罗猫 的博客——四界。</p>
+<p>主要作用是记录个人生活，整理所学知识，放飞自我， 天天向上！</p>
+<p>这里先许下一个心愿：<strong>希望未来能顺利毕业！</strong></p>
+<span id="more"></span>
+<h1 id="说明"><a href="#说明" class="headerlink" title="说明"></a>说明</h1><table>
+<thead>
+<tr>
+<th align="center"><strong>侧栏名称</strong></th>
+<th align="center"><strong>简介</strong></th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center"><strong>主页</strong></td>
+<td align="center">博客主页</td>
+</tr>
+<tr>
+<td align="center"><strong>归档</strong></td>
+<td align="center">罗列所有文章</td>
+</tr>
+<tr>
+<td align="center"><strong>分类</strong></td>
+<td align="center">按类型分类文章</td>
+</tr>
+<tr>
+<td align="center"><strong>标签</strong></td>
+<td align="center">按标签分类文章</td>
+</tr>
+<tr>
+<td align="center"><strong>随笔</strong></td>
+<td align="center">日常相关的吐槽</td>
+</tr>
+<tr>
+<td align="center"><strong>关于我</strong></td>
+<td align="center">个人简历</td>
+</tr>
+</tbody></table>
+<h1 id="关于“四界”"><a href="#关于“四界”" class="headerlink" title="关于“四界”"></a>关于“四界”</h1><p>“四界”这个名字来自于我初高中时的自产小说，小说内容就不说了，满满都是中二，而且还坑了2333。</p>
+<p>Anyway，这个博客名字可以理解为致敬青春吧。</p>
+<p>祝愿我的未来无论走出多远，归来仍是少年。</p>
+]]></content>
+      <categories>
+        <category>生活</category>
+      </categories>
+      <tags>
+        <tag>生活</tag>
       </tags>
   </entry>
   <entry>
@@ -2120,6 +2120,251 @@
 <p>所有参与融合的关键帧都将更新它们在共视图中的边，以此来有效的创建闭合回环的新边。</p>
 <h2 id="7-4-Essential-Graph优化"><a href="#7-4-Essential-Graph优化" class="headerlink" title="7.4 Essential Graph优化"></a>7.4 Essential Graph优化</h2><p>为了更高效的闭合回环，我们在Essential Graph上执行了一次位姿图优化（3.4），该操作将回环检测误差分布在了图上。该优化是通过相似性变换来纠正尺度漂移的[6]，详见附录。</p>
 <p>优化完成后，每个地图点都根据观察它的一个关键帧的修正来进行转换。</p>
+]]></content>
+      <categories>
+        <category>科研</category>
+      </categories>
+      <tags>
+        <tag>科研</tag>
+        <tag>SLAM</tag>
+        <tag>论文阅读</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>Paper Reading--RadarSLAM: Radar based Large-Scale SLAM in All Weathers</title>
+    <url>/Paper-Reading-RadarSLAM-Radar-based-Large-Scale-SLAM-in-All-Weathers/</url>
+    <content><![CDATA[<p>RadarSLAM: Radar based Large-Scale SLAM in All Weathers</p>
+<hr>
+<p><a href="http://pro.hw.ac.uk/research/radarslam/">主页</a></p>
+<p>数据集可下载，无代码；</p>
+<p>本文对标orb-slam，实验部分和orb-slam2做的对比。</p>
+<h1 id="0-摘要"><a href="#0-摘要" class="headerlink" title="0. 摘要"></a>0. 摘要</h1><p>本文提出的RadarSLAM是一个全雷达图形SLAM系统，该系统包含位姿跟踪、局部建图、回环检测、位姿图优化，并使用一个新颖的特征匹配算法、以及从雷达图像中生成的概率点云来提升系统性能。</p>
+<p>测试数据集包括公开的雷达数据集以及多个self-collected的雷达序列。实验验证了该系统在各种恶劣天气条件下（如黑夜、浓雾、大雪）都具有SOTA的可靠性和定位精度。</p>
+<h1 id="1-介绍"><a href="#1-介绍" class="headerlink" title="1. 介绍"></a>1. 介绍</h1><ul>
+<li><p>Motivation：</p>
+<ul>
+<li>再过去的十年间，基于各种传感器（声呐sonar、相机、LIDAR）的SLAM技术蓬勃发展。但是室外的大规模SLAM仍受限于恶劣的天气条件。</li>
+<li>调频连续波（FMCM）雷达传感器可以在多种天气环境下工作（该传感器多使用与自动驾驶和自动机器人领域）</li>
+<li>我们想把FMCM雷达传感器应用在SLAM上</li>
+</ul>
+</li>
+<li><p>已知：雷达的landmark extraction &amp; motion estimation：</p>
+<ul>
+<li>雷达路标路标提取和运动估计方法<ul>
+<li>[1,2,3]</li>
+<li>[4]，radar scan表示为点云形式，使用ICP算法估计相对运动</li>
+</ul>
+</li>
+<li>雷达里程器(radar odometery)：Feature based geometric method[6,7,8]<ul>
+<li>[6]，雷达路标提取算法：估计雷达功率信号</li>
+<li>[7]，图匹配算法：实现不需要运动先验的雷达关键点数据关联</li>
+</ul>
+</li>
+<li>雷达里程器：直接法[9]<ul>
+<li>[9]，使用Fourier Mellin Transform 和局部图优化来估计相对位姿</li>
+</ul>
+</li>
+<li>基于雷达的定位技术：[5,14,15,16,18,19]</li>
+</ul>
+</li>
+<li><p>已知：基于深度学习的雷达特征提取和里程计方法</p>
+<ul>
+<li>[12,13,20]<ul>
+<li>[13]，学习多个测量结果的coherence，来决定在读数中保留哪些信息；同时生成一个mask来过滤[12]中雷达读数的噪声</li>
+<li>[20]，用于在Cartesian雷达图像中检测关键点的自监督框架，除了雷达里程计，该方法还可以用于后续的运动估计和回环检测。</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>本文：</p>
+<ul>
+<li>提出了一种基于<code>radar geometry</code> 和<code>graph SLAM</code>的<code>RadarSLAM</code>，该系统可以应用于大规模户外场景下的鲁棒性定位和建图。</li>
+</ul>
+</li>
+<li><p>贡献：</p>
+<ul>
+<li>提出了一种特征匹配和位姿跟踪算法（使用雷达几何和图表征）</li>
+<li>从雷达图像中生成概率点云（降低了<code>speckle noises</code>）</li>
+<li>基于图优化的全雷达SLAM系统（恶劣天气条件下可工作）</li>
+<li>在大规模场景环境进行了大量的实验，首次证明了算法可以在极端天气环境中工作(如浓雾和大雪)。</li>
+</ul>
+</li>
+</ul>
+<h1 id="2-雷达传感器"><a href="#2-雷达传感器" class="headerlink" title="2. 雷达传感器"></a>2. 雷达传感器</h1><p>FMCM雷达：不但可以测距，还可以测速（通过分析发射信号个接收信号的频率差来分析预测目标速度）[21]。</p>
+<p>目前FMCM主要的问题是存在多种<code>噪声源</code>：范围误差、角误差、假阳性检测、假阴性检测等[22]</p>
+<ul>
+<li>例如，假阳性检测包括：(产生原因主要因为FMCM传感器对<code>surface reflection</code>和<code>reflector pose</code>高度敏感)<ul>
+<li>杂波<code>clutter</code></li>
+<li>旁波<code>sidelobes</code></li>
+<li>多径反射<code>multi-path reflections</code><ul>
+<li>会使得连续帧不一致，引起额外的噪声和异常值(outliers)</li>
+</ul>
+</li>
+<li>接收器饱和<code>receiver saturation</code></li>
+</ul>
+</li>
+</ul>
+<p>鉴于此，相比相机和LIDAR数据，雷达读数更嘈杂，这个点造成雷达传感器在运动估计和SLAM中使用困难。</p>
+<h2 id="2-1-Radar-Geometry"><a href="#2-1-Radar-Geometry" class="headerlink" title="2.1 Radar Geometry"></a>2.1 Radar Geometry</h2><p><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/study/SLAM/img20211021165145.png"></p>
+<p>雷达图像常见噪声：</p>
+<ul>
+<li>斑点噪声speckle noise</li>
+<li>接收机饱和receiver saturation</li>
+<li>多路径反射multi-path reflection</li>
+</ul>
+<p>360°FMCM雷达连续扫过<code>Ns``方位角(azimuth angles)</code>（步长=2pi/Ns）。对于每个方位角，雷达发射波束，然后将返回的信号压缩成一个距离，这个过程不考虑高度信息。</p>
+<p><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/study/SLAM/img20211021171146.png"></p>
+<p>鉴于此，雷达图像可以提供<code>absolute metric information of range distance</code>（也就是相机图像缺失的深度信息）。</p>
+<p>原始的<code>polar scan</code>可以转换到<code>笛卡尔空间(Cartesian space)</code>（灰度图像？）。</p>
+<ul>
+<li>在polar图像中给定点(a,r)，笛卡尔坐标P为：<img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/study/SLAM/img20211021171332.png"></li>
+</ul>
+<p>其中θ=2pi*a/Ns（ranging angle），γ是<code>图像像素空间</code>和<code>世界度量空间</code>的尺度因子</p>
+<ul>
+<li>为了得到更好的分辨率，笛卡尔图像通常使用<code>bi-linear interpolation</code>来插值。</li>
+<li>本文基于笛卡尔表示法。</li>
+</ul>
+<h1 id="3-基于雷达的SLAM"><a href="#3-基于雷达的SLAM" class="headerlink" title="3. 基于雷达的SLAM"></a>3. 基于雷达的SLAM</h1><p>RadarSLAM的目标是：给定一个radar scans序列，估计雷达位姿和全局一致的地图(使用graph SLAM)。</p>
+<p>RadarSLAM系统包括了4个子系统：</p>
+<ul>
+<li>位姿跟踪</li>
+<li>局部建图</li>
+<li>回环检测</li>
+<li>位姿图优化</li>
+</ul>
+<p><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/study/SLAM/img20211021172426.png"></p>
+<h2 id="3-1-位姿跟踪"><a href="#3-1-位姿跟踪" class="headerlink" title="3.1 位姿跟踪"></a>3.1 位姿跟踪</h2><p>位姿跟踪：利用关键帧，对雷达位姿进行连续的online估计。</p>
+<p>具体一点，为了在世界坐标系中追踪当前雷达帧t的位姿Ct，需要先算一个当前帧t到关键帧k（位姿为Ck）的转换<code>T_tk</code>。如果Ck已知，Ct就可计算：【用的是哪个关键帧k？是参考帧。】【参考帧怎么确定的？】</p>
+<p><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/study/SLAM/img20211021191056.png"></p>
+<hr>
+<p>示例：特征提取+特征匹配</p>
+<p><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/study/SLAM/img20211021200031.png"></p>
+<p>利用笛卡尔雷达图像中的关键点的<code>geometry</code>来计算T。</p>
+<ol>
+<li><p>关键点特征提取</p>
+<ul>
+<li>SURF[23]算法，从当前帧t和关键帧k中分别提取两组关键点特征。</li>
+</ul>
+</li>
+<li><p>根据这两组关键点特征的描述子进行特征匹配。</p>
+<ul>
+<li><p><strong>与视觉不同</strong>，雷达图像的特征匹配可以利用<code>radar geometry</code> 来实现。（<code>radar geometry</code>可以直接提供<code>metric ranging</code>信息）</p>
+</li>
+<li><p><code>减少雷达图像特征匹配错误</code>：</p>
+<ul>
+<li>机制1：引入<code>motion prior</code>（如最大速度）来限制在雷达局部坐标系中搜索关键点时的最大搜索半径。（减少错误匹配数量，降低特征匹配的计算开销）</li>
+<li>机制2：<code>pairwise consistenct constraint</code>—成对的inliner关键点对应需要有相似的运动趋势，基于这一原则，进一步排除异常值(outliers)</li>
+</ul>
+<p> 当前帧t和关键帧k上的一对匹配的关键点需要满足以下<code>pairwise constraint</code>:</p>
+<p> <img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/study/SLAM/img20211021193627.png"></p>
+<p> 其中，<code>||·||2</code>是欧氏距离，<code>P_t_i</code>和<code>P_k_i</code>是局部坐标系中关键点对i的笛卡尔坐标，<code>δ_c</code>是最小距离阈值。</p>
+</li>
+<li><p>G矩阵：表示满足<code>pariwise consistency</code>约束的所有匹配。</p>
+<ul>
+<li>寻找匹配一致的最大<code>inliner set</code>等价于求出G表示的图的<a href="https://www.jianshu.com/p/dabbc78471d7">最大团</a>，使用[26]可以有效地解决这个问题。</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>获得最大<code>inliner set</code>后，可以利用匹配的关键点来计算对应的变换矩阵<code>T_tk</code></p>
+<ul>
+<li>计算方法：<code>SVD</code>[24]</li>
+</ul>
+</li>
+<li><p>得到T后，可以用Eq.2来算当前位姿Ct。这里算出来的Ct是Eq.4优化的初始估计。</p>
+</li>
+</ol>
+<hr>
+<p>为了进一步限制<code>local drifts</code>，对Ct做进一步的优化（最小化当前帧t和关键帧k中成功匹配的点对的重投影误差），目标函数为：</p>
+<p><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/study/SLAM/img20211021200828.png"></p>
+<p>其中<code>M_tk</code>是帧t和k的匹配点对集合，<code>P_w_i</code>是世界坐标下的对应地图点。</p>
+<p><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/study/SLAM/img20211021201906.png"></p>
+<hr>
+<p>处理完当前帧t后（根据当前帧估计了Ct），当前帧可以转换成关键帧。</p>
+<p>生成关键帧的方法：遵循ORB-SLAM中的关键帧生成方案[25]，该方案要考虑匹配关键点最小数量、当前帧和关键帧之间的平移和旋转。</p>
+<h2 id="3-2-局部建图"><a href="#3-2-局部建图" class="headerlink" title="3.2 局部建图"></a>3.2 局部建图</h2><p>局部建图的目标：通过联合优化估计的位姿和局部地图来改善<code>位姿估计</code>和<code>局部地图的一致性</code>。</p>
+<p>局部建图线程和位姿跟踪线程并行进行。</p>
+<p>一旦生成了一个新的关键帧，该帧上的关键点就变成了地图点【？】。</p>
+<p>然后，恢复附近的关键帧和这些关键帧可以观测到的地图点，执行<code>局部BA</code>[27]。即通过最小化损失函数（<code>加权的Squared Error之和</code>）来优化关键帧的位姿和地图点的位置，目标损失函数如下：</p>
+<p><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/study/SLAM/img20211021205626.png"></p>
+<p>其中<code>X</code>表示关键帧的位姿+地图点位姿，z-z(X)是预测值和观测值之间的<code>residual error</code>，<code>W</code>是正定对称权重矩阵【W哪来的？】。</p>
+<p>使用<code>Levenberg-Marquardt梯度法</code>来解优化问题。</p>
+<p>为了限制计算开销，最后一个关键帧创建的地图点如果没有被两个以上关键帧观测到就会被剔除。</p>
+<h2 id="3-3-回环检测"><a href="#3-3-回环检测" class="headerlink" title="3.3 回环检测"></a>3.3 回环检测</h2><p>鲁棒的回环检测对于减少SLAM系统的漂移而言非常关键。</p>
+<p>视觉SLAM在回环检测环节常用词袋模型，但是对于雷达SLAM而言行不通，原因如下：</p>
+<ol>
+<li>相比于光学图像，雷达图像的像素特征并不明显，这意味着雷达图像会出现大量相似的特征描述子。</li>
+<li>雷达中的多路径反射问题会造成特征描述子模糊。</li>
+<li>雷达传感器的微小旋转可能会使场景发生巨大的改变，导致描述子的<code>histogram distribution</code>发生较大扭曲。</li>
+</ol>
+<p>鉴于此，我们采用另一种技术：</p>
+<ul>
+<li>捕捉场景结构</li>
+<li>利用雷达点云反射密度的空间特性。【？】</li>
+</ul>
+<hr>
+<p><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/study/SLAM/img20211021231525.png"></p>
+<p>首先，将雷达图像(a)转换成点云。</p>
+<p>(b): 局部最大值算法：在每个<code>azimuth</code>的读数中找到局部最大值来做峰值检测。<strong>但是</strong>，这个算法的问题是，由于<code>散斑噪声speckle noise</code>的存在，峰值会在整个雷达图像中随机分布，即使没有目标的地方也会出现峰值。</p>
+<p>因此，我们提出了一种<code>使用概率模型的点云生成算法</code>（算法1）。</p>
+<ul>
+<li>假设每个<code>azimuth scan</code>的<code>peak power s</code>都服从正态分布：<ul>
+<li><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/study/SLAM/img20211021232233.png"></li>
+</ul>
+</li>
+<li>选择<code>&gt;均值μ</code>且<code>&gt;标准差σ</code>的峰值（降低假阳性）</li>
+</ul>
+<p><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/study/SLAM/img20211021232834.png"></p>
+<hr>
+<p>从雷达图像中生成点云后，使用M2DP[31]（3D点云中使用的一种具有旋转不变形的全局描述子）作为点云的描述子，来进行回环检测。</p>
+<ul>
+<li><a href="https://blog.csdn.net/weixin_41398920/article/details/111661861">M2DP</a>：计算平面上点云的<code>density signature</code>，使用这些签名的<code>left and right singular vectors</code>作为点云的描述子。</li>
+</ul>
+<h2 id="3-4-位姿图优化"><a href="#3-4-位姿图优化" class="headerlink" title="3.4 位姿图优化"></a>3.4 位姿图优化</h2><p>位姿图随着雷达的移动而逐渐建立。</p>
+<p>一旦检测到回环，就计算当前帧和检测到的关键帧之间的相对变换，然后将变换添加到位姿图中作为回环约束。</p>
+<ul>
+<li>计算方法：ICP[32] with RANSAC[33]</li>
+</ul>
+<p>如果ICP收敛了，就对所有关键帧执行<code>位姿图优化</code>。</p>
+<ul>
+<li>优化：使用g2o[34]库</li>
+</ul>
+<p>对关键帧的位姿进行优化后，更新全局地图上的所有地图点。</p>
+<p>当全部序列完成时，执行一个全局BA来细化地图。</p>
+<h1 id="4-实验"><a href="#4-实验" class="headerlink" title="4. 实验"></a>4. 实验</h1><p>实验包括定量实验和定性实验，用于评估大规模环境+多种天气情况下的RadarSLAM性能。</p>
+<h2 id="4-1-Quantitative-Evaluation"><a href="#4-1-Quantitative-Evaluation" class="headerlink" title="4.1 Quantitative Evaluation"></a>4.1 Quantitative Evaluation</h2><h2 id="4-2-Qualitative-Evaluation"><a href="#4-2-Qualitative-Evaluation" class="headerlink" title="4.2 Qualitative Evaluation"></a>4.2 Qualitative Evaluation</h2><h2 id="4-3-Computation-Time"><a href="#4-3-Computation-Time" class="headerlink" title="4.3 Computation Time"></a>4.3 Computation Time</h2><h1 id="参考文献"><a href="#参考文献" class="headerlink" title="参考文献"></a>参考文献</h1><p>[1] J. W. Marck, A. Mohamoud, E. vd Houwen, and R. van Heijster, “Indoor radar slam a radar application for vision and gps denied environments,” in 2013 European Radar Conference. IEEE, 2013.</p>
+<p>[2] D. Vivet, P. Checchin, and R. Chapuis, “Localization and mapping using only a rotating fmcw radar sensor,” Sensors, 2013.</p>
+<p>[3] F. Schuster, C. G. Keller, M. Rapp, M. Haueis, and C. Curio, “Landmark based radar SLAM using graph optimization,” in IEEE International Conference on Intelligent Transportation Systems. IEEE, 2016.</p>
+<p>[4] M. Holder, S. Hellwig, and H. Winner, “Real-time pose graph slam based on radar,” in IEEE Intelligent Vehicles Symposium. IEEE, 2019.</p>
+<p>[5] Narula, L., Iannucci, P.A. and Humphreys, T.E., 2020, April. Automotive-radar-based 50-cm urban positioning. In 2020 IEEE/ION Position, Location and Navigation Symposium (PLANS) (pp. 856867). IEEE.</p>
+<p>[6] S. Cen and P. Newman, “Precise ego-motion estimation with millimeter-wave radar under diverse and challenging conditions,” in IEEE International Conference on Robotics and Automation. IEEE, 2018, pp. 1–8.</p>
+<p>[7] S. H. Cen and P. Newman, “Radar-only ego-motion estimation in difficult settings via graph matching,” in International Conference on Robotics and Automation. IEEE, 2019, pp. 298–304.</p>
+<p>[8] R. Aldera, D. De Martini, M. Gadd, and P. Newman, “What could go wrong? introspective radar odometry in challenging environments,” in IEEE Intelligent Transportation Systems Conference. IEEE, 2019.</p>
+<p>[9] Y. S. Park, Y.-S. Shin, and A. Kim, “Pharao: Direct radar odometry using phase correlation,” in Proceedings of the IEEE International Conference on Robotics and Automation (ICRA). IEEE, May 2020.</p>
+<p>[10] D. Barnes, M. Gadd, P. Murcutt, P. Newman, and I. Posner, “The oxford radar robotcar dataset: A radar extension to the oxford robotcar dataset,” in IEEE International Conference on Robotics and Automation, 2020.</p>
+<p>[11] W. Maddern, G. Pascoe, C. Linegar and P. Newman, “1 Year, 1000km: The Oxford RobotCar Dataset,” The International Journal of Robotics Research (IJRR), 2016</p>
+<p>[12] D. Barnes, R. Weston, and I. Posner, “Masking by moving: Learning distraction-free radar odometry from pose information,” arXiv preprint arXiv:1909.03752, 2019.</p>
+<p>[13] R. Aldera, D. De Martini, M. Gadd, and P. Newman, “Fast radar motion estimation with a learnt focus of attention using weak supervision,” in 2019 International Conference on Robotics and Automation (ICRA). IEEE, 2019, pp. 1190–1196.</p>
+<p>[14] S. Saftescu, M. Gadd, D. De Martini, D. Barnes and P. Newman. Kidnapped Radar: Topological Radar Localisation using RotationallyInvariant Metric Learning, in Proceedings of the IEEE International Conference on Robotics and Automation (ICRA), Paris, France, 2020</p>
+<p>[15] M. Gadd, D. De Martini, and P. Newman, Look Around You: Sequence-based Radar Place Recognition with Learned Rotational Invariance, in IEEE/ION Position, Location and Navigation Symposium (PLANS), (Portland, OR, USA), 2020.</p>
+<p>[16] Tang, T.Y., De Martini, D., Barnes, D. and Newman, P., 2020. RSLNet: Localising in Satellite Images From a Radar on the Ground. IEEE Robotics and Automation Letters, 5(2), pp.1087-1094.</p>
+<p>[17] Tang, T.Y., De Martini, D., Wu, S. and Newman, P., 2020. SelfSupervised Localisation between Range Sensors and Overhead Imagery. arXiv preprint arXiv:2006.02108.</p>
+<p>[18] Giseop Kim, Yeong Sang Park, Younghun Cho, Jinyong Jeong, Ayoung Kim, MulRan: Multimodal Range Dataset for Urban Place Recognition. In Proceedings of the IEEE International Conference on Robotics and Automation (ICRA), Paris, May 2020</p>
+<p>[19] Jinyong Jeong, Younggun Cho, Young-Sik Shin, Hyunchul Roh and Ayoung Kim, Complex Urban Dataset with Multi-level Sensors from Highly Diverse Urban Environments. International Journal of Robotics Research, 38(6):642-657, 2019</p>
+<p>[20] D. Barnes and I. Posner, “Under the radar: Learning to predict robust keypoints for odometry estimation and metric localisation in radar,” in IEEE International Conference on Robotics and Automation, 2020.</p>
+<p>[21] M. Skolnik, “Radar handbook,” 1970. [22] S. Cen, “Ego-motion estimation and localization with millimeter-wave scanning radar,” Master’s thesis, University of Oxford, 2019.</p>
+<p>[23] H. Bay, A. Ess, T. Tuytelaars, and L. Van Gool, “Speeded-up robust features (surf),” Computer vision and image understanding, vol. 110, no. 3, pp. 346–359, 2008.</p>
+<p>[24] J. H. Challis, “A procedure for determining rigid body transformation parameters,” Journal of Biomechanics, vol. 28, pp. 733–737, 1995.</p>
+<p>[25] M. J. M. M. Mur-Artal, Ra´ul and J. D. Tard´os, “ORB-SLAM: a versatile and accurate monocular SLAM system,” IEEE Transactions on Robotics, vol. 31, no. 5, pp. 1147–1163, 2015.</p>
+<p>[26] Konc, J. and Janezic, D., An improved branch and bound algorithm for the maximum clique problem. proteins, 4(5), 2007.</p>
+<p>[27] B. Triggs, P. F. McLauchlan, R. I. Hartley, and A. W. Fitzgibbon, “Bundle adjustmenta modern synthesis,” in International Workshop on Vision Algorithms. Springer, 1999, pp. 298–372.</p>
+<p>[28] W. Churchill, “Experience based navigation: Theory, practice and implementation,” 2012.</p>
+<p>[29] J. Zhang and S. Singh, “Loam: Lidar odometry and mapping in realtime,” in Proceedings of Robotics: Science and Systems Conference, 2014.</p>
+<p>[30] J. Behley and C. Stachniss, “Efficient surfel-based SLAM using 3D laser range data in urban environments,” in Robotics: Science and Systems, 2018.</p>
+<p>[31] L. He, X. Wang, and H. Zhang, “M2dp: A novel 3d point cloud descriptor and its application in loop closure detection,” in IEEE/RSJ International Conference on Intelligent Robots and Systems. IEEE, 2016, pp. 231–237.</p>
+<p>[32] P. J. Besl and N. D. McKay, “Method for registration of 3-d shapes,” in Sensor fusion IV: control paradigms and data structures, vol. 1611. International Society for Optics and Photonics, 1992, pp. 586–606.</p>
+<p>[33] M. A. Fischler and R. C. Bolles, “Random sample consensus: a paradigm for model fitting with applications to image analysis and automated cartography,” Communications of the ACM, 1981.</p>
+<p>[34] R. K¨ummerle, G. Grisetti, H. Strasdat, K. Konolige, and W. Burgard, “g2o: A general framework for graph optimization,” in IEEE International Conference on Robotics and Automation. IEEE, 2011.</p>
 ]]></content>
       <categories>
         <category>科研</category>
