@@ -1,0 +1,882 @@
+<!DOCTYPE html>
+
+
+<html lang="zh-Hans">
+
+
+<head>
+  <meta charset="utf-8" />
+   
+  <meta name="keywords" content="记录，学习，娱乐，博客" />
+   
+  <meta name="description" content="四界云官" />
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+  <title>
+    论文阅读：ORB-SALM2 |  四界
+  </title>
+  <meta name="generator" content="hexo-theme-ayer">
+  
+  <link rel="shortcut icon" href="/greencat2.ico" />
+  
+  
+<link rel="stylesheet" href="/dist/main.css">
+
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/Shen-Yu/cdn/css/remixicon.min.css">
+  
+<link rel="stylesheet" href="/css/custom.css">
+
+  
+  <script src="https://cdn.jsdelivr.net/npm/pace-js@1.0.2/pace.min.js"></script>
+  
+  
+
+  
+
+
+<style>.github-emoji { position: relative; display: inline-block; width: 1.2em; min-height: 1.2em; overflow: hidden; vertical-align: top; color: transparent; }  .github-emoji > span { position: relative; z-index: 10; }  .github-emoji img, .github-emoji .fancybox { margin: 0 !important; padding: 0 !important; border: none !important; outline: none !important; text-decoration: none !important; user-select: none !important; cursor: auto !important; }  .github-emoji img { height: 1.2em !important; width: 1.2em !important; position: absolute !important; left: 50% !important; top: 50% !important; transform: translate(-50%, -50%) !important; user-select: none !important; cursor: auto !important; } .github-emoji-fallback { color: inherit; } .github-emoji-fallback img { opacity: 0 !important; }</style>
+</head>
+
+</html>
+
+<body>
+  <div id="app">
+    
+      
+      <canvas width="1777" height="841"
+        style="position: fixed; left: 0px; top: 0px; z-index: 99999; pointer-events: none;"></canvas>
+      
+    <main class="content on">
+      <section class="outer">
+  <article
+  id="post-论文阅读：ORB-SALM2"
+  class="article article-type-post"
+  itemscope
+  itemprop="blogPost"
+  data-scroll-reveal
+>
+  <div class="article-inner">
+    
+    <header class="article-header">
+       
+<h1 class="article-title sea-center" style="border-left:0" itemprop="name">
+  论文阅读：ORB-SALM2
+</h1>
+ 
+
+      
+    </header>
+     
+    <div class="article-meta">
+      <a href="/%E8%AE%BA%E6%96%87%E9%98%85%E8%AF%BB%EF%BC%9AORB-SALM2/" class="article-date">
+  <time datetime="2021-10-26T12:58:00.000Z" itemprop="datePublished">2021-10-26</time>
+</a> 
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/%E7%A7%91%E7%A0%94/">科研</a>
+  </div>
+  
+<div class="word_count">
+    <span class="post-time">
+        <span class="post-meta-item-icon">
+            <i class="ri-quill-pen-line"></i>
+            <span class="post-meta-item-text"> Word count:</span>
+            <span class="post-count">5.1k</span>
+        </span>
+    </span>
+
+    <span class="post-time">
+        &nbsp; | &nbsp;
+        <span class="post-meta-item-icon">
+            <i class="ri-book-open-line"></i>
+            <span class="post-meta-item-text"> Reading time≈</span>
+            <span class="post-count">20 min</span>
+        </span>
+    </span>
+</div>
+ 
+    </div>
+      
+    <div class="tocbot"></div>
+
+
+
+
+  
+    <div class="article-entry" itemprop="articleBody">
+       
+  <h1 id="0-摘要"><a href="#0-摘要" class="headerlink" title="0. 摘要"></a>0. 摘要</h1><p>ORB-SLAM2：一个适用于单目、双目、RGB-D相机的完整SLAM系统。</p>
+<ul>
+<li>系统包括地图重利用、回环检测和重定位功能</li>
+<li>该系统在标准CPUs上实时工作，适用于多种环境：室内小型手持设备、工业环境中的无人机、城市中行驶的车辆。</li>
+<li>该系统后端采用基于单目和双目观测的BA，允许metric尺度下对轨迹的精确估计。</li>
+<li>该系统包括一个轻量级的定位模式，该模式可以在零点漂移(zero-drift)的情况下，利用视觉里程计来追踪未建图的区域并匹配地图点。</li>
+</ul>
+<p>实验方面：<br>在29个公开序列上对ORB-SLAM2进行评估，该系统实现了SOTA的准确性，并且在多数情况下是最准确的SLAM方案。</p>
+<p>代码已公开。</p>
+<h1 id="1-介绍"><a href="#1-介绍" class="headerlink" title="1. 介绍"></a>1. 介绍</h1><p>在过去20年间，CV和机器人领域中，SLAM算是热门方向，近年更是吸引了不少高科技公司的关注。<br>SLAM技术旨在建立一个未知环境的地图，并且在地图中地位传感器，其重点在于实时操作。<br>在众多传感器中，相机相对廉价且能提供丰富的环境信息。相机传感器允许鲁邦且准确的位置识别(place recoginition)。因此，在VSLAM中，主流方案还是使用相机传感器。<br>位置识别是SLAM系统中回环检测部分的关键模块，此外，位置识别对于跟踪失败（由于遮挡<code>occlusion</code>或者剧烈运动或者系统重新初始化）后相机的重定位也很关键。</p>
+<p>VSLAM可以只用单目相机来完成，这是一种最廉价且最小型的传感器设置。然而，单目存在一些问题：</p>
+<ol>
+<li>由于仅用一台相机不能观测深度，地图和估计轨迹的尺度是未知的。</li>
+<li>由于不能从第一帧中进行三角化测量，单目SLAM系统的启动(bootstrapping)需要多视角或<code>滤波技术</code>【？】才能生成初始地图。</li>
+<li>单目SLAM可能出现<a target="_blank" rel="noopener" href="https://www.zhihu.com/question/301977205">尺度漂移</a></li>
+<li>如果探索过程中出现纯旋转可能会失败。</li>
+</ol>
+<p>使用双目/RGBD相机可以解决上述问题。</p>
+<hr>
+<p>在这篇论文中，我们基于单目ORB-SLAM[1]提出ORB-SLAM2，主要贡献如下：</p>
+<ul>
+<li>首个关于单目、双目和RGB-D相机的开源SLAM系统，系统包括回环检测、重定位和地图重用。</li>
+<li>RGB-D结果显示，BA比ICP或者<code>光度(photometric)和深度误差最小化</code>更准确。</li>
+<li>ORB-SLAM2使用远近双目点和单目观测，双目结果比SOTA中直接使用双目的SLAM系统更准确。【？】</li>
+<li>在无法建图的情况下，ORB-SLAM2提供一个轻量级的定位模式，实现地图的高效重用。</li>
+</ul>
+<hr>
+<p>下图分别是输入为双目和RGB-D时，ORB-SLAM2的输出结果：</p>
+<ul>
+<li><p>双目：</p>
+<p><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/study/SLAM/img20211023100214.png"></p>
+<p>这是<code>KITTI数据集</code>[2]序列<code>00</code>的最终轨迹和稀疏重建。该序列是一个有多个回环的城市数据集，从结果看，ORB-SLAM2成功检测到了回环。</p>
+</li>
+<li><p>RGB-D：</p>
+<p><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/study/SLAM/img20211023100327.png"></p>
+<p>这是<code>TUM RGB-D数据集</code>[3]序列<code>fr1_room</code>的关键帧位姿估计和一个稠密点云图，该稠密点云图是通过从估计的关键帧位姿反映射(backproject)到传感器深度地图来构建的。【？】</p>
+<p>ORB-SLAM2没有做KinectFusion[4]一类的数据融合处理【？】，但是关键帧位姿的估计还是很准确的。</p>
+</li>
+<li><p>其他范例可以参考附录视频</p>
+</li>
+</ul>
+<h1 id="2-相关工作"><a href="#2-相关工作" class="headerlink" title="2. 相关工作"></a>2. 相关工作</h1><h2 id="2-1-Stereo-SLAM"><a href="#2-1-Stereo-SLAM" class="headerlink" title="2.1 Stereo SLAM"></a>2.1 Stereo SLAM</h2><h2 id="2-2-RGB-D-SLAM"><a href="#2-2-RGB-D-SLAM" class="headerlink" title="2.2 RGB-D SLAM"></a>2.2 RGB-D SLAM</h2><h1 id="3-ORB-SLAM2"><a href="#3-ORB-SLAM2" class="headerlink" title="3. ORB-SLAM2"></a>3. ORB-SLAM2</h1><p><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/study/SLAM/img20211024205807.png"></p>
+<ul>
+<li><p>系统包括三个主线程和一个小线程：</p>
+<ul>
+<li>跟踪：通过与局部地图进行特征匹配和用<code>motion-only BA</code>来最小化重投影误差，来跟踪每一帧对应的相机位置</li>
+<li>局部建图：通过执行<code>局部BA</code>，来建立和优化局部地图</li>
+<li>回环检测：通过执行<code>位姿图优化</code>，来检测大回环并且矫正累积漂移</li>
+<li><code>Full BA</code>（小线程）:在位姿图优化后进入第四个线程，该线程执行<code>full BA</code>，来计算出最优的结构和运动。</li>
+</ul>
+</li>
+<li><p>系统还嵌入了一个<code>Place Recognition模块</code></p>
+<ul>
+<li><code>Place Recognition模块</code>基于DBoW2[16]</li>
+<li>用途：<ul>
+<li>在跟踪失败(例如遮挡<code>occlusion</code>)情况下重定位</li>
+<li>在已建图场景中重新初始化</li>
+<li>回环检测</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>该系统维护一个<code>共视图</code>(covisibility graph)[8]和一个<code>最小生成树</code>(minimum spanning tree)</p>
+<ul>
+<li>共视图：连接任意两个共同观测点的关键帧</li>
+<li>最小生成树：连接所有关键帧</li>
+<li>这些图结构能够得到一个关键帧的局部窗口，便于在局部范围内跟踪和建立局部地图。图结构使系统可以工作在大规模环境中，并在回环检测部分作为图优化的一种结构。</li>
+</ul>
+</li>
+<li><p>该系统在<code>跟踪</code>、<code>建图</code>和<code>place recognition</code>中使用<code>ORB特征</code>[17]</p>
+<ul>
+<li>ORB特征优点：<ul>
+<li>对于旋转和尺度变换具有鲁棒性</li>
+<li>对于相机<code>自增益auto-gain</code>、<code>自曝光auto-exposure</code>、<code>光度变化</code>具有良好的稳定性</li>
+<li>能快速进行特征提取和特征匹配<ul>
+<li>有助于实时性操作</li>
+<li>在<code>词袋place recognition</code>中表现出良好的精确率和召回率[18]</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h2 id="3-1-单目、近双目、远双目关键点"><a href="#3-1-单目、近双目、远双目关键点" class="headerlink" title="3.1 单目、近双目、远双目关键点"></a>3.1 单目、近双目、远双目关键点</h2><p><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/study/SLAM/img20211024221656.png"></p>
+<p>ORB-SLAM2是一种基于特征的方法，对输入进行预处理后，再提取显著关键点位置特征。</p>
+<p>然后，丢弃输入图像，之后所有的系统操作都是基于这些提取的特征，因此，ORB-SLAM2系统独立于传感器（stereo、RGB-D）。</p>
+<p>系统对单目和双目的关键点进行处理，这些关键点分为近点和远点两类。</p>
+<p><a target="_blank" rel="noopener" href="http://zhaoxuhui.top/blog/2018/12/14/SLAMCamera.html">SLAM相机成像原理</a></p>
+<h3 id="3-1-1-双目关键点"><a href="#3-1-1-双目关键点" class="headerlink" title="3.1.1 双目关键点"></a>3.1.1 双目关键点</h3><p>双目关键点定义为$X_s=(u_L,v_L,u_R)$，其中$(u_L,v_L)$是<code>左图</code>的坐标，$u_R$是<code>右图</code>的<em>水平</em>坐标。</p>
+<ul>
+<li><p>对于双目相机：我们对每对图像提取ORB特征，在右图中寻找左图的ORB匹配。这对于双目图像矫正(stereo rectified images)【？】很有效，因此极线(epipolar lines)是<em>水平</em>的。</p>
+<p>然后，使用 左ORB的坐标 和 右匹配的水平坐标 生成双目关键点，通过<code>修补相关性(patch correlation)</code>来细化亚像素<code>subpixel</code>。【？】</p>
+</li>
+<li><p>对于RGB-D相机：我们在RGB图像上提取ORB特征，如[8]所述，对于每个坐标为$(u_L,v_L)$的特征，我们将深度d转换成虚右坐标(virtual right coordinate)（对标双目里的$u_R$）：</p>
+<p><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/study/SLAM/img20211025013701.png"></p>
+<p>其中$f_x$是水平焦距，b是结构光投影仪(structured light projector)和红外摄像机之间的基线。<code>Kinect</code>和<code>Asus Xtion</code>的基线大约8cm。</p>
+<p><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/study/SLAM/img20211025021252.png"></p>
+<p>深度传感器的不确定性可以用虚右坐标的不确定性来表示。这样一来，双目的输入特征和RGB-D的输入特征在系统其余部分都可以等效处理。</p>
+</li>
+</ul>
+<p>双目关键点分为近点和远点两类：</p>
+<ul>
+<li>近点：深度小于40倍的双目/RGB-D基线[5]<ul>
+<li>这是因为近点的深度估计是准确的，且提供了尺度、平移和旋转信息。</li>
+<li>因此，可以从<strong>单独一帧</strong>中安全的三角化。</li>
+</ul>
+</li>
+<li>远点：其他<ul>
+<li>远点提供了准确的旋转信息，但是尺度信息和平移信息比较弱。</li>
+<li>只有提供<strong>多视角</strong>的情况下，才能对远点进行三角化。</li>
+</ul>
+</li>
+</ul>
+<h3 id="3-1-2-单目关键点"><a href="#3-1-2-单目关键点" class="headerlink" title="3.1.2 单目关键点"></a>3.1.2 单目关键点</h3><p>单目关键点定义为$x_m=(u_L,v_L)$，对应找不到双目匹配、以及RGB-D深度无效的情况。</p>
+<ul>
+<li>这些关键点没有尺度信息</li>
+<li>只能从<strong>多视角</strong>中三角化</li>
+<li>有助于旋转估计和平移估计【？】</li>
+</ul>
+<h2 id="3-2-系统启动"><a href="#3-2-系统启动" class="headerlink" title="3.2 系统启动"></a>3.2 系统启动</h2><p>使用双目/RGBD相机的一个最主要的好处是可以从单独一帧获取深度信息，不需要像单目那样从运动初始化中获得特定的结构。</p>
+<p>在系统启动时，我们将第一帧创建为关键帧，将其位姿设置为原点，从所有双目关键点中创建初始化地图。</p>
+<h2 id="3-3-单目和双目约束的BA"><a href="#3-3-单目和双目约束的BA" class="headerlink" title="3.3 单目和双目约束的BA"></a>3.3 单目和双目约束的BA</h2><ul>
+<li>在跟踪线程中，系统执行<code>motion-only BA</code>来优化相机位姿。</li>
+<li>在局部建图线程中，系统执行<code>local BA</code>来优化关键帧和点的局部窗口。</li>
+<li>在回环检测后的第四线程中，系统执行<code>full BA</code>来优化所有关键帧和点。</li>
+</ul>
+<p>以上所有BA都使用<code>Levenberg-Marquardt梯度法</code>，该方法基于<code>g2o</code>库[19]实现。</p>
+<h3 id="3-3-1-Motion-only-BA"><a href="#3-3-1-Motion-only-BA" class="headerlink" title="3.3.1 Motion-only BA"></a>3.3.1 Motion-only BA</h3><p>优化相机位姿，即优化相机方向$R（SO(3)）$和位置$t（R^3）$。</p>
+<p>方法：最小化匹配的3D点$X^i（R^3）$的世界坐标和关键点$x_(.)^i$之间的重投影误差：</p>
+<p>（单目：$x_m^i（R^2）$；双目：$x_s^i（R^3）$；i属于匹配集）</p>
+<p><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/study/SLAM/img20211025102348.png"></p>
+<h3 id="3-3-2-Local-BA"><a href="#3-3-2-Local-BA" class="headerlink" title="3.3.2 Local BA"></a>3.3.2 Local BA</h3><p>优化一组共视关键帧$K_L$以及这些关键帧观测到的所有点$P_L$。</p>
+<p>其他观测到这些点但是不在待优化关键帧组$K_L$中的关键帧$K_F$，在优化过程中固定不变（即这些关键帧不被优化），但是参与优化方程。</p>
+<p>$X_k$表示<code>关键帧k中的关键点</code>与<code>点集$P_L$中的点</code>相匹配的点的集合。</p>
+<p>目标函数：</p>
+<p><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/study/SLAM/img20211025103106.png"></p>
+<h3 id="3-3-3-Full-BA"><a href="#3-3-3-Full-BA" class="headerlink" title="3.3.3 Full BA"></a>3.3.3 Full BA</h3><p><code>Full BA</code>优化地图中所有的关键帧和点。</p>
+<ul>
+<li><code>Full BA</code>实际上只是<code>local BA</code>的一种特殊情况。</li>
+<li>原始关键帧固定（不被优化），这是为了消除<code>gauge freedom</code>【？】</li>
+</ul>
+<h2 id="3-4-回环检测和全BA"><a href="#3-4-回环检测和全BA" class="headerlink" title="3.4 回环检测和全BA"></a>3.4 回环检测和全BA</h2><p><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/study/SLAM/img20211025103823.png"></p>
+<p>回环检测包括两个步骤：</p>
+<ol>
+<li>检测并验证回环</li>
+<li>通过优化位姿图来矫正回环</li>
+</ol>
+<hr>
+<p>ORB-SLAM2不用管单目ORB-SLAM中的<code>尺度漂移</code>[20]：</p>
+<ul>
+<li>这是因为双目/深度信息可以直接获得，这使得尺度是可以被观测的</li>
+<li>ORB-SLAM2中，<code>几何验证</code>和<code>位姿图优化</code>时不再需要处理尺度漂移【？】<ul>
+<li>ORB-SLAM中，这两个部分是基于相似性的</li>
+<li>ORB-SLAM2中，这两个部分是基于刚体变换的</li>
+</ul>
+</li>
+</ul>
+<hr>
+<p>在ORB-SLAM2中，我们在位姿图优化后加了一个<code>full BA优化</code>来实现方案最优化。这个优化过程开销比较大，我们为它开辟了一个单独的线程，因此系统可以继续创建地图、检测回环。</p>
+<p>但这也带来了一个挑战：如何将BA的输出与当前地图相融合。</p>
+<ul>
+<li><p>如果检测到新的回环，而full BA优化正在进行中，就中断优化先执行闭环，然后再启动优化。</p>
+</li>
+<li><p>当full BA优化结束后，需要将<code>BA优化后的更新版关键帧和点</code>与<code>优化允许时插入的未更新版关键帧和点</code>相融合。</p>
+<ul>
+<li>通过生成树，我们将<code>更新版关键帧</code>的修正（即未优化位姿到优化位姿的转换）传播给<code>未更新版关键帧</code>。</li>
+<li>根据对参考关键帧的修正来转换<code>未更新版点</code>。【？】</li>
+</ul>
+</li>
+</ul>
+<h2 id="3-5-关键帧插入"><a href="#3-5-关键帧插入" class="headerlink" title="3.5 关键帧插入"></a>3.5 关键帧插入</h2><p>ORB-SLAM2延续了ORB-SLAM中的策略：频繁插入关键帧，严格剔除冗余关键帧。</p>
+<p>双目远点和近点的区别允许我们在关键帧插入环节引入新的条件。在<code>大部分场景距离双目传感器较远（远点较多）</code>的情况下，该条件起到关键作用。</p>
+<p><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/study/SLAM/img20211025112744.png"></p>
+<p>在该场景下，我们需要足够数量的近点来准确估计位姿转移，因此，如果跟踪到的近点数量在$\tau_t$以下，且该帧能够创建至少$\tau_c$个新的近点，系统就会插入新的关键帧。</p>
+<ul>
+<li>实验值：$\tau_t=100$，$\tau_c=70$</li>
+</ul>
+<h2 id="3-6-定位模式"><a href="#3-6-定位模式" class="headerlink" title="3.6 定位模式"></a>3.6 定位模式</h2><p>系统包括一个<code>定位模式</code>，该模块有助于在已有的良好建图区域中进行长期的轻量级定位，前提是环境没有发生太大变化。</p>
+<p>在该模式下：</p>
+<ul>
+<li>局部建图线程和回环检测线程停用，而相机始终在通过跟踪进行重定位（如果需要）</li>
+<li>跟踪线程利用<code>visual odometry matches（VO匹配）</code>来匹配地图点。<ul>
+<li><code>VO匹配</code>将当前帧的ORB特征与从历史帧中根据双目/深度信息创建的3D点（地图点？）相匹配</li>
+<li>这些匹配使得定位在未建图区域中具有鲁棒性，但是依然存在<code>累积漂移</code>【？】</li>
+<li>地图点匹配使得系统可以在已有地图上进行零漂移定位</li>
+</ul>
+</li>
+</ul>
+<p>随附该模式的演示视频。</p>
+<h1 id="4-评估"><a href="#4-评估" class="headerlink" title="4. 评估"></a>4. 评估</h1><p>环境：Intel Core i7-4790 + 16G RAM</p>
+<p>鉴于多线程系统存在不确定性，每个数据序列允许5次，取中值作为估计轨迹的精度。</p>
+<h2 id="4-1-KITTI数据集"><a href="#4-1-KITTI数据集" class="headerlink" title="4.1 KITTI数据集"></a>4.1 KITTI数据集</h2><p>KITTI数据集[2]：</p>
+<ul>
+<li>城市和公路环境中汽车采集的双目序列。</li>
+<li>00, 02, 05, 06, 07, 09 序列中存在回环</li>
+<li>ORB-SLAM2未成功检测到序列09的回环，原因是回环位于序列末尾很少的帧中</li>
+</ul>
+<p>双目传感器：</p>
+<ul>
+<li>基线：~54cm</li>
+<li>工作频率：10Hz</li>
+<li>修正后的分辨率：1240x376</li>
+</ul>
+<hr>
+<ul>
+<li><p>表1显示11个训练序列的结果，这些序列都有公开的<code>ground-truth</code>；与SOTA的<code>双目LSD-SLAM</code>[11]进行比较：</p>
+<p> <img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/study/SLAM/img20211026192600.png"></p>
+<ul>
+<li>度量(metrics)：<ul>
+<li><code>绝对 translation RMSE</code> $t_abs$[3]</li>
+<li><code>平均相对 translation误差</code> $t_rel$[2]</li>
+<li><code>平均相对 rotation误差</code> $r_rel$[2]</li>
+</ul>
+</li>
+</ul>
+<p>我们的系统在大多数序列中的表现都超过了<code>双目LSD-SLAM</code>，总体上相对误差低于1%。</p>
+</li>
+<li><p>序列01：训练集中唯一的公路序列，translation误差略差。</p>
+<p> <img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/study/SLAM/img20211026193256.png"></p>
+<p>由于高速度和低帧率，该序列中能跟踪到的近点比较少，因此<code>translation</code>很难估计。</p>
+<p>不过，许多远点可以长时间被跟踪到，因此<code>orientation</code>能够被准确估计，每100m误差0.21度。</p>
+</li>
+<li><p>轨迹估计范例：</p>
+<p> <img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/study/SLAM/img20211026193953.png"></p>
+</li>
+</ul>
+<hr>
+<p>与ORB-SALM的结果相比，双目系统能够处理单目系统处理不了的序列01。【？KITTI不是双目序列吗】</p>
+<p>在该序列中，近点仅在少数帧中可见，双目系统可以从单独一个双目关键帧中创建地图点，而单目需要在两个关键帧中寻找匹配，故存在初始化延迟。这点是不跟丢的关键。</p>
+<p>此外，双目系统以<code>metric scale</code>估计地图和轨迹，能够估计出地图和轨迹的真实尺度，没有<code>尺度漂移</code>现象。如下图所示：</p>
+<p><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/study/SLAM/img20211026194827.png"></p>
+<h2 id="4-2-EuRoC数据集"><a href="#4-2-EuRoC数据集" class="headerlink" title="4.2 EuRoC数据集"></a>4.2 EuRoC数据集</h2><p>EuRoC数据集[21]：</p>
+<ul>
+<li>包含11个双目序列，数据来源是在两个不同房间和一个大型工业环境中飞行的微型飞行器(MAV)。</li>
+<li>序列分类：easy, meduim, difficult（取决于MAV的速度、光照、场景纹理）</li>
+</ul>
+<p>双目传感器：</p>
+<ul>
+<li>基线：~11cm</li>
+<li>频率：20Hz</li>
+<li>分辨率：WVGA（854×480或800×480）</li>
+</ul>
+<hr>
+<p>跑序列等于MAV重新访问环境，ORB-SLAM2能够实现地图重用、并在必要时闭环。</p>
+<ul>
+<li><p>表2：</p>
+<p> <img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/study/SLAM/img20211026195708.png"></p>
+<ul>
+<li><p>ORB-SLAM2的定位精度为几厘米，比双目LSD-SLAM要高。</p>
+</li>
+<li><p>由于存在严重的<code>motion blur</code>，系统在<code>V2_03_difficult</code>序列中的部分区域跟丢了。根据[22]所述，该序列可以使用<code>IMU信息</code>进行处理。</p>
+</li>
+</ul>
+</li>
+<li><p>图6：轨迹估计范例</p>
+<p><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/study/SLAM/img20211026200246.png"></p>
+</li>
+</ul>
+<h2 id="4-3-TUM-RGB-D数据集"><a href="#4-3-TUM-RGB-D数据集" class="headerlink" title="4.3 TUM RGB-D数据集"></a>4.3 TUM RGB-D数据集</h2><p>TUM RGB-D数据集[3]：</p>
+<ul>
+<li>包含RGB-D传感器采集的室内序列。</li>
+<li>序列分为几种类别，用于评估不同纹理、光照、结构条件下，目标重建和SLAM/视觉里程计方法。</li>
+</ul>
+<hr>
+<p>选择了部分RGB-D方法常用的序列来进行评估。</p>
+<ul>
+<li><p>表3：对比了ElasticFusion [15], Kintinuous [12], DVO-SLAM [14] and RGB-D SLAM [13]。</p>
+<ul>
+<li>我们的ORB-SLAM2是唯一一个基于BA的方法（其他都是基于直接法/ICP），且在大多数序列中表现最佳。</li>
+</ul>
+<p> <img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/study/SLAM/img20211026200930.png"></p>
+<p>我们在ORB-SLAM[1]已经注意到：<code>freiburg2序列</code>存在4%的尺度偏差(scale bias)，该误差可能来源于校准错误(miscalibration)。我们在系统运行中对该偏差进行了补偿。【how？】</p>
+</li>
+<li><p>图7：从4个序列估计的关键帧位姿中反投影出传感器深度图得到的点云</p>
+<p><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/study/SLAM/img20211026201636.png"></p>
+<p>桌子和海报轮廓清晰笔直，证明了ORB-SLAM2的高精度定位。</p>
+</li>
+</ul>
+<h2 id="4-4-Timing-Results"><a href="#4-4-Timing-Results" class="headerlink" title="4.4 Timing Results"></a>4.4 Timing Results</h2><ul>
+<li><p>表4：不同图像分辨率和不同传感器的三个序列的计时结果，显示了每个线程的平均值和两个标准差范围。</p>
+<p><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/study/SLAM/img20211026202149.png"></p>
+<p>由于这些序列都是单环的，<code>Full BA</code>线程以及<code>回环检测线程</code>中的一些任务只执行一次，因此只计算一次运行时间。</p>
+<ul>
+<li><p>跟踪</p>
+<p><strong>平均每帧的跟踪时间小于每个序列的相机帧率的倒数，这意味着我们的系统能够实时工作。</strong></p>
+<p>  由于双目图像中ORB特征提取是并行进行的，可以看到从V2_02序列的双目WVGA图像中提取1000个ORB特征约等于从fr3_office序列的single VGA image channel中提取1000个特征。</p>
+</li>
+<li><p>回环检测</p>
+<p>回环中关键帧的数量可以作为回环检测用时的参考：</p>
+<ul>
+<li><p>虽然KITTI 07序列中包含更多的关键帧，但是室内fr3_office序列的共视图更稠密，因此该序列的回环融合、姿态图优化、full BA任务都更耗时。</p>
+</li>
+<li><p>共视图越稠密，局部地图包含的关键帧和点的数量就越多，因此局部图跟踪和局部BA也会更加耗时。</p>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h1 id="5-总结"><a href="#5-总结" class="headerlink" title="5. 总结"></a>5. 总结</h1><h1 id="6-参考文献"><a href="#6-参考文献" class="headerlink" title="6. 参考文献"></a>6. 参考文献</h1><p>[1] R. Mur-Artal, J. M. M. Montiel, and J. D. Tard´os, “ORB-SLAM: a versatile and accurate monocular SLAM system,” IEEE Trans. Robot., vol. 31, no. 5, pp. 1147–1163, 2015.</p>
+<p>[2] A. Geiger, P. Lenz, C. Stiller, and R. Urtasun, “Vision meets robotics: The KITTI dataset,” Int. J. Robot. Res., vol. 32, no. 11, pp. 1231–1237, 2013.</p>
+<p>[3] J. Sturm, N. Engelhard, F. Endres, W. Burgard, and D. Cremers, “A benchmark for the evaluation of RGB-D SLAM systems,” in IEEE/RSJ Int. Conf. Intell. Robots and Syst. (IROS), 2012, pp. 573–580.</p>
+<p>[4] R. A. Newcombe, A. J. Davison, S. Izadi, P. Kohli, O. Hilliges, J. Shotton, D. Molyneaux, S. Hodges, D. Kim, and A. Fitzgibbon, “KinectFusion: Real-time dense surface mapping and tracking,” in IEEE Int. Symp. on Mixed and Augmented Reality (ISMAR), 2011.</p>
+<p>[5] L. M. Paz, P. Pini´es, J. D. Tard´os, and J. Neira, “Large-scale 6-DOF SLAM with stereo-in-hand,” IEEE Trans. Robot., vol. 24, no. 5, pp. 946–957, 2008.</p>
+<p>[6] J. Civera, A. J. Davison, and J. M. M. Montiel, “Inverse depth parametrization for monocular SLAM,” IEEE Trans. Robot., vol. 24, no. 5, pp. 932–945, 2008.</p>
+<p>[7] H. Strasdat, J. M. M. Montiel, and A. J. Davison, “Visual SLAM: Why filter?” Image and Vision Computing, vol. 30, no. 2, pp. 65–77, 2012.</p>
+<p>[8] H. Strasdat, A. J. Davison, J. M. M. Montiel, and K. Konolige, “Double window optimisation for constant time visual SLAM,” in IEEE Int. Conf. Comput. Vision (ICCV), 2011, pp. 2352–2359.</p>
+<p>[9] C. Mei, G. Sibley, M. Cummins, P. Newman, and I. Reid, “RSLAM: A system for large-scale mapping in constant-time using stereo,” Int. J. Comput. Vision, vol. 94, no. 2, pp. 198–214, 2011.</p>
+<p>[10] T. Pire, T. Fischer, J. Civera, P. De Crist´oforis, and J. J. Berlles, “Stereo parallel tracking and mapping for robot localization,” in IEEE/RSJ Int. Conf. Intell. Robots and Syst. (IROS), 2015, pp. 1373–1378.</p>
+<p>[11] J. Engel, J. Stueckler, and D. Cremers, “Large-scale direct SLAM with stereo cameras,” in IEEE/RSJ Int. Conf. Intell. Robots and Syst. (IROS), 2015.</p>
+<p>[12] T. Whelan, M. Kaess, H. Johannsson, M. Fallon, J. J. Leonard, and J. McDonald, “Real-time large-scale dense RGB-D SLAM with volumetric fusion,” Int. J. Robot. Res., vol. 34, no. 4-5, pp. 598–626, 2015.</p>
+<p>[13] F. Endres, J. Hess, J. Sturm, D. Cremers, and W. Burgard, “3-D mapping with an RGB-D camera,” IEEE Trans. Robot., vol. 30, no. 1, pp. 177– 187, 2014.</p>
+<p>[14] C. Kerl, J. Sturm, and D. Cremers, “Dense visual SLAM for RGB-D cameras,” in IEEE/RSJ Int. Conf. Intell. Robots and Syst. (IROS), 2013.</p>
+<p>[15] T. Whelan, R. F. Salas-Moreno, B. Glocker, A. J. Davison, and S. Leutenegger, “ElasticFusion: Real-time dense SLAM and light source estimation,” Int. J. Robot. Res., vol. 35, no. 14, pp. 1697–1716, 2016.</p>
+<p>[16] D. G´alvez-L´opez and J. D. Tard´os, “Bags of binary words for fast place recognition in image sequences,” IEEE Trans. Robot., vol. 28, no. 5, pp. 1188–1197, 2012.</p>
+<p>[17] E. Rublee, V. Rabaud, K. Konolige, and G. Bradski, “ORB: an efficient alternative to SIFT or SURF,” in IEEE Int. Conf. Comput. Vision (ICCV), 2011, pp. 2564–2571.</p>
+<p>[18] R. Mur-Artal and J. D. Tard´os, “Fast relocalisation and loop closing in keyframe-based SLAM,” in IEEE Int. Conf. on Robot. and Autom. (ICRA), 2014, pp. 846–853.</p>
+<p>[19] R. Kuemmerle, G. Grisetti, H. Strasdat, K. Konolige, and W. Burgard, “g2o: A general framework for graph optimization,” in IEEE Int. Conf. on Robot. and Autom. (ICRA), 2011, pp. 3607–3613.</p>
+<p>[20] H. Strasdat, J. M. M. Montiel, and A. J. Davison, “Scale drift-aware large scale monocular SLAM.” in Robot.: Sci. and Syst. (RSS), 2010.</p>
+<p>[21] M. Burri, J. Nikolic, P. Gohl, T. Schneider, J. Rehder, S. Omari, M. W. Achtelik, and R. Siegwart, “The EuRoC micro aerial vehicle datasets,” Int. J. Robot. Res., vol. 35, no. 10, pp. 1157–1163, 2016.</p>
+<p>[22] R. Mur-Artal and J. D. Tard´os, “Visual-inertial monocular SLAM with map reuse,” IEEE Robot. and Autom. Lett., vol. 2, no. 2, pp. 796 – 803, 2017.</p>
+ 
+      <!-- reward -->
+      
+    </div>
+    
+
+    <!-- copyright -->
+    
+    <footer class="article-footer">
+       
+<div class="share-btn">
+      <span class="share-sns share-outer">
+        <i class="ri-share-forward-line"></i>
+        分享
+      </span>
+      <div class="share-wrap">
+        <i class="arrow"></i>
+        <div class="share-icons">
+          
+          <a class="weibo share-sns" href="javascript:;" data-type="weibo">
+            <i class="ri-weibo-fill"></i>
+          </a>
+          <a class="weixin share-sns wxFab" href="javascript:;" data-type="weixin">
+            <i class="ri-wechat-fill"></i>
+          </a>
+          <a class="qq share-sns" href="javascript:;" data-type="qq">
+            <i class="ri-qq-fill"></i>
+          </a>
+          <a class="douban share-sns" href="javascript:;" data-type="douban">
+            <i class="ri-douban-line"></i>
+          </a>
+          <!-- <a class="qzone share-sns" href="javascript:;" data-type="qzone">
+            <i class="icon icon-qzone"></i>
+          </a> -->
+          
+          <a class="facebook share-sns" href="javascript:;" data-type="facebook">
+            <i class="ri-facebook-circle-fill"></i>
+          </a>
+          <a class="twitter share-sns" href="javascript:;" data-type="twitter">
+            <i class="ri-twitter-fill"></i>
+          </a>
+          <a class="google share-sns" href="javascript:;" data-type="google">
+            <i class="ri-google-fill"></i>
+          </a>
+        </div>
+      </div>
+</div>
+
+<div class="wx-share-modal">
+    <a class="modal-close" href="javascript:;"><i class="ri-close-circle-line"></i></a>
+    <p>扫一扫，分享到微信</p>
+    <div class="wx-qrcode">
+      <img src="//api.qrserver.com/v1/create-qr-code/?size=150x150&data=https://apollomao.com/%E8%AE%BA%E6%96%87%E9%98%85%E8%AF%BB%EF%BC%9AORB-SALM2/" alt="微信分享二维码">
+    </div>
+</div>
+
+<div id="share-mask"></div>  
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/SLAM/" rel="tag">SLAM</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E7%A7%91%E7%A0%94/" rel="tag">科研</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E8%AE%BA%E6%96%87%E9%98%85%E8%AF%BB/" rel="tag">论文阅读</a></li></ul>
+
+    </footer>
+  </div>
+
+   
+  <nav class="article-nav">
+    
+    
+      <a href="/Paper-Reading-RadarSLAM-Radar-based-Large-Scale-SLAM-in-All-Weathers/" class="article-nav-link">
+        <strong class="article-nav-caption">下一篇</strong>
+        <div class="article-nav-title">Paper Reading--RadarSLAM: Radar based Large-Scale SLAM in All Weathers</div>
+      </a>
+    
+  </nav>
+
+  
+   
+     
+</article>
+
+</section>
+      <footer class="footer">
+  <div class="outer">
+    <ul>
+      <li>
+        Copyrights &copy;
+        2021
+        <i class="ri-heart-fill heart_icon"></i> 阿波罗猫
+      </li>
+    </ul>
+    <ul>
+      <li>
+        
+        
+        
+        Powered by <a href="https://hexo.io" target="_blank">Hexo</a>
+        <span class="division">|</span>
+        Theme - <a href="https://github.com/Shen-Yu/hexo-theme-ayer" target="_blank">Ayer</a>
+        
+      </li>
+    </ul>
+    <ul>
+      <li>
+        
+      </li>
+    </ul>
+    <ul>
+      
+    </ul>
+    <ul>
+      
+    </ul>
+    <ul>
+      <li>
+        <!-- cnzz统计 -->
+        
+      </li>
+    </ul>
+  </div>
+</footer>
+      <div class="float_btns">
+        <div class="totop" id="totop">
+  <i class="ri-arrow-up-line"></i>
+</div>
+
+<div class="todark" id="todark">
+  <i class="ri-moon-line"></i>
+</div>
+
+      </div>
+    </main>
+    <aside class="sidebar on">
+      <button class="navbar-toggle"></button>
+<nav class="navbar">
+  
+  <div class="logo">
+    <a href="/"><img src="/images/bluecat.svg" alt="四界"></a>
+  </div>
+  
+  <ul class="nav nav-main">
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/">主页</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/archives">归档</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/categories">分类</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/tags">标签</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/tags/%E9%9A%8F%E7%AC%94/">随笔</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/2021/about">关于我</a>
+    </li>
+    
+  </ul>
+</nav>
+<nav class="navbar navbar-bottom">
+  <ul class="nav">
+    <li class="nav-item">
+      
+      <a class="nav-item-link nav-item-search"  title="Search">
+        <i class="ri-search-line"></i>
+      </a>
+      
+      
+    </li>
+  </ul>
+</nav>
+<div class="search-form-wrap">
+  <div class="local-search local-search-plugin">
+  <input type="search" id="local-search-input" class="local-search-input" placeholder="Search...">
+  <div id="local-search-result" class="local-search-result"></div>
+</div>
+</div>
+    </aside>
+    <div id="mask"></div>
+
+<!-- #reward -->
+<div id="reward">
+  <span class="close"><i class="ri-close-line"></i></span>
+  <p class="reward-p"><i class="ri-cup-line"></i>请我喝杯咖啡吧~</p>
+  <div class="reward-box">
+    
+    <div class="reward-item">
+      <img class="reward-img" src="https://cdn.jsdelivr.net/gh/Shen-Yu/cdn/img/alipay.jpg">
+      <span class="reward-type">支付宝</span>
+    </div>
+    
+    
+    <div class="reward-item">
+      <img class="reward-img" src="https://cdn.jsdelivr.net/gh/Shen-Yu/cdn/img/wechat.jpg">
+      <span class="reward-type">微信</span>
+    </div>
+    
+  </div>
+</div>
+    
+<script src="/js/jquery-2.0.3.min.js"></script>
+
+
+<script src="/js/lazyload.min.js"></script>
+
+<!-- Tocbot -->
+
+
+<script src="/js/tocbot.min.js"></script>
+
+<script>
+  tocbot.init({
+    tocSelector: '.tocbot',
+    contentSelector: '.article-entry',
+    headingSelector: 'h1, h2, h3, h4, h5, h6',
+    hasInnerContainers: true,
+    scrollSmooth: true,
+    scrollContainer: 'main',
+    positionFixedSelector: '.tocbot',
+    positionFixedClass: 'is-position-fixed',
+    fixedSidebarOffset: 'auto'
+  });
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/jquery-modal@0.9.2/jquery.modal.min.js"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/jquery-modal@0.9.2/jquery.modal.min.css">
+<script src="https://cdn.jsdelivr.net/npm/justifiedGallery@3.7.0/dist/js/jquery.justifiedGallery.min.js"></script>
+
+<script src="/dist/main.js"></script>
+
+<!-- ImageViewer -->
+
+<!-- Root element of PhotoSwipe. Must have class pswp. -->
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+
+    <!-- Background of PhotoSwipe. 
+         It's a separate element as animating opacity is faster than rgba(). -->
+    <div class="pswp__bg"></div>
+
+    <!-- Slides wrapper with overflow:hidden. -->
+    <div class="pswp__scroll-wrap">
+
+        <!-- Container that holds slides. 
+            PhotoSwipe keeps only 3 of them in the DOM to save memory.
+            Don't modify these 3 pswp__item elements, data is added later on. -->
+        <div class="pswp__container">
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+        </div>
+
+        <!-- Default (PhotoSwipeUI_Default) interface on top of sliding area. Can be changed. -->
+        <div class="pswp__ui pswp__ui--hidden">
+
+            <div class="pswp__top-bar">
+
+                <!--  Controls are self-explanatory. Order can be changed. -->
+
+                <div class="pswp__counter"></div>
+
+                <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+
+                <button class="pswp__button pswp__button--share" style="display:none" title="Share"></button>
+
+                <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+
+                <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+
+                <!-- Preloader demo http://codepen.io/dimsemenov/pen/yyBWoR -->
+                <!-- element will get class pswp__preloader--active when preloader is running -->
+                <div class="pswp__preloader">
+                    <div class="pswp__preloader__icn">
+                        <div class="pswp__preloader__cut">
+                            <div class="pswp__preloader__donut"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+                <div class="pswp__share-tooltip"></div>
+            </div>
+
+            <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+            </button>
+
+            <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+            </button>
+
+            <div class="pswp__caption">
+                <div class="pswp__caption__center"></div>
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/default-skin/default-skin.min.css">
+<script src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe-ui-default.min.js"></script>
+
+<script>
+    function viewer_init() {
+        let pswpElement = document.querySelectorAll('.pswp')[0];
+        let $imgArr = document.querySelectorAll(('.article-entry img:not(.reward-img)'))
+
+        $imgArr.forEach(($em, i) => {
+            $em.onclick = () => {
+                // slider展开状态
+                // todo: 这样不好，后面改成状态
+                if (document.querySelector('.left-col.show')) return
+                let items = []
+                $imgArr.forEach(($em2, i2) => {
+                    let img = $em2.getAttribute('data-idx', i2)
+                    let src = $em2.getAttribute('data-target') || $em2.getAttribute('src')
+                    let title = $em2.getAttribute('alt')
+                    // 获得原图尺寸
+                    const image = new Image()
+                    image.src = src
+                    items.push({
+                        src: src,
+                        w: image.width || $em2.width,
+                        h: image.height || $em2.height,
+                        title: title
+                    })
+                })
+                var gallery = new PhotoSwipe(pswpElement, PhotoSwipeUI_Default, items, {
+                    index: parseInt(i)
+                });
+                gallery.init()
+            }
+        })
+    }
+    viewer_init()
+</script>
+
+<!-- MathJax -->
+
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+      tex2jax: {
+          inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+          processEscapes: true,
+          skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+      }
+  });
+
+  MathJax.Hub.Queue(function() {
+      var all = MathJax.Hub.getAllJax(), i;
+      for(i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+      }
+  });
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/mathjax@2.7.6/unpacked/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+<script>
+  var ayerConfig = {
+    mathjax: true
+  }
+</script>
+
+<!-- Katex -->
+
+<!-- busuanzi  -->
+
+<!-- ClickLove -->
+
+<!-- ClickBoom1 -->
+
+<!-- ClickBoom2 -->
+
+
+<script src="/js/clickBoom2.js"></script>
+
+
+<!-- CodeCopy -->
+
+
+<link rel="stylesheet" href="/css/clipboard.css">
+
+<script src="https://cdn.jsdelivr.net/npm/clipboard@2/dist/clipboard.min.js"></script>
+<script>
+  function wait(callback, seconds) {
+    var timelag = null;
+    timelag = window.setTimeout(callback, seconds);
+  }
+  !function (e, t, a) {
+    var initCopyCode = function(){
+      var copyHtml = '';
+      copyHtml += '<button class="btn-copy" data-clipboard-snippet="">';
+      copyHtml += '<i class="ri-file-copy-2-line"></i><span>COPY</span>';
+      copyHtml += '</button>';
+      $(".highlight .code pre").before(copyHtml);
+      $(".article pre code").before(copyHtml);
+      var clipboard = new ClipboardJS('.btn-copy', {
+        target: function(trigger) {
+          return trigger.nextElementSibling;
+        }
+      });
+      clipboard.on('success', function(e) {
+        let $btn = $(e.trigger);
+        $btn.addClass('copied');
+        let $icon = $($btn.find('i'));
+        $icon.removeClass('ri-file-copy-2-line');
+        $icon.addClass('ri-checkbox-circle-line');
+        let $span = $($btn.find('span'));
+        $span[0].innerText = 'COPIED';
+        
+        wait(function () { // 等待两秒钟后恢复
+          $icon.removeClass('ri-checkbox-circle-line');
+          $icon.addClass('ri-file-copy-2-line');
+          $span[0].innerText = 'COPY';
+        }, 2000);
+      });
+      clipboard.on('error', function(e) {
+        e.clearSelection();
+        let $btn = $(e.trigger);
+        $btn.addClass('copy-failed');
+        let $icon = $($btn.find('i'));
+        $icon.removeClass('ri-file-copy-2-line');
+        $icon.addClass('ri-time-line');
+        let $span = $($btn.find('span'));
+        $span[0].innerText = 'COPY FAILED';
+        
+        wait(function () { // 等待两秒钟后恢复
+          $icon.removeClass('ri-time-line');
+          $icon.addClass('ri-file-copy-2-line');
+          $span[0].innerText = 'COPY';
+        }, 2000);
+      });
+    }
+    initCopyCode();
+  }(window, document);
+</script>
+
+
+<!-- CanvasBackground -->
+
+
+    
+  </div>
+</body>
+
+</html>
