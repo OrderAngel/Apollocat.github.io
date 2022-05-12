@@ -463,325 +463,358 @@
       </tags>
   </entry>
   <entry>
-    <title>本科知识整理</title>
-    <url>/%E6%9C%AC%E7%A7%91%E7%9F%A5%E8%AF%86%E6%95%B4%E7%90%86/</url>
-    <content><![CDATA[<h1 id="算法设计与分析"><a href="#算法设计与分析" class="headerlink" title="算法设计与分析"></a>算法设计与分析</h1><p>《算法设计与分析第三版-王晓东》</p>
-<ol>
-<li>算法引论<ol>
-<li>算法与程序</li>
-<li>表达算法的抽象机制</li>
-<li>描述算法</li>
-<li>算法复杂性分析</li>
+    <title>WWMCAS:calibration</title>
+    <url>/WWMCAS-calibration/</url>
+    <content><![CDATA[<h1 id="1-流程简述"><a href="#1-流程简述" class="headerlink" title="1. 流程简述"></a>1. 流程简述</h1><ol>
+<li><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/study/radar/20220511101215.png"></li>
 </ol>
+<ol start="2">
+<li><p><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/study/radar/20220511101257.png"></p>
 </li>
-<li>递归与分治策略<ol>
-<li>递归的概念</li>
-<li>分治法的基本思想</li>
-<li>二分搜索技术</li>
-<li>大整数的乘法</li>
-<li>Strassen矩阵乘法</li>
-<li>棋盘覆盖</li>
-<li>合并排序</li>
-<li>快速排序</li>
-<li>线性时间选择</li>
-<li>最接近点对问题</li>
-<li>循环赛日程表</li>
-</ol>
+<li><p><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/study/radar/20220511101419.png"></p>
 </li>
-<li>动态规划<ol>
-<li> 矩阵连乘问题</li>
-<li> 动态规划算法的基本要素</li>
-<li> 最长公共子序列</li>
-<li> 凸多边形最优三角划分</li>
-<li> 多边形游戏</li>
-<li> 图像压缩</li>
-<li> 电路布线</li>
-<li> 流水作业调度</li>
-<li> 0-1背包问题</li>
-<li>最优二叉搜索树</li>
-</ol>
-</li>
-<li>贪心算法<ol>
-<li> 活动安排问题</li>
-<li>贪心算法的基本要素<ol>
-<li> 贪心选择性质</li>
-<li> 最优子结构性质</li>
-<li> 贪心算法与动态规划算法的差异</li>
-</ol>
-</li>
-<li>最优装载</li>
-<li>哈夫曼编码<ol>
-<li>前编码</li>
-<li>构造哈弗曼编码</li>
-<li>哈夫曼算法的正确性</li>
-</ol>
-</li>
-<li>单源最短路径<ol>
-<li>算法基本思想</li>
-<li>算法的正确性和计算复杂性</li>
-</ol>
-</li>
-<li>最小生成树<ol>
-<li>最小生成树性质</li>
-<li>Prim算法</li>
-<li>Kruskal算法</li>
-<li>多机调度问题</li>
-<li>贪心算法的理论基础<ol>
-<li>拟阵</li>
-<li>带权拟阵的贪心算法</li>
-<li>任务时间表问题</li>
-</ol>
+<li><p><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/study/radar/20220511101454.png"></p>
 </li>
 </ol>
+<ul>
+<li>注意：Simple如果要跑，需要加一个文件夹嵌套：</li>
+</ul>
+<p><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/study/radar/20220511102126.png"></p>
+<ul>
+<li>注意：缺少两个文件</li>
+</ul>
+<p><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/study/radar/20220511102310.png"></p>
+<p><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/study/radar/20220511102400.png"></p>
+<p><a href="https://e2e.ti.com/support/sensors-group/sensors/f/sensors-forum/952341/mmwcas-dsp-evm-missing-matlab-example-file-cascade_txbf_verification-m">下载</a></p>
+<ul>
+<li>注意：需要把<code>psSettingProgramCal.csv</code>复制过来进行替换：<br><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/study/radar/20220511103424.png"></li>
+</ul>
+<ol start="5">
+<li><p><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/study/radar/20220511102944.png"></p>
+</li>
+<li><p>跑跑<code>TXBF_Create_PSCal_Advanced_Frame_Config.m</code></p>
 </li>
 </ol>
+<h1 id="2-硬软件描述"><a href="#2-硬软件描述" class="headerlink" title="2. 硬软件描述"></a>2. 硬软件描述</h1><h2 id="2-1-硬软件需求"><a href="#2-1-硬软件需求" class="headerlink" title="2.1 硬软件需求"></a>2.1 硬软件需求</h2><ul>
+<li><code>MMWCAS-RF-EVM</code> + <code>MMWCAS-DSP-EVM</code></li>
+<li>角反射器+测试环境（天线暗室）</li>
+<li>PC<ul>
+<li>mmWave Studio 3.1+<ul>
+<li>已经跑过MIMO example</li>
+<li>在TDMA MIMO example的基础上运行TX phase shifter校准</li>
+</ul>
 </li>
-<li>回溯法<ol>
-<li>回溯法的算法框架<ol>
-<li>问题的解空间</li>
-<li>回溯法的基本思想</li>
-<li>递归回溯</li>
-<li>迭代回溯</li>
-<li>子集树与排列数</li>
-</ol>
+</ul>
 </li>
-<li>装载问题</li>
-<li>批处理作业调度</li>
-<li>符号三角形问题</li>
-<li>n后问题</li>
-<li>0-1背包问题</li>
-<li>最大团问题</li>
-<li>图的m着色问题</li>
-<li>旅行售货员问题</li>
-<li>圆排列问题</li>
-<li>电路板排列问题</li>
-<li>连续邮资问题</li>
-<li>回溯法的效率分析</li>
-</ol>
+</ul>
+<h2 id="2-2-lua脚本"><a href="#2-2-lua脚本" class="headerlink" title="2.2 lua脚本"></a>2.2 lua脚本</h2><h3 id="2-2-1-Cascade-Phase-Shifter-Calibration-AWRx-lua"><a href="#2-2-1-Cascade-Phase-Shifter-Calibration-AWRx-lua" class="headerlink" title="2.2.1 Cascade_Phase_Shifter_Calibration_AWRx.lua"></a>2.2.1 Cascade_Phase_Shifter_Calibration_AWRx.lua</h3><p><strong>作用：采集校准数据。</strong></p>
+<ul>
+<li><p>脚本设置了<code>RF-EVM AWRx</code>和<code>DSP-EVM data capture</code>所需要的参数。</p>
 </li>
-<li>分支限界法<ol>
-<li>分支限界法的基本思想</li>
-<li>单源最短路径问题</li>
-<li>装载问题</li>
-<li>布线问题</li>
-<li>0-1背包问题</li>
-<li>最大团问题</li>
-<li>旅行售货员问题</li>
-<li>电路板排列问题</li>
-<li>批处理作业调度</li>
-</ol>
+<li><p>使用TDMA-MIMO的帧结构，使用了4个AWRx设备获取设备，横跨了所有的TX/RX虚拟channels，在0-63的设置范围内扫描6位 phase-shifter offset。</p>
 </li>
-<li>概率算法<ol>
-<li> 随机数</li>
-<li>数值概率算法<ol>
-<li> 用随机投点法计算π值</li>
-<li> 计算定积分</li>
-<li> 解非线性方程组</li>
-</ol>
+<li><p>每个数据集包括了一些TDMA-MIMO帧，这些帧在每个TX通道使用相同的phase shifter值</p>
 </li>
-<li>舍伍德算法<ol>
-<li>线性时间选择算法</li>
-<li>跳跃表</li>
-</ol>
+<li><p>每个采集64个数据集，这些数据集（对所有TX通道）使用不同的phase-shifter offset。</p>
 </li>
-<li>拉斯维加斯算法<ol>
-<li>n后问题</li>
-<li>整数因子分解</li>
-</ol>
+<li><p>数据存储：/mmWaveStudio/Postproc/TX_PS_CAL_phaseShiftValueX</p>
+<ul>
+<li>X：phase-shifter（00-63）</li>
+<li>该数据形式后续还要在<code>cascade_TX_Phase_Calibration.m</code>中使用</li>
+</ul>
 </li>
-<li>蒙特卡罗算法<ol>
-<li>蒙特卡罗算法的基本思想</li>
-<li>主元素问题</li>
-<li>素数测试</li>
-</ol>
+<li><p>注意：该脚本需要与MIMO脚本的基础配置保持一致。</p>
+<ul>
+<li><em>之前MIMO校准的时候使用的参数是默认配置</em></li>
+<li>改<code>metaImagePath(ES1.1)</code></li>
+<li>改<code>temperatureLogFileName</code>(地址)</li>
+<li><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/study/radar/20220510110100.png"></li>
+</ul>
 </li>
-</ol>
+<li><p>改了 capture_directory？改成直接地址不可行，应该某个文件规定了默认的存储地址是propost，需要改那里。</p>
 </li>
-<li>NP完全性理论<ol>
-<li>计算模型<ol>
-<li>随机存取机RAM</li>
-<li>随机存取存储程序机RASP</li>
-<li>RAM，模型的变形与简化</li>
-<li>图灵机</li>
-<li>图灵机模型与RAM模型的关系</li>
-<li>问题变换与计算复杂性归约</li>
-</ol>
+</ul>
+<h3 id="2-2-2-Cascade-Configuration-TXBF-Simple-lua"><a href="#2-2-2-Cascade-Configuration-TXBF-Simple-lua" class="headerlink" title="2.2.2 Cascade_Configuration_TXBF_Simple.lua"></a>2.2.2 Cascade_Configuration_TXBF_Simple.lua</h3><p><strong>作用：用来验证校准前后的beamforming性能，完成配置和数据采集。</strong></p>
+<ul>
+<li><p>该脚本使用基本chirp配置设置了一个静态（单一且固定angle）TX beam-form示例（未使用AWR进阶frame配置）。</p>
 </li>
-<li>P类与NP类问题<ol>
-<li>非确定性图灵机</li>
-<li>P类与NP类语言</li>
-<li>多项式时间验证</li>
-</ol>
+<li><p><code>psCalLUT</code>：[Number of Angles] x [9 TX] phase-shifter 校准矩阵，该矩阵将特定的beam-steering角映射到级联设备阵列的一组calibrated phase shifter programming values。</p>
+<ul>
+<li>+-15度，1度resolution</li>
+</ul>
+<p><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/study/radar/20220510111607.png"></p>
 </li>
-<li>NP完全问题<ol>
-<li>多项式时间变换</li>
-<li>COok定理</li>
-</ol>
+<li><p>该示例只用了9个方位角上的TX天线。对应AWR 4，3，2（三个slaver）</p>
+<p><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/study/radar/20220510112105.png"></p>
 </li>
-<li>一些典型的NP完全问题<ol>
-<li>合取范式的可满足性问题</li>
-<li>3元合取范式的可满足性问题</li>
-<li>团问题</li>
-<li>顶点覆盖问题</li>
-<li>子集和问题</li>
-<li>哈密顿回路问题</li>
-<li>旅行售货员问题</li>
-</ol>
+<li><p><code>angleX</code>：<code>psCalLUT</code>的row index，表示beam-steering的角度</p>
 </li>
-</ol>
+<li><p><code>psSettings</code>：基于<code>angleX</code>，<code>psCalLUT</code>映射到<code>psSettings</code>，然后可以使用<code>ar1.ProfileConfig_mult()</code>lua指令对每个单独的设备进行编程。</p>
 </li>
-<li> 近似算法</li>
-<li>近似算法的性能</li>
-<li>顶点覆盖问题的近似算法</li>
-<li>旅行售货员问题的近似算法<ol>
-<li>具有三角不等式性质的旅行售货员问题</li>
-<li>一般的旅行售货员问题</li>
-</ol>
+</ul>
+<h3 id="2-2-3-Cascade-Configuration-TXBF-AngleSweep-lua"><a href="#2-2-3-Cascade-Configuration-TXBF-AngleSweep-lua" class="headerlink" title="2.2.3 Cascade_Configuration_TXBF_AngleSweep.lua"></a>2.2.3 Cascade_Configuration_TXBF_AngleSweep.lua</h3><p><strong>作用：捕捉到全范围的beam-steering offsets。当对数据进行后期处理时，可用于创建<code>RX信噪比 vs. 波束角度</code>图。</strong></p>
+<ul>
+<li><p>该脚本使用基本chirp配置设置了一个静态（单一且固定angle）TX beam-form <code>sweep</code> 示例。<code>angleIdx</code>变量扫过<code>psCalLUT</code>矩阵，采集的数据集可以捕捉每个角度偏移。</p>
 </li>
-<li>集合覆盖问题的近似算法</li>
-<li>子集和问题的近似算法<ol>
-<li>子集和问题的指数时间算法</li>
-<li>子集和问题的完全多项式时间近似格式</li>
-</ol>
+<li><p>该脚本在<code>Cascade_Configuration_TXBF_Simple.lua</code>的基础上加了一个对<code>psCalLUT</code>矩阵的<code>sweep</code>。</p>
 </li>
-<li>算法优化策略<ol>
-<li>算法设计策略的比较与选择<ol>
-<li>最大子段和问题的简单算法</li>
-<li>最大子段和问题的分治算法</li>
-<li>最大子段和问题的动态规划算法</li>
-<li>最大子段和问题与动态规划算法的推广</li>
-</ol>
+<li><p>采集后，用<code>cascade_TXBF_Verification.m</code>做数据后处理。</p>
 </li>
-<li>动态规划加速原理<ol>
-<li>货物储运问题</li>
-<li>算法及其优化</li>
-</ol>
+</ul>
+<h2 id="2-3-Matlab后处理脚本"><a href="#2-3-Matlab后处理脚本" class="headerlink" title="2.3 Matlab后处理脚本"></a>2.3 Matlab后处理脚本</h2><p><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/study/radar/20220510113557.png"></p>
+<h3 id="2-3-1-cascade-TX-Phase-Calibration-m"><a href="#2-3-1-cascade-TX-Phase-Calibration-m" class="headerlink" title="2.3.1 cascade_TX_Phase_Calibration.m"></a>2.3.1 cascade_TX_Phase_Calibration.m</h3><p><strong>作用：读数据，生成<code>calibrateTXPhaseResults.mat</code>，该文件用于生成phase-shifter offsets查找表。</strong></p>
+<ul>
+<li><p>位置：MIMO example/main/cascade</p>
 </li>
-<li>问题的算法特性<ol>
-<li>贪心策略</li>
-<li>对贪心策略的改进</li>
-<li>算法三部曲</li>
-<li>算法实现</li>
-<li>算法复杂性</li>
-</ol>
+<li><p>该脚本通过迭代TX phase shifter校准数据集并找到2D-FFT(0速度bin)的峰值来工作。该峰值对应于固定的校准目标的IF返回信号。记录这个2D-FFT的相位数据。通过对比每个目标的相位值和参考TX/RX通道（虚拟）的目标相位，计算每个TX的相位偏移。</p>
 </li>
-<li>优化数据结构<ol>
-<li>带权区间最短路问题</li>
-<li>算法设计思想</li>
-<li>算法实现方案</li>
-<li>并查集</li>
-<li>可并优先队列</li>
-</ol>
+<li><p>在执行脚本之前，应该修改多个变量以匹配校准数据环境：</p>
+<ul>
+<li>dataFolder_calib_data_path</li>
+<li>DEBUG_PLOTS</li>
+<li>numDevices</li>
+<li>numTX</li>
+<li>numRX</li>
+<li>numPhaseShifterOffsets</li>
+<li>refDevice（无？）</li>
+<li>refTX</li>
+</ul>
 </li>
-<li>优化搜索策略</li>
-</ol>
+</ul>
+<p>理论debug结果图：</p>
+<p><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/study/radar/20220510124548.png"></p>
+<p><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/study/radar/20220510124639.png"></p>
+<h3 id="2-3-2-cascade-Read-TX-Cal-Data-m"><a href="#2-3-2-cascade-Read-TX-Cal-Data-m" class="headerlink" title="2.3.2 cascade_Read_TX_Cal_Data.m"></a>2.3.2 cascade_Read_TX_Cal_Data.m</h3><p><code>cascade_TX_Phase_Calibration.m</code>依赖，用于读取校准数据的具体帧。</p>
+<h3 id="2-3-3-TXBF-PS-LUT-Generate-m"><a href="#2-3-3-TXBF-PS-LUT-Generate-m" class="headerlink" title="2.3.3 TXBF_PS_LUT_Generate.m"></a>2.3.3 TXBF_PS_LUT_Generate.m</h3><p><strong>作用：使用<code>calibrateTXPhaseResults.mat</code>生成TX beamforming校准loop up table（LUT）。该查找表将beam-steering angle转换成一组校准后的phase-shifter programmable值。</strong></p>
+<p>生成文件：</p>
+<ul>
+<li><p><code>psSettingProgram.csv</code>：这是计算出的理想移相器programming矩阵，它将<code>方位波束转向角 azimuth beam-steering angle</code>映射到移相器程序值。</p>
 </li>
-<li>在线算法设计<ol>
-<li> 在线算法设计的基本概念</li>
-<li> 页调度问题</li>
-<li> 势函数分析</li>
-<li>k服务问题竞争比的下界<ol>
-<li> 平衡算法</li>
-<li> 对称移动算法</li>
-</ol>
+<li><p><code>psSettingProgramCal.csv</code>：该脚本是校准后的移相器编程矩阵，它将<code>方位波束转向角</code>映射到移相器程序值，使系统的相位偏移误差生效。</p>
 </li>
-<li> Steiner树问题</li>
-<li> 在线任务调度</li>
-<li> 负载平衡</li>
-</ol>
+<li><p>改<code>phaseShiftCalFile</code></p>
 </li>
-</ol>
-<h1 id="概率论"><a href="#概率论" class="headerlink" title="概率论"></a>概率论</h1><p>《概率论与数理统计应用第二版-施雨+概率统计辅导书-魏平、王宁》</p>
-<ol>
-<li>随机事件与概率<ol>
-<li>随机事件</li>
-<li>概率</li>
-<li>古典概率的计算</li>
-<li>条件概率 事件的相互独立性</li>
-</ol>
+<li><p>相位偏移被打开到0到360度空间，以便它们可以与移相器可编程设置相比较：</p>
+<p><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/study/radar/20220510130225.png"></p>
 </li>
-<li>随机变量与概率分布<ol>
-<li>一维随机变量</li>
-<li>二维随机变量</li>
-<li>条件分布</li>
-<li>随机变量的相互独立性</li>
-<li>随机变量的函数的概率分布</li>
+</ul>
+<h3 id="2-3-4-TXBF-Calc-Phase-Settings-m"><a href="#2-3-4-TXBF-Calc-Phase-Settings-m" class="headerlink" title="2.3.4 TXBF_Calc_Phase_Settings.m"></a>2.3.4 TXBF_Calc_Phase_Settings.m</h3><p><code>TXBF_PS_LUT_Generate.m</code>依赖，用于生成单个波束转向角的校准相位偏置。</p>
+<h3 id="2-3-5-cascade-TXBF-Verification-m"><a href="#2-3-5-cascade-TXBF-Verification-m" class="headerlink" title="2.3.5 cascade_TXBF_Verification.m"></a>2.3.5 cascade_TXBF_Verification.m</h3><p>该脚本读取由<code>Cascade_Configuration_TXBF_AngleSweep.lua</code>收集的数据集。</p>
+<p><em>？？找不到？？</em></p>
+<h3 id="2-3-6-TXBF-Create-PSCal-Advanced-Frame-Config-m"><a href="#2-3-6-TXBF-Create-PSCal-Advanced-Frame-Config-m" class="headerlink" title="2.3.6 TXBF_Create_PSCal_Advanced_Frame_Config.m"></a>2.3.6 TXBF_Create_PSCal_Advanced_Frame_Config.m</h3><p>该脚本读入<code>calibrateTXPhaseResults.mat</code>，生成新的相位校准矩阵ph：<code>phaseShifterCalibration.mat</code>。</p>
+<ul>
+<li>用户之后用这个新的mat替换掉原来的<code>\mmWaveStudio\MatlabExamples\4chip_cascade_TxBF_example\Calibrations\phaseShifterCalibration.mat</code>。</li>
+</ul>
+<h2 id="2-4-软件脚本配置"><a href="#2-4-软件脚本配置" class="headerlink" title="2.4 软件脚本配置"></a>2.4 软件脚本配置</h2><p><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/study/radar/20220510133736.png"></p>
+<h1 id="3-校准流程"><a href="#3-校准流程" class="headerlink" title="3. 校准流程"></a>3. 校准流程</h1><h2 id="3-1-Calibration-Physical-Setup"><a href="#3-1-Calibration-Physical-Setup" class="headerlink" title="3.1 Calibration Physical Setup"></a>3.1 Calibration Physical Setup</h2><p><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/study/radar/20220510133906.png"></p>
+<h2 id="3-2-脚本"><a href="#3-2-脚本" class="headerlink" title="3.2 脚本"></a>3.2 脚本</h2><p>跑<code>Cascade_Phase_Shifter_Calibration_AWRx.lua</code></p>
+<h3 id="3-2-1-采集校准数据"><a href="#3-2-1-采集校准数据" class="headerlink" title="3.2.1 采集校准数据"></a>3.2.1 采集校准数据</h3><ol>
+<li>修改并执行<code>Cascade_Phase_Shifter_Calibration_AWRx.lua</code>。主要改chirp配置，包括specific chirp profile, number of devices/TX-channels/TX phase-shifter offset values desired in sweep，以满足校准需要。</li>
+<li>一个完整的4设备，12TX，64相移偏移量需要30分钟来迭代。（数据传输时间）</li>
+<li>跑完获得一个巨大的数据包：</li>
 </ol>
-</li>
-<li>随机变量的数字特性<ol>
-<li>数学期望</li>
-<li>方差</li>
-<li>协方差与相关系数</li>
-<li>条件期望与条件方差</li>
-</ol>
-</li>
-<li>大数定律与中心极限定理<ol>
-<li>大数定律</li>
-<li>中心极限定理</li>
-</ol>
-</li>
-<li>数理统计学的基本概念<ol>
-<li>总体与样本</li>
-<li>样本分布</li>
-<li>统计量</li>
-<li>抽样分布</li>
-</ol>
-</li>
-<li>参数估计<ol>
-<li>点估计</li>
-<li>估计量与评选标准</li>
-<li>区间估计</li>
-<li>正态总体参数的区间估计</li>
-</ol>
-</li>
-<li>假设检验<ol>
-<li>假设检验的基本概念</li>
-<li>正态总体参数的假设检验</li>
-<li>单边假设检验</li>
-<li>多数假设的大样本检验</li>
-<li>分布假设检验</li>
-</ol>
-</li>
-<li>方差分析<ol>
-<li>单因素方差分析</li>
-<li>双因素方差分析</li>
-</ol>
-</li>
-<li>回归分析<ol>
-<li>一元线性回归</li>
-<li>可线性化的一元非线性回归</li>
-<li>多元线性回归</li>
-</ol>
-</li>
-<li>随机过程的基本知识<ol>
-<li> 随机过程的概念和记号</li>
-<li> 随机过程的概率特性</li>
-<li> 随机过程的基本类型</li>
-<li> 泊松过程与布朗运动</li>
-</ol>
-</li>
-<li>平稳过程<ol>
-<li> 平稳过程的概念</li>
-<li> 平稳过程的性质</li>
-<li> 平稳过程的谱密度</li>
-<li> 各态历经性</li>
-</ol>
-</li>
-<li>附录<ol>
-<li> 标准正态分布表</li>
-<li> 泊松分布表</li>
-<li> t分布表</li>
-<li> X^2分布表</li>
-<li> F分布表</li>
-</ol>
-</li>
-</ol>
+<p><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/study/radar/20220510135138.png"></p>
+<p><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/study/radar/20220510135219.png"></p>
+<h3 id="3-3-2-Calibration-Data-Processing"><a href="#3-3-2-Calibration-Data-Processing" class="headerlink" title="3.3.2 Calibration Data Processing"></a>3.3.2 Calibration Data Processing</h3><p>add_paths.m在MIMO的时候跑过了。</p>
+<p>跑<code>cascade_TX_Phase_Calibration.m</code>，获得<code>calibrateTXPhaseResults.mat</code></p>
+<p><em>就没有手册里给的cascade_TX_Calibration.m和calibrateTXPhaseResultsFileFull.mat，大概是没有更新手册。参考前面的summary做了修改。</em></p>
+<h3 id="3-2-3-生成beam-angle-to-phase-shifter-的-LUT"><a href="#3-2-3-生成beam-angle-to-phase-shifter-的-LUT" class="headerlink" title="3.2.3 生成beam angle to phase shifter 的 LUT"></a>3.2.3 生成beam angle to phase shifter 的 LUT</h3><p>跑<code>TXBF_PS_LUT_Generate.m</code>生成俩csv，分别是校准和非校准的LUT。</p>
+<p>修改<code>phaseShiftCalFile</code></p>
+<p>   <img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/study/radar/20220511103922.png"></p>
+<h3 id="3-2-4-验证校准结果"><a href="#3-2-4-验证校准结果" class="headerlink" title="3.2.4 验证校准结果"></a>3.2.4 验证校准结果</h3><p>跑<code>Cascade_Configuration_TXBF_Simple.lua</code>和<code>Cascade_Configuration_TXBF_AngleSweep.lua</code>（慢）采集数据。</p>
+<p>跑<code>cascade_TXBF_Verification.m</code>进行验证，如前（section1）所述，改一点参数。</p>
+<p><img src="https://raw.githubusercontent.com/OrderAngel/Picture/main/study/radar/20220511105128.png"></p>
+<h3 id="3-2-5-Updating-Calibration-in-Matlab-TXBF-Example"><a href="#3-2-5-Updating-Calibration-in-Matlab-TXBF-Example" class="headerlink" title="3.2.5 Updating Calibration in Matlab TXBF Example"></a>3.2.5 Updating Calibration in Matlab TXBF Example</h3><p>跑<code>TXBF_Create_PSCal_Advanced_Frame_Config.m</code>，生成<code>phaseShifterCalibration.mat</code>，该数据表用于后续的TXBF后处理。</p>
+<h1 id="4-TX-Beamforming"><a href="#4-TX-Beamforming" class="headerlink" title="4. TX Beamforming"></a>4. TX Beamforming</h1><p>参考级联操作手册8.3.3</p>
 ]]></content>
       <categories>
-        <category>学习</category>
+        <category>科研</category>
       </categories>
       <tags>
-        <tag>学习</tag>
+        <tag>科研</tag>
+        <tag>FMCW</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>ubuntu18.04+VINS-MONO+RealsenseD453i 配置教程</title>
+    <url>/ubuntu18-04-VINS-MONO-RealsenseD453i-%E9%85%8D%E7%BD%AE%E6%95%99%E7%A8%8B/</url>
+    <content><![CDATA[<h1 id="VINS-MONO"><a href="#VINS-MONO" class="headerlink" title="VINS-MONO"></a>VINS-MONO</h1><p>主要参考链接：<br><a href="https://blog.csdn.net/github_53583003/article/details/111187288">Ubuntu18配置VINS-MONO</a></p>
+<p>初始配置：<br>ubuntu18.04+cmake+engine</p>
+<h2 id="1-ROS配置"><a href="#1-ROS配置" class="headerlink" title="1. ROS配置"></a>1. ROS配置</h2><p><a href="http://wiki.ros.org/melodic/Installation/Ubuntu">ROS官方安装教程</a></p>
+<p><em>前面的主要参考链接用的是16.04下的<code>kinetic</code>内核，20.04用的是<code>Neotic</code>内核，我用的是18.04下的<code>melodic</code>内核，所以使用官方教程</em></p>
+<h2 id="2-opencv配置"><a href="#2-opencv配置" class="headerlink" title="2. opencv配置"></a>2. opencv配置</h2><p>根据mono的建议，cv版本用的是<a href="https://github.com/opencv/opencv/releases/tag/3.3.1">opencv-3.3.1</a>和<a href="https://github.com/opencv/opencv_contrib/releases/tag/3.3.1">opencv-contrib-3.3.1</a></p>
+<p>location: <code>~/library/opencv-3.3.1</code></p>
+<p>后续根据<a href="https://blog.csdn.net/github_53583003/article/details/111187288">参考链接</a>完成编译。</p>
+<p>进行opencv的编译环境配置：</p>
+<figure class="highlight plain"><table><tbody><tr><td class="code"><pre><span class="line">sudo apt-get install build-essential libgtk2.0-dev libvtk6-dev libjpeg-dev libtiff4-dev libjasper-dev libopenexr-dev libtbb-dev</span><br></pre></td></tr></tbody></table></figure>
+<p><em>注意，opencv的依赖包虽然是参考SLAM十四讲，但是由于版本区别，有的包要装升级后的版本，比如书里是libvtk5-dev，而我们需要装6</em></p>
+<h2 id="3-安装Ceres库"><a href="#3-安装Ceres库" class="headerlink" title="3. 安装Ceres库"></a>3. 安装Ceres库</h2><p>Ceres solver 是谷歌开发的一款用于非线性优化的库，在谷歌的开源激光雷达slam项目cartographer中被大量使用</p>
+<p>首先，安装依赖</p>
+<figure class="highlight plain"><table><tbody><tr><td class="code"><pre><span class="line">sudo apt-get install liblapack-dev </span><br><span class="line">sudo apt-get install libsuitesparse-dev </span><br><span class="line">sudo apt-get install libcxsparse3.1.2</span><br><span class="line">sudo apt-get install libgflags-dev </span><br><span class="line">sudo apt-get install libgoogle-glog-dev libgtest-dev</span><br></pre></td></tr></tbody></table></figure>
+<p><em>如果有的包无法定位，可能是因为更换了版本名，<a href="https://packages.ubuntu.com/">https://packages.ubuntu.com/</a> <code>Search package directories</code>搜一下keyword，注意与当前ubuntu版本对应；也可以参考<a href="https://www.cnblogs.com/qilai/p/13654810.html">无法定位lib3.1.2</a>，我用的第二种方法</em></p>
+<p>然后，下载<a href="https://github.com/ceres-solver/ceres-solver/releases">Ceres</a></p>
+<p><em>我下的是cere2.0.0，解压后location: <code>~/library/ceres-solver-2.0.0</code></em></p>
+<p>进入目录下编译ceres:</p>
+<figure class="highlight plain"><table><tbody><tr><td class="code"><pre><span class="line">mkdir build</span><br><span class="line">cd build</span><br><span class="line">cmake ..</span><br><span class="line">sudo make install</span><br></pre></td></tr></tbody></table></figure>
+<h2 id="4-VINS-MONO编译"><a href="#4-VINS-MONO编译" class="headerlink" title="4. VINS-MONO编译"></a>4. VINS-MONO编译</h2><p>VINS-MONO，2017年港科老师开源的一个单目视觉惯导的实时SLAM方案，是视觉与IMU的经典融合，定位精度可以媲美OKVIS，在Linux上运行，并与ROS完全集成。</p>
+<p>该算法基于优化和滑动窗口的 VIO ，使用 IMU 预积分构建紧耦合框架，同时还有自动初始化，在线外参标定，重定位，闭环检测，以及全局位姿图优化功能。</p>
+<ul>
+<li>准备数据</li>
+</ul>
+<p>首先下载<a href="https://projects.asl.ethz.ch/datasets/doku.php?id=kmavvisualinertialdatasets#the_euroc_mav_dataset">EuRoC数据集</a>，该数据集是微型飞行器 (MAV) 上收集的视觉惯性数据集。数据集包含立体图像、同步 IMU 测量以及精确的运动和结构地面实况。</p>
+<p><em>我下的是<code>Machine Hall 01 (ROS bag)</code>用来测试，location: <code>~/DATA/VINS-MONO/MH_01_easy.bag</code></em></p>
+<p>此外还要下载<a href="https://github.com/HKUST-Aerial-Robotics/VINS-Mono">VINS-MONO代码</a>。</p>
+<ul>
+<li><p>创建ROS工作空间</p>
+<figure class="highlight plain"><table><tbody><tr><td class="code"><pre><span class="line">mkdir -p ~/catkin_ws/src              </span><br><span class="line">cd ~/catkin_ws/src</span><br><span class="line">catkin_init_workspace</span><br></pre></td></tr></tbody></table></figure></li>
+<li><p>编译VINS</p>
+</li>
+</ul>
+<p>将前面下载的Vins-mono的代码移动到<code>~/catkin_ws/src</code>文件夹下。</p>
+<p>编译：</p>
+<figure class="highlight plain"><table><tbody><tr><td class="code"><pre><span class="line">cd ~/catkin_ws</span><br><span class="line">catkin_make</span><br><span class="line">source ~/catkin_ws/devel/setup.bash</span><br></pre></td></tr></tbody></table></figure>
+<ul>
+<li>修改配置文件内容在VINS-Mono-master主工程目录下的config子目录中找到euroc文件夹，并打开其中的euroc_config.yaml文件，将其中结果输出保存路径修改为本地的绝对路径或相对路径<figure class="highlight plain"><table><tbody><tr><td class="code"><pre><span class="line">output_path: "/home/yj/HZL/VINS-MONO-REALSENSE/output/"</span><br><span class="line">pose_graph_save_path: "/home/yj/HZL/VINS-MONO-REALSENSE/output/pose_graph/"</span><br></pre></td></tr></tbody></table></figure></li>
+</ul>
+<ul>
+<li>修改source如果每次运行前需要都需要用source来指定文件位置未免太麻烦，可以直接在<code>.bashrc</code>中添加source<figure class="highlight plain"><table><tbody><tr><td class="code"><pre><span class="line">sudo  gedit ~/.bashrc</span><br></pre></td></tr></tbody></table></figure>
+在.bashrc中加上：<figure class="highlight plain"><table><tbody><tr><td class="code"><pre><span class="line">source ~/catkin_ws/devel/setup.bash</span><br></pre></td></tr></tbody></table></figure></li>
+</ul>
+<ul>
+<li>运行<ul>
+<li>1号终端启动ROS核心：<figure class="highlight plain"><table><tbody><tr><td class="code"><pre><span class="line">roscore</span><br></pre></td></tr></tbody></table></figure></li>
+<li>2号终端：<figure class="highlight plain"><table><tbody><tr><td class="code"><pre><span class="line">roslaunch vins_estimator euroc.launch</span><br></pre></td></tr></tbody></table></figure></li>
+<li>3号终端启动rviz软件<figure class="highlight plain"><table><tbody><tr><td class="code"><pre><span class="line">roslaunch vins_estimator vins_rviz.launch</span><br></pre></td></tr></tbody></table></figure></li>
+<li>4号终端输入数据：注意把数据包地址改成自己的<figure class="highlight plain"><table><tbody><tr><td class="code"><pre><span class="line">rosbag play /home/yj/DATA/VINS-MONO/MH_01_easy.bag </span><br></pre></td></tr></tbody></table></figure></li>
+</ul>
+</li>
+</ul>
+<h1 id="使用Realsense-D453i运行VINS-MONO"><a href="#使用Realsense-D453i运行VINS-MONO" class="headerlink" title="使用Realsense D453i运行VINS-MONO"></a>使用Realsense D453i运行VINS-MONO</h1><p><a href="https://blog.csdn.net/weixin_44580210/article/details/89789416">参考链接</a></p>
+<h2 id="1-安装librealsense-SDK-2-0"><a href="#1-安装librealsense-SDK-2-0" class="headerlink" title="1. 安装librealsense SDK 2.0"></a>1. 安装librealsense SDK 2.0</h2><p><a href="https://github.com/IntelRealSense/librealsense/releases/tag/v2.48.0">v2.48.0</a></p>
+<p><a href="https://github.com/IntelRealSense/librealsense/blob/master/doc/distribution_linux.md">官方指南</a></p>
+<p>librealsense SDK相当于相机的驱动，D435i是librealsense SDK 2.0；SDK的安装方式有两种，一是从源码编译安装，二是直接命令行安装，官方指南的公钥法用的2。</p>
+<p><em>我装的是librealsense SDK v2.48.0，支持18.04</em></p>
+<p>测试：</p>
+<figure class="highlight plain"><table><tbody><tr><td class="code"><pre><span class="line">realsense-viewer</span><br></pre></td></tr></tbody></table></figure>
+<p><em>注意：使用3.0的usb口</em></p>
+<h2 id="2-安装测试realsense相机对应的ROS包"><a href="#2-安装测试realsense相机对应的ROS包" class="headerlink" title="2. 安装测试realsense相机对应的ROS包"></a>2. 安装测试realsense相机对应的ROS包</h2><p><a href="https://github.com/IntelRealSense/realsense-ros">官方指南</a><br>（用的是指南里的realsense distribution方案）</p>
+<p>进入ros空间: </p>
+<figure class="highlight plain"><table><tbody><tr><td class="code"><pre><span class="line">cd ~/catkin_ws/src</span><br><span class="line">git clone https://github.com/IntelRealSense/realsense-ros.git</span><br><span class="line">cd realsense-ros/</span><br><span class="line">git checkout `git tag | sort -V | grep -P "^2.\d+\.\d+" | tail -1`</span><br></pre></td></tr></tbody></table></figure>
+<p>补一些依赖: </p>
+<figure class="highlight plain"><table><tbody><tr><td class="code"><pre><span class="line">mkdir -p ~/catkin_ws/src/realsense</span><br><span class="line">rosdep install --from-paths src --ignore-src -r -y    # 这步第二次安装的时候失败</span><br><span class="line">sudo apt purge ros-melodic-librealsense2</span><br></pre></td></tr></tbody></table></figure>
+<p>继续安装：</p>
+<figure class="highlight plain"><table><tbody><tr><td class="code"><pre><span class="line">cd ~/catkin_ws</span><br><span class="line">catkin_make clean</span><br><span class="line">catkin_make -DCATKIN_ENABLE_TESTING=False -DCMAKE_BUILD_TYPE=Release</span><br><span class="line">catkin_make install</span><br></pre></td></tr></tbody></table></figure>
+<ul>
+<li>出现报错，原因是缺少ddynamic_reconfigure，解决方案是从<a href="https://github.com/pal-robotics/ddynamic_reconfigure/tree/kinetic-devel">这里</a>将其下载，克隆到工作区<code>~/catkin_ws/src/</code>中</li>
+</ul>
+<p>改<code>.bashrc</code>：</p>
+<figure class="highlight plain"><table><tbody><tr><td class="code"><pre><span class="line">echo "source ~/catkin_ws/devel/setup.bash" &gt;&gt; ~/.bashrc</span><br><span class="line">source ~/.bashrc</span><br></pre></td></tr></tbody></table></figure>
+<p>运行rviz：</p>
+<ul>
+<li>1号终端启动ROS核心：<figure class="highlight plain"><table><tbody><tr><td class="code"><pre><span class="line">roscore</span><br></pre></td></tr></tbody></table></figure></li>
+<li>2号终端：<figure class="highlight plain"><table><tbody><tr><td class="code"><pre><span class="line">rosrun rviz rviz</span><br></pre></td></tr></tbody></table></figure>
+运行realsense：<figure class="highlight plain"><table><tbody><tr><td class="code"><pre><span class="line">roslaunch realsense2_camera rs_camera.launch filters:=pointcloud</span><br></pre></td></tr></tbody></table></figure>
+这时候应该无图像，需要在rviz中修改一些配置，当然配置有很多选择，对于新手来说有图就行orz，以下只是举个例子：</li>
+<li>把fixed frame改成<code>camera_...</code>，不能是<code>map</code>，Global Status由红色变绿</li>
+<li>Add -&gt; 上方点击 By topic -&gt; /depth_registered 下的 /points 下的/PointCloud2，这是针对上面命令中<code>filters:=pointcloud</code>部分选择的type</li>
+<li>Add -&gt; 上方点击 By topic -&gt; /color 下的 /image_raw 下的image</li>
+</ul>
+<h2 id="3-在D453i上运行VINS-MONO"><a href="#3-在D453i上运行VINS-MONO" class="headerlink" title="3. 在D453i上运行VINS-MONO"></a>3. 在D453i上运行VINS-MONO</h2><p>这里建议先把catkin_ws备份一下<br><a href="https://zhuanlan.zhihu.com/p/390933690">参考链接0</a><br><a href="https://blog.csdn.net/weixin_44580210/article/details/89789416">参考链接1</a><br><a href="https://blog.csdn.net/qq_41839222/article/details/86552367">参考链接2</a></p>
+<h3 id="1）修改rs-camera-launch文件"><a href="#1）修改rs-camera-launch文件" class="headerlink" title="1）修改rs_camera.launch文件"></a>1）修改rs_camera.launch文件</h3><p>location：<code>~/catkin_ws/src/realsense-ros/realsense2_camera/launch</code></p>
+<ul>
+<li>修改unite_imu_method如下，这里是让IMU的角速度和加速度作为一个topic输出<figure class="highlight plain"><table><tbody><tr><td class="code"><pre><span class="line">&lt;arg name="unite_imu_method"      default="copy"/&gt;</span><br></pre></td></tr></tbody></table></figure></li>
+<li>修改enable_sync参数为true，这里是开启相机和IMU的同步<figure class="highlight plain"><table><tbody><tr><td class="code"><pre><span class="line">&lt;arg name="enable_sync"           default="true"/&gt;</span><br></pre></td></tr></tbody></table></figure></li>
+<li>打开陀螺仪和加速度计<figure class="highlight plain"><table><tbody><tr><td class="code"><pre><span class="line">&lt;arg name="enable_gyro"         default="true"/&gt;</span><br><span class="line">&lt;arg name="enable_accel"        default="true"/&gt;</span><br></pre></td></tr></tbody></table></figure>
+<h3 id="2）修改realsense-color-config-yaml文件"><a href="#2）修改realsense-color-config-yaml文件" class="headerlink" title="2）修改realsense_color_config.yaml文件"></a>2）修改realsense_color_config.yaml文件</h3></li>
+</ul>
+<p>location：<code>~/catkin_ws/src/VINS-Mono-master/config/realsense/realsense_color_config.yaml</code></p>
+<ul>
+<li>修改订阅的topic<figure class="highlight plain"><table><tbody><tr><td class="code"><pre><span class="line">imu_topic: "/camera/imu"</span><br><span class="line">image_topic: "/camera/color/image_raw"</span><br><span class="line">output_path: "/home/yj/HZL/VINS-MONO-REALSENSE/output/"  #自己的地址</span><br><span class="line"></span><br><span class="line">pose_graph_save_path: "/home/yj/HZL/VINS-MONO-REALSENSE/output/pose_graph/"</span><br></pre></td></tr></tbody></table></figure></li>
+<li>修改相机的内参<br><a href="https://zhuanlan.zhihu.com/p/390933690">指南</a><figure class="highlight plain"><table><tbody><tr><td class="code"><pre><span class="line">rostopic echo /camera/color/camera_info #查看内参命令</span><br></pre></td></tr></tbody></table></figure>
+<figure class="highlight plain"><table><tbody><tr><td class="code"><pre><span class="line">#camera calibration </span><br><span class="line">model_type: PINHOLE</span><br><span class="line">camera_name: camera</span><br><span class="line">image_width: 1280</span><br><span class="line">image_height: 720</span><br><span class="line">distortion_parameters:</span><br><span class="line">   k1: 0 #9.2615504465028850e-02</span><br><span class="line">   k2: 0 #-1.8082438825995681e-01</span><br><span class="line">   p1: 0 #-6.5484100374765971e-04</span><br><span class="line">   p2: 0 #-3.5829351558557421e-04</span><br><span class="line">projection_parameters:</span><br><span class="line">   fx: 9.194400024414062e+02 #6.0970550296798035e+02</span><br><span class="line">   fy: 9.189413452148438e+02 #6.0909579671294716e+02</span><br><span class="line">   cx: 6.383787841796875e+02 #3.1916667152289227e+02</span><br><span class="line">   cy: 3.5089337158203125e+02 #2.3558360480225772e+02</span><br></pre></td></tr></tbody></table></figure></li>
+<li>IMU到相机的变换矩阵，这里我根据注释的提示修改成2</li>
+</ul>
+<p>初始为0，选0的话，IMU和camera之间的外参矩阵建议使用Kalibr工具进行离线标定，也可以改成1或者2让估计器自己标定和优化。</p>
+<figure class="highlight plain"><table><tbody><tr><td class="code"><pre><span class="line"># Extrinsic parameter between IMU and Camera.</span><br><span class="line">estimate_extrinsic: 2   </span><br><span class="line">                # 0  Have an accurate extrinsic parameters. We will trust the following imu^R_cam, imu^T_cam, don't change it.</span><br><span class="line">                # 1  Have an initial guess about extrinsic parameters. We will optimize around your initial guess.</span><br><span class="line">                # 2  Don't know anything about extrinsic parameters. You don't need to give R,T. We will try to calibrate it. Do some rotation movement at beginning.                        </span><br><span class="line">                # If you choose 0 or 1, you should write down the following matrix.</span><br></pre></td></tr></tbody></table></figure>
+<ul>
+<li>IMU参数，这里我全部修改注释给的参数<figure class="highlight plain"><table><tbody><tr><td class="code"><pre><span class="line">#imu parameters       The more accurate parameters you provide, the better performance</span><br><span class="line">acc_n: 0.2          # accelerometer measurement noise standard deviation. #0.2</span><br><span class="line">gyr_n: 0.05         # gyroscope measurement noise standard deviation.     #0.05</span><br><span class="line">acc_w: 0.02         # accelerometer bias random work noise standard deviation.  #0.02</span><br><span class="line">gyr_w: 4.0e-5       # gyroscope bias random work noise standard deviation.     #4.0e-5</span><br><span class="line">g_norm: 9.80       # gravity magnitude</span><br></pre></td></tr></tbody></table></figure></li>
+<li>是否需要在线估计同步时差，根据上述博主的建议这里选择不需要<figure class="highlight plain"><table><tbody><tr><td class="code"><pre><span class="line">#unsynchronization parameters</span><br><span class="line">estimate_td: 0                      # online estimate time offset between camera and imu</span><br><span class="line">td: 0.000                           # initial value of time offset. unit: s. readed image clock + td = real image clock (IMU clock)</span><br></pre></td></tr></tbody></table></figure></li>
+<li>相机曝光改成全局曝光<figure class="highlight plain"><table><tbody><tr><td class="code"><pre><span class="line">#rolling shutter parameters</span><br><span class="line">rolling_shutter: 0                      # 0: global shutter camera, 1: rolling shutter camera</span><br><span class="line">rolling_shutter_tr: 0               # unit: s. rolling shutter read out time per frame (from data sheet). </span><br></pre></td></tr></tbody></table></figure>
+<h3 id="3）运行"><a href="#3）运行" class="headerlink" title="3）运行"></a>3）运行</h3><figure class="highlight plain"><table><tbody><tr><td class="code"><pre><span class="line">roscore</span><br><span class="line">roslaunch realsense2_camera rs_camera.launch  #启动realsense驱动sdk，输出相应图像和IMU话题</span><br><span class="line">roslaunch vins_estimator realsense_color.launch #启动vins-mono，数据来源是相机</span><br><span class="line">roslaunch vins_estimator vins_rviz.launch #启动rviz界面</span><br></pre></td></tr></tbody></table></figure>
+在global option里把word改成camera_link</li>
+</ul>
+<h1 id="问题："><a href="#问题：" class="headerlink" title="问题："></a>问题：</h1><p>不显示特征点和轨迹，报错如下：</p>
+<figure class="highlight plain"><table><tbody><tr><td class="code"><pre><span class="line">[ INFO] [1629687186.636584239]: init begins</span><br><span class="line">[ INFO] [1629687186.672642097]: Loaded config_file: /home/yj/catkin_ws/src/VINS-Mono-master/feature_tracker/../config/realsense/realsense_color_config.yaml</span><br><span class="line">vocabulary_file/home/yj/catkin_ws/src/VINS-Mono-master/pose_graph/../support_files/brief_k10L6.bin</span><br><span class="line">result path /home/yj/HZL/VINS-MONO-REALSENSE/output//vins_result_no_loop.csv</span><br><span class="line">[ INFO] [1629687186.683639120]: ROW: 480.000000 COL: 640.000000 </span><br><span class="line">[ WARN] [1629687186.683652444]: have no prior about extrinsic param, calibrate extrinsic param</span><br><span class="line"></span><br><span class="line">[ INFO] [1629688187.806394607]: Synchronized sensors, fix time offset: 0</span><br><span class="line">[ WARN] [1629688187.806432117]: waiting for image and imu...</span><br><span class="line">vocabulary_file/home/yj/catkin_ws/src/VINS-Mono-master/pose_graph/../support_files/brief_k10L6.bin</span><br><span class="line">loop start load vocabulary</span><br><span class="line">BRIEF_PATTERN_FILE/home/yj/catkin_ws/src/VINS-Mono-master/pose_graph/../support_files/brief_pattern.yml</span><br><span class="line">no previous pose graph</span><br><span class="line">OpenCV Error: Assertion failed (_mask.empty() || (_mask.type() == CV_8UC1 &amp;&amp; _mask.sameSize(_image))) in goodFeaturesToTrack, file /build/opencv-L2vuMj/opencv-3.2.0+dfsg/modules/imgproc/src/featureselect.cpp, line 366</span><br><span class="line">terminate called after throwing an instance of 'cv::Exception'</span><br><span class="line">  what():  /build/opencv-L2vuMj/opencv-3.2.0+dfsg/modules/imgproc/src/featureselect.cpp:366: error: (-215) _mask.empty() || (_mask.type() == CV_8UC1 &amp;&amp; _mask.sameSize(_image)) in function goodFeaturesToTrack</span><br><span class="line"></span><br><span class="line">[feature_tracker-1] process has died [pid 1331, exit code -6, cmd /home/yj/catkin_ws/devel/lib/feature_tracker/feature_tracker __name:=feature_tracker __log:=/home/yj/.ros/log/8f26fcba-03bf-11ec-9c16-b07b250c6f90/feature_tracker-1.log].</span><br><span class="line">log file: /home/yj/.ros/log/8f26fcba-03bf-11ec-9c16-b07b250c6f90/feature_tracker-1*.log</span><br><span class="line"></span><br></pre></td></tr></tbody></table></figure>
+<p>解决策略：</p>
+<ul>
+<li><p>第一次跑的时候没配置opencv，现在补充配置opencv，按照《高翔SLAM》p108中的配置安装依赖包（这部分已补充在上文），以下是安装以上依赖时附带安装的依赖，仅作为记录，不作为参考：</p>
+<figure class="highlight plain"><table><tbody><tr><td class="code"><pre><span class="line">sudo apt-get install build-essential libopenmpi1.6 libvtk5.8 mpi-default-dev</span><br></pre></td></tr></tbody></table></figure></li>
+<li><p>还是不显示，参考<a href="https://github.com/HKUST-Aerial-Robotics/VINS-Mono/issues/26">链接</a>，发现是相机参数未同步的原因：</p>
+<p><strong>最终解决方案</strong>：除了要在上述的<code>realsense_color_config.yaml</code>中修改相机参数，还需要在<code>/home/yj/catkin_ws/src/VINS-Mono-master/config/euroc/euroc_config.yaml</code>文件中修改<code>#camera calibration</code></p>
+<p>我的problem还有，在<code>realsense_color_config.yaml</code>中只修改了<code>distortion_parameters</code>和<code>projection_parameters</code>，而未修改分辨率<code>(image_width: 1280, image_height: 720)</code></p>
+<ul>
+<li>查看相机内参指令(不同相机内参是不一样的)：</li>
+</ul>
+  <figure class="highlight plain"><table><tbody><tr><td class="code"><pre><span class="line">roscore</span><br><span class="line">roslaunch realsense2_camera rs_camera.launch  #打开相机节点</span><br><span class="line">rostopic echo /camera/color/camera_info   #查看相机内参</span><br></pre></td></tr></tbody></table></figure></li>
+</ul>
+]]></content>
+      <categories>
+        <category>教程</category>
+      </categories>
+      <tags>
+        <tag>SLAM</tag>
+        <tag>教程</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>博客简介</title>
+    <url>/%E5%8D%9A%E5%AE%A2%E7%AE%80%E4%BB%8B/</url>
+    <content><![CDATA[<h1 id="介绍"><a href="#介绍" class="headerlink" title="介绍"></a>介绍</h1><p>Hi, guys！</p>
+<p>这里是 阿波罗猫 的博客——四界。</p>
+<p>主要作用是记录个人生活，整理所学知识，放飞自我， 天天向上！</p>
+<p>这里先许下一个心愿：<strong>希望未来能顺利毕业！</strong></p>
+<span id="more"></span>
+<h1 id="说明"><a href="#说明" class="headerlink" title="说明"></a>说明</h1><table>
+<thead>
+<tr>
+<th align="center"><strong>侧栏名称</strong></th>
+<th align="center"><strong>简介</strong></th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center"><strong>主页</strong></td>
+<td align="center">博客主页</td>
+</tr>
+<tr>
+<td align="center"><strong>归档</strong></td>
+<td align="center">罗列所有文章</td>
+</tr>
+<tr>
+<td align="center"><strong>分类</strong></td>
+<td align="center">按类型分类文章</td>
+</tr>
+<tr>
+<td align="center"><strong>标签</strong></td>
+<td align="center">按标签分类文章</td>
+</tr>
+<tr>
+<td align="center"><strong>随笔</strong></td>
+<td align="center">日常相关的吐槽</td>
+</tr>
+<tr>
+<td align="center"><strong>关于我</strong></td>
+<td align="center">个人简历</td>
+</tr>
+</tbody></table>
+<h1 id="关于“四界”"><a href="#关于“四界”" class="headerlink" title="关于“四界”"></a>关于“四界”</h1><p>“四界”这个名字来自于我初高中时的自产小说，小说内容就不说了，满满都是中二，而且还坑了2333。</p>
+<p>Anyway，这个博客名字可以理解为致敬青春吧。</p>
+<p>祝愿我的未来无论走出多远，归来仍是少年。</p>
+]]></content>
+      <categories>
+        <category>生活</category>
+      </categories>
+      <tags>
+        <tag>生活</tag>
       </tags>
   </entry>
   <entry>
@@ -1393,185 +1426,325 @@
       </tags>
   </entry>
   <entry>
-    <title>博客简介</title>
-    <url>/%E5%8D%9A%E5%AE%A2%E7%AE%80%E4%BB%8B/</url>
-    <content><![CDATA[<h1 id="介绍"><a href="#介绍" class="headerlink" title="介绍"></a>介绍</h1><p>Hi, guys！</p>
-<p>这里是 阿波罗猫 的博客——四界。</p>
-<p>主要作用是记录个人生活，整理所学知识，放飞自我， 天天向上！</p>
-<p>这里先许下一个心愿：<strong>希望未来能顺利毕业！</strong></p>
-<span id="more"></span>
-<h1 id="说明"><a href="#说明" class="headerlink" title="说明"></a>说明</h1><table>
-<thead>
-<tr>
-<th align="center"><strong>侧栏名称</strong></th>
-<th align="center"><strong>简介</strong></th>
-</tr>
-</thead>
-<tbody><tr>
-<td align="center"><strong>主页</strong></td>
-<td align="center">博客主页</td>
-</tr>
-<tr>
-<td align="center"><strong>归档</strong></td>
-<td align="center">罗列所有文章</td>
-</tr>
-<tr>
-<td align="center"><strong>分类</strong></td>
-<td align="center">按类型分类文章</td>
-</tr>
-<tr>
-<td align="center"><strong>标签</strong></td>
-<td align="center">按标签分类文章</td>
-</tr>
-<tr>
-<td align="center"><strong>随笔</strong></td>
-<td align="center">日常相关的吐槽</td>
-</tr>
-<tr>
-<td align="center"><strong>关于我</strong></td>
-<td align="center">个人简历</td>
-</tr>
-</tbody></table>
-<h1 id="关于“四界”"><a href="#关于“四界”" class="headerlink" title="关于“四界”"></a>关于“四界”</h1><p>“四界”这个名字来自于我初高中时的自产小说，小说内容就不说了，满满都是中二，而且还坑了2333。</p>
-<p>Anyway，这个博客名字可以理解为致敬青春吧。</p>
-<p>祝愿我的未来无论走出多远，归来仍是少年。</p>
+    <title>本科知识整理</title>
+    <url>/%E6%9C%AC%E7%A7%91%E7%9F%A5%E8%AF%86%E6%95%B4%E7%90%86/</url>
+    <content><![CDATA[<h1 id="算法设计与分析"><a href="#算法设计与分析" class="headerlink" title="算法设计与分析"></a>算法设计与分析</h1><p>《算法设计与分析第三版-王晓东》</p>
+<ol>
+<li>算法引论<ol>
+<li>算法与程序</li>
+<li>表达算法的抽象机制</li>
+<li>描述算法</li>
+<li>算法复杂性分析</li>
+</ol>
+</li>
+<li>递归与分治策略<ol>
+<li>递归的概念</li>
+<li>分治法的基本思想</li>
+<li>二分搜索技术</li>
+<li>大整数的乘法</li>
+<li>Strassen矩阵乘法</li>
+<li>棋盘覆盖</li>
+<li>合并排序</li>
+<li>快速排序</li>
+<li>线性时间选择</li>
+<li>最接近点对问题</li>
+<li>循环赛日程表</li>
+</ol>
+</li>
+<li>动态规划<ol>
+<li> 矩阵连乘问题</li>
+<li> 动态规划算法的基本要素</li>
+<li> 最长公共子序列</li>
+<li> 凸多边形最优三角划分</li>
+<li> 多边形游戏</li>
+<li> 图像压缩</li>
+<li> 电路布线</li>
+<li> 流水作业调度</li>
+<li> 0-1背包问题</li>
+<li>最优二叉搜索树</li>
+</ol>
+</li>
+<li>贪心算法<ol>
+<li> 活动安排问题</li>
+<li>贪心算法的基本要素<ol>
+<li> 贪心选择性质</li>
+<li> 最优子结构性质</li>
+<li> 贪心算法与动态规划算法的差异</li>
+</ol>
+</li>
+<li>最优装载</li>
+<li>哈夫曼编码<ol>
+<li>前编码</li>
+<li>构造哈弗曼编码</li>
+<li>哈夫曼算法的正确性</li>
+</ol>
+</li>
+<li>单源最短路径<ol>
+<li>算法基本思想</li>
+<li>算法的正确性和计算复杂性</li>
+</ol>
+</li>
+<li>最小生成树<ol>
+<li>最小生成树性质</li>
+<li>Prim算法</li>
+<li>Kruskal算法</li>
+<li>多机调度问题</li>
+<li>贪心算法的理论基础<ol>
+<li>拟阵</li>
+<li>带权拟阵的贪心算法</li>
+<li>任务时间表问题</li>
+</ol>
+</li>
+</ol>
+</li>
+</ol>
+</li>
+<li>回溯法<ol>
+<li>回溯法的算法框架<ol>
+<li>问题的解空间</li>
+<li>回溯法的基本思想</li>
+<li>递归回溯</li>
+<li>迭代回溯</li>
+<li>子集树与排列数</li>
+</ol>
+</li>
+<li>装载问题</li>
+<li>批处理作业调度</li>
+<li>符号三角形问题</li>
+<li>n后问题</li>
+<li>0-1背包问题</li>
+<li>最大团问题</li>
+<li>图的m着色问题</li>
+<li>旅行售货员问题</li>
+<li>圆排列问题</li>
+<li>电路板排列问题</li>
+<li>连续邮资问题</li>
+<li>回溯法的效率分析</li>
+</ol>
+</li>
+<li>分支限界法<ol>
+<li>分支限界法的基本思想</li>
+<li>单源最短路径问题</li>
+<li>装载问题</li>
+<li>布线问题</li>
+<li>0-1背包问题</li>
+<li>最大团问题</li>
+<li>旅行售货员问题</li>
+<li>电路板排列问题</li>
+<li>批处理作业调度</li>
+</ol>
+</li>
+<li>概率算法<ol>
+<li> 随机数</li>
+<li>数值概率算法<ol>
+<li> 用随机投点法计算π值</li>
+<li> 计算定积分</li>
+<li> 解非线性方程组</li>
+</ol>
+</li>
+<li>舍伍德算法<ol>
+<li>线性时间选择算法</li>
+<li>跳跃表</li>
+</ol>
+</li>
+<li>拉斯维加斯算法<ol>
+<li>n后问题</li>
+<li>整数因子分解</li>
+</ol>
+</li>
+<li>蒙特卡罗算法<ol>
+<li>蒙特卡罗算法的基本思想</li>
+<li>主元素问题</li>
+<li>素数测试</li>
+</ol>
+</li>
+</ol>
+</li>
+<li>NP完全性理论<ol>
+<li>计算模型<ol>
+<li>随机存取机RAM</li>
+<li>随机存取存储程序机RASP</li>
+<li>RAM，模型的变形与简化</li>
+<li>图灵机</li>
+<li>图灵机模型与RAM模型的关系</li>
+<li>问题变换与计算复杂性归约</li>
+</ol>
+</li>
+<li>P类与NP类问题<ol>
+<li>非确定性图灵机</li>
+<li>P类与NP类语言</li>
+<li>多项式时间验证</li>
+</ol>
+</li>
+<li>NP完全问题<ol>
+<li>多项式时间变换</li>
+<li>COok定理</li>
+</ol>
+</li>
+<li>一些典型的NP完全问题<ol>
+<li>合取范式的可满足性问题</li>
+<li>3元合取范式的可满足性问题</li>
+<li>团问题</li>
+<li>顶点覆盖问题</li>
+<li>子集和问题</li>
+<li>哈密顿回路问题</li>
+<li>旅行售货员问题</li>
+</ol>
+</li>
+</ol>
+</li>
+<li> 近似算法</li>
+<li>近似算法的性能</li>
+<li>顶点覆盖问题的近似算法</li>
+<li>旅行售货员问题的近似算法<ol>
+<li>具有三角不等式性质的旅行售货员问题</li>
+<li>一般的旅行售货员问题</li>
+</ol>
+</li>
+<li>集合覆盖问题的近似算法</li>
+<li>子集和问题的近似算法<ol>
+<li>子集和问题的指数时间算法</li>
+<li>子集和问题的完全多项式时间近似格式</li>
+</ol>
+</li>
+<li>算法优化策略<ol>
+<li>算法设计策略的比较与选择<ol>
+<li>最大子段和问题的简单算法</li>
+<li>最大子段和问题的分治算法</li>
+<li>最大子段和问题的动态规划算法</li>
+<li>最大子段和问题与动态规划算法的推广</li>
+</ol>
+</li>
+<li>动态规划加速原理<ol>
+<li>货物储运问题</li>
+<li>算法及其优化</li>
+</ol>
+</li>
+<li>问题的算法特性<ol>
+<li>贪心策略</li>
+<li>对贪心策略的改进</li>
+<li>算法三部曲</li>
+<li>算法实现</li>
+<li>算法复杂性</li>
+</ol>
+</li>
+<li>优化数据结构<ol>
+<li>带权区间最短路问题</li>
+<li>算法设计思想</li>
+<li>算法实现方案</li>
+<li>并查集</li>
+<li>可并优先队列</li>
+</ol>
+</li>
+<li>优化搜索策略</li>
+</ol>
+</li>
+<li>在线算法设计<ol>
+<li> 在线算法设计的基本概念</li>
+<li> 页调度问题</li>
+<li> 势函数分析</li>
+<li>k服务问题竞争比的下界<ol>
+<li> 平衡算法</li>
+<li> 对称移动算法</li>
+</ol>
+</li>
+<li> Steiner树问题</li>
+<li> 在线任务调度</li>
+<li> 负载平衡</li>
+</ol>
+</li>
+</ol>
+<h1 id="概率论"><a href="#概率论" class="headerlink" title="概率论"></a>概率论</h1><p>《概率论与数理统计应用第二版-施雨+概率统计辅导书-魏平、王宁》</p>
+<ol>
+<li>随机事件与概率<ol>
+<li>随机事件</li>
+<li>概率</li>
+<li>古典概率的计算</li>
+<li>条件概率 事件的相互独立性</li>
+</ol>
+</li>
+<li>随机变量与概率分布<ol>
+<li>一维随机变量</li>
+<li>二维随机变量</li>
+<li>条件分布</li>
+<li>随机变量的相互独立性</li>
+<li>随机变量的函数的概率分布</li>
+</ol>
+</li>
+<li>随机变量的数字特性<ol>
+<li>数学期望</li>
+<li>方差</li>
+<li>协方差与相关系数</li>
+<li>条件期望与条件方差</li>
+</ol>
+</li>
+<li>大数定律与中心极限定理<ol>
+<li>大数定律</li>
+<li>中心极限定理</li>
+</ol>
+</li>
+<li>数理统计学的基本概念<ol>
+<li>总体与样本</li>
+<li>样本分布</li>
+<li>统计量</li>
+<li>抽样分布</li>
+</ol>
+</li>
+<li>参数估计<ol>
+<li>点估计</li>
+<li>估计量与评选标准</li>
+<li>区间估计</li>
+<li>正态总体参数的区间估计</li>
+</ol>
+</li>
+<li>假设检验<ol>
+<li>假设检验的基本概念</li>
+<li>正态总体参数的假设检验</li>
+<li>单边假设检验</li>
+<li>多数假设的大样本检验</li>
+<li>分布假设检验</li>
+</ol>
+</li>
+<li>方差分析<ol>
+<li>单因素方差分析</li>
+<li>双因素方差分析</li>
+</ol>
+</li>
+<li>回归分析<ol>
+<li>一元线性回归</li>
+<li>可线性化的一元非线性回归</li>
+<li>多元线性回归</li>
+</ol>
+</li>
+<li>随机过程的基本知识<ol>
+<li> 随机过程的概念和记号</li>
+<li> 随机过程的概率特性</li>
+<li> 随机过程的基本类型</li>
+<li> 泊松过程与布朗运动</li>
+</ol>
+</li>
+<li>平稳过程<ol>
+<li> 平稳过程的概念</li>
+<li> 平稳过程的性质</li>
+<li> 平稳过程的谱密度</li>
+<li> 各态历经性</li>
+</ol>
+</li>
+<li>附录<ol>
+<li> 标准正态分布表</li>
+<li> 泊松分布表</li>
+<li> t分布表</li>
+<li> X^2分布表</li>
+<li> F分布表</li>
+</ol>
+</li>
+</ol>
 ]]></content>
       <categories>
-        <category>生活</category>
+        <category>学习</category>
       </categories>
       <tags>
-        <tag>生活</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>ubuntu18.04+VINS-MONO+RealsenseD453i 配置教程</title>
-    <url>/ubuntu18-04-VINS-MONO-RealsenseD453i-%E9%85%8D%E7%BD%AE%E6%95%99%E7%A8%8B/</url>
-    <content><![CDATA[<h1 id="VINS-MONO"><a href="#VINS-MONO" class="headerlink" title="VINS-MONO"></a>VINS-MONO</h1><p>主要参考链接：<br><a href="https://blog.csdn.net/github_53583003/article/details/111187288">Ubuntu18配置VINS-MONO</a></p>
-<p>初始配置：<br>ubuntu18.04+cmake+engine</p>
-<h2 id="1-ROS配置"><a href="#1-ROS配置" class="headerlink" title="1. ROS配置"></a>1. ROS配置</h2><p><a href="http://wiki.ros.org/melodic/Installation/Ubuntu">ROS官方安装教程</a></p>
-<p><em>前面的主要参考链接用的是16.04下的<code>kinetic</code>内核，20.04用的是<code>Neotic</code>内核，我用的是18.04下的<code>melodic</code>内核，所以使用官方教程</em></p>
-<h2 id="2-opencv配置"><a href="#2-opencv配置" class="headerlink" title="2. opencv配置"></a>2. opencv配置</h2><p>根据mono的建议，cv版本用的是<a href="https://github.com/opencv/opencv/releases/tag/3.3.1">opencv-3.3.1</a>和<a href="https://github.com/opencv/opencv_contrib/releases/tag/3.3.1">opencv-contrib-3.3.1</a></p>
-<p>location: <code>~/library/opencv-3.3.1</code></p>
-<p>后续根据<a href="https://blog.csdn.net/github_53583003/article/details/111187288">参考链接</a>完成编译。</p>
-<p>进行opencv的编译环境配置：</p>
-<figure class="highlight plain"><table><tbody><tr><td class="code"><pre><span class="line">sudo apt-get install build-essential libgtk2.0-dev libvtk6-dev libjpeg-dev libtiff4-dev libjasper-dev libopenexr-dev libtbb-dev</span><br></pre></td></tr></tbody></table></figure>
-<p><em>注意，opencv的依赖包虽然是参考SLAM十四讲，但是由于版本区别，有的包要装升级后的版本，比如书里是libvtk5-dev，而我们需要装6</em></p>
-<h2 id="3-安装Ceres库"><a href="#3-安装Ceres库" class="headerlink" title="3. 安装Ceres库"></a>3. 安装Ceres库</h2><p>Ceres solver 是谷歌开发的一款用于非线性优化的库，在谷歌的开源激光雷达slam项目cartographer中被大量使用</p>
-<p>首先，安装依赖</p>
-<figure class="highlight plain"><table><tbody><tr><td class="code"><pre><span class="line">sudo apt-get install liblapack-dev </span><br><span class="line">sudo apt-get install libsuitesparse-dev </span><br><span class="line">sudo apt-get install libcxsparse3.1.2</span><br><span class="line">sudo apt-get install libgflags-dev </span><br><span class="line">sudo apt-get install libgoogle-glog-dev libgtest-dev</span><br></pre></td></tr></tbody></table></figure>
-<p><em>如果有的包无法定位，可能是因为更换了版本名，<a href="https://packages.ubuntu.com/">https://packages.ubuntu.com/</a> <code>Search package directories</code>搜一下keyword，注意与当前ubuntu版本对应；也可以参考<a href="https://www.cnblogs.com/qilai/p/13654810.html">无法定位lib3.1.2</a>，我用的第二种方法</em></p>
-<p>然后，下载<a href="https://github.com/ceres-solver/ceres-solver/releases">Ceres</a></p>
-<p><em>我下的是cere2.0.0，解压后location: <code>~/library/ceres-solver-2.0.0</code></em></p>
-<p>进入目录下编译ceres:</p>
-<figure class="highlight plain"><table><tbody><tr><td class="code"><pre><span class="line">mkdir build</span><br><span class="line">cd build</span><br><span class="line">cmake ..</span><br><span class="line">sudo make install</span><br></pre></td></tr></tbody></table></figure>
-<h2 id="4-VINS-MONO编译"><a href="#4-VINS-MONO编译" class="headerlink" title="4. VINS-MONO编译"></a>4. VINS-MONO编译</h2><p>VINS-MONO，2017年港科老师开源的一个单目视觉惯导的实时SLAM方案，是视觉与IMU的经典融合，定位精度可以媲美OKVIS，在Linux上运行，并与ROS完全集成。</p>
-<p>该算法基于优化和滑动窗口的 VIO ，使用 IMU 预积分构建紧耦合框架，同时还有自动初始化，在线外参标定，重定位，闭环检测，以及全局位姿图优化功能。</p>
-<ul>
-<li>准备数据</li>
-</ul>
-<p>首先下载<a href="https://projects.asl.ethz.ch/datasets/doku.php?id=kmavvisualinertialdatasets#the_euroc_mav_dataset">EuRoC数据集</a>，该数据集是微型飞行器 (MAV) 上收集的视觉惯性数据集。数据集包含立体图像、同步 IMU 测量以及精确的运动和结构地面实况。</p>
-<p><em>我下的是<code>Machine Hall 01 (ROS bag)</code>用来测试，location: <code>~/DATA/VINS-MONO/MH_01_easy.bag</code></em></p>
-<p>此外还要下载<a href="https://github.com/HKUST-Aerial-Robotics/VINS-Mono">VINS-MONO代码</a>。</p>
-<ul>
-<li><p>创建ROS工作空间</p>
-<figure class="highlight plain"><table><tbody><tr><td class="code"><pre><span class="line">mkdir -p ~/catkin_ws/src              </span><br><span class="line">cd ~/catkin_ws/src</span><br><span class="line">catkin_init_workspace</span><br></pre></td></tr></tbody></table></figure></li>
-<li><p>编译VINS</p>
-</li>
-</ul>
-<p>将前面下载的Vins-mono的代码移动到<code>~/catkin_ws/src</code>文件夹下。</p>
-<p>编译：</p>
-<figure class="highlight plain"><table><tbody><tr><td class="code"><pre><span class="line">cd ~/catkin_ws</span><br><span class="line">catkin_make</span><br><span class="line">source ~/catkin_ws/devel/setup.bash</span><br></pre></td></tr></tbody></table></figure>
-<ul>
-<li>修改配置文件内容在VINS-Mono-master主工程目录下的config子目录中找到euroc文件夹，并打开其中的euroc_config.yaml文件，将其中结果输出保存路径修改为本地的绝对路径或相对路径<figure class="highlight plain"><table><tbody><tr><td class="code"><pre><span class="line">output_path: "/home/yj/HZL/VINS-MONO-REALSENSE/output/"</span><br><span class="line">pose_graph_save_path: "/home/yj/HZL/VINS-MONO-REALSENSE/output/pose_graph/"</span><br></pre></td></tr></tbody></table></figure></li>
-</ul>
-<ul>
-<li>修改source如果每次运行前需要都需要用source来指定文件位置未免太麻烦，可以直接在<code>.bashrc</code>中添加source<figure class="highlight plain"><table><tbody><tr><td class="code"><pre><span class="line">sudo  gedit ~/.bashrc</span><br></pre></td></tr></tbody></table></figure>
-在.bashrc中加上：<figure class="highlight plain"><table><tbody><tr><td class="code"><pre><span class="line">source ~/catkin_ws/devel/setup.bash</span><br></pre></td></tr></tbody></table></figure></li>
-</ul>
-<ul>
-<li>运行<ul>
-<li>1号终端启动ROS核心：<figure class="highlight plain"><table><tbody><tr><td class="code"><pre><span class="line">roscore</span><br></pre></td></tr></tbody></table></figure></li>
-<li>2号终端：<figure class="highlight plain"><table><tbody><tr><td class="code"><pre><span class="line">roslaunch vins_estimator euroc.launch</span><br></pre></td></tr></tbody></table></figure></li>
-<li>3号终端启动rviz软件<figure class="highlight plain"><table><tbody><tr><td class="code"><pre><span class="line">roslaunch vins_estimator vins_rviz.launch</span><br></pre></td></tr></tbody></table></figure></li>
-<li>4号终端输入数据：注意把数据包地址改成自己的<figure class="highlight plain"><table><tbody><tr><td class="code"><pre><span class="line">rosbag play /home/yj/DATA/VINS-MONO/MH_01_easy.bag </span><br></pre></td></tr></tbody></table></figure></li>
-</ul>
-</li>
-</ul>
-<h1 id="使用Realsense-D453i运行VINS-MONO"><a href="#使用Realsense-D453i运行VINS-MONO" class="headerlink" title="使用Realsense D453i运行VINS-MONO"></a>使用Realsense D453i运行VINS-MONO</h1><p><a href="https://blog.csdn.net/weixin_44580210/article/details/89789416">参考链接</a></p>
-<h2 id="1-安装librealsense-SDK-2-0"><a href="#1-安装librealsense-SDK-2-0" class="headerlink" title="1. 安装librealsense SDK 2.0"></a>1. 安装librealsense SDK 2.0</h2><p><a href="https://github.com/IntelRealSense/librealsense/releases/tag/v2.48.0">v2.48.0</a></p>
-<p><a href="https://github.com/IntelRealSense/librealsense/blob/master/doc/distribution_linux.md">官方指南</a></p>
-<p>librealsense SDK相当于相机的驱动，D435i是librealsense SDK 2.0；SDK的安装方式有两种，一是从源码编译安装，二是直接命令行安装，官方指南的公钥法用的2。</p>
-<p><em>我装的是librealsense SDK v2.48.0，支持18.04</em></p>
-<p>测试：</p>
-<figure class="highlight plain"><table><tbody><tr><td class="code"><pre><span class="line">realsense-viewer</span><br></pre></td></tr></tbody></table></figure>
-<p><em>注意：使用3.0的usb口</em></p>
-<h2 id="2-安装测试realsense相机对应的ROS包"><a href="#2-安装测试realsense相机对应的ROS包" class="headerlink" title="2. 安装测试realsense相机对应的ROS包"></a>2. 安装测试realsense相机对应的ROS包</h2><p><a href="https://github.com/IntelRealSense/realsense-ros">官方指南</a><br>（用的是指南里的realsense distribution方案）</p>
-<p>进入ros空间: </p>
-<figure class="highlight plain"><table><tbody><tr><td class="code"><pre><span class="line">cd ~/catkin_ws/src</span><br><span class="line">git clone https://github.com/IntelRealSense/realsense-ros.git</span><br><span class="line">cd realsense-ros/</span><br><span class="line">git checkout `git tag | sort -V | grep -P "^2.\d+\.\d+" | tail -1`</span><br></pre></td></tr></tbody></table></figure>
-<p>补一些依赖: </p>
-<figure class="highlight plain"><table><tbody><tr><td class="code"><pre><span class="line">mkdir -p ~/catkin_ws/src/realsense</span><br><span class="line">rosdep install --from-paths src --ignore-src -r -y    # 这步第二次安装的时候失败</span><br><span class="line">sudo apt purge ros-melodic-librealsense2</span><br></pre></td></tr></tbody></table></figure>
-<p>继续安装：</p>
-<figure class="highlight plain"><table><tbody><tr><td class="code"><pre><span class="line">cd ~/catkin_ws</span><br><span class="line">catkin_make clean</span><br><span class="line">catkin_make -DCATKIN_ENABLE_TESTING=False -DCMAKE_BUILD_TYPE=Release</span><br><span class="line">catkin_make install</span><br></pre></td></tr></tbody></table></figure>
-<ul>
-<li>出现报错，原因是缺少ddynamic_reconfigure，解决方案是从<a href="https://github.com/pal-robotics/ddynamic_reconfigure/tree/kinetic-devel">这里</a>将其下载，克隆到工作区<code>~/catkin_ws/src/</code>中</li>
-</ul>
-<p>改<code>.bashrc</code>：</p>
-<figure class="highlight plain"><table><tbody><tr><td class="code"><pre><span class="line">echo "source ~/catkin_ws/devel/setup.bash" &gt;&gt; ~/.bashrc</span><br><span class="line">source ~/.bashrc</span><br></pre></td></tr></tbody></table></figure>
-<p>运行rviz：</p>
-<ul>
-<li>1号终端启动ROS核心：<figure class="highlight plain"><table><tbody><tr><td class="code"><pre><span class="line">roscore</span><br></pre></td></tr></tbody></table></figure></li>
-<li>2号终端：<figure class="highlight plain"><table><tbody><tr><td class="code"><pre><span class="line">rosrun rviz rviz</span><br></pre></td></tr></tbody></table></figure>
-运行realsense：<figure class="highlight plain"><table><tbody><tr><td class="code"><pre><span class="line">roslaunch realsense2_camera rs_camera.launch filters:=pointcloud</span><br></pre></td></tr></tbody></table></figure>
-这时候应该无图像，需要在rviz中修改一些配置，当然配置有很多选择，对于新手来说有图就行orz，以下只是举个例子：</li>
-<li>把fixed frame改成<code>camera_...</code>，不能是<code>map</code>，Global Status由红色变绿</li>
-<li>Add -&gt; 上方点击 By topic -&gt; /depth_registered 下的 /points 下的/PointCloud2，这是针对上面命令中<code>filters:=pointcloud</code>部分选择的type</li>
-<li>Add -&gt; 上方点击 By topic -&gt; /color 下的 /image_raw 下的image</li>
-</ul>
-<h2 id="3-在D453i上运行VINS-MONO"><a href="#3-在D453i上运行VINS-MONO" class="headerlink" title="3. 在D453i上运行VINS-MONO"></a>3. 在D453i上运行VINS-MONO</h2><p>这里建议先把catkin_ws备份一下<br><a href="https://zhuanlan.zhihu.com/p/390933690">参考链接0</a><br><a href="https://blog.csdn.net/weixin_44580210/article/details/89789416">参考链接1</a><br><a href="https://blog.csdn.net/qq_41839222/article/details/86552367">参考链接2</a></p>
-<h3 id="1）修改rs-camera-launch文件"><a href="#1）修改rs-camera-launch文件" class="headerlink" title="1）修改rs_camera.launch文件"></a>1）修改rs_camera.launch文件</h3><p>location：<code>~/catkin_ws/src/realsense-ros/realsense2_camera/launch</code></p>
-<ul>
-<li>修改unite_imu_method如下，这里是让IMU的角速度和加速度作为一个topic输出<figure class="highlight plain"><table><tbody><tr><td class="code"><pre><span class="line">&lt;arg name="unite_imu_method"      default="copy"/&gt;</span><br></pre></td></tr></tbody></table></figure></li>
-<li>修改enable_sync参数为true，这里是开启相机和IMU的同步<figure class="highlight plain"><table><tbody><tr><td class="code"><pre><span class="line">&lt;arg name="enable_sync"           default="true"/&gt;</span><br></pre></td></tr></tbody></table></figure></li>
-<li>打开陀螺仪和加速度计<figure class="highlight plain"><table><tbody><tr><td class="code"><pre><span class="line">&lt;arg name="enable_gyro"         default="true"/&gt;</span><br><span class="line">&lt;arg name="enable_accel"        default="true"/&gt;</span><br></pre></td></tr></tbody></table></figure>
-<h3 id="2）修改realsense-color-config-yaml文件"><a href="#2）修改realsense-color-config-yaml文件" class="headerlink" title="2）修改realsense_color_config.yaml文件"></a>2）修改realsense_color_config.yaml文件</h3></li>
-</ul>
-<p>location：<code>~/catkin_ws/src/VINS-Mono-master/config/realsense/realsense_color_config.yaml</code></p>
-<ul>
-<li>修改订阅的topic<figure class="highlight plain"><table><tbody><tr><td class="code"><pre><span class="line">imu_topic: "/camera/imu"</span><br><span class="line">image_topic: "/camera/color/image_raw"</span><br><span class="line">output_path: "/home/yj/HZL/VINS-MONO-REALSENSE/output/"  #自己的地址</span><br><span class="line"></span><br><span class="line">pose_graph_save_path: "/home/yj/HZL/VINS-MONO-REALSENSE/output/pose_graph/"</span><br></pre></td></tr></tbody></table></figure></li>
-<li>修改相机的内参<br><a href="https://zhuanlan.zhihu.com/p/390933690">指南</a><figure class="highlight plain"><table><tbody><tr><td class="code"><pre><span class="line">rostopic echo /camera/color/camera_info #查看内参命令</span><br></pre></td></tr></tbody></table></figure>
-<figure class="highlight plain"><table><tbody><tr><td class="code"><pre><span class="line">#camera calibration </span><br><span class="line">model_type: PINHOLE</span><br><span class="line">camera_name: camera</span><br><span class="line">image_width: 1280</span><br><span class="line">image_height: 720</span><br><span class="line">distortion_parameters:</span><br><span class="line">   k1: 0 #9.2615504465028850e-02</span><br><span class="line">   k2: 0 #-1.8082438825995681e-01</span><br><span class="line">   p1: 0 #-6.5484100374765971e-04</span><br><span class="line">   p2: 0 #-3.5829351558557421e-04</span><br><span class="line">projection_parameters:</span><br><span class="line">   fx: 9.194400024414062e+02 #6.0970550296798035e+02</span><br><span class="line">   fy: 9.189413452148438e+02 #6.0909579671294716e+02</span><br><span class="line">   cx: 6.383787841796875e+02 #3.1916667152289227e+02</span><br><span class="line">   cy: 3.5089337158203125e+02 #2.3558360480225772e+02</span><br></pre></td></tr></tbody></table></figure></li>
-<li>IMU到相机的变换矩阵，这里我根据注释的提示修改成2</li>
-</ul>
-<p>初始为0，选0的话，IMU和camera之间的外参矩阵建议使用Kalibr工具进行离线标定，也可以改成1或者2让估计器自己标定和优化。</p>
-<figure class="highlight plain"><table><tbody><tr><td class="code"><pre><span class="line"># Extrinsic parameter between IMU and Camera.</span><br><span class="line">estimate_extrinsic: 2   </span><br><span class="line">                # 0  Have an accurate extrinsic parameters. We will trust the following imu^R_cam, imu^T_cam, don't change it.</span><br><span class="line">                # 1  Have an initial guess about extrinsic parameters. We will optimize around your initial guess.</span><br><span class="line">                # 2  Don't know anything about extrinsic parameters. You don't need to give R,T. We will try to calibrate it. Do some rotation movement at beginning.                        </span><br><span class="line">                # If you choose 0 or 1, you should write down the following matrix.</span><br></pre></td></tr></tbody></table></figure>
-<ul>
-<li>IMU参数，这里我全部修改注释给的参数<figure class="highlight plain"><table><tbody><tr><td class="code"><pre><span class="line">#imu parameters       The more accurate parameters you provide, the better performance</span><br><span class="line">acc_n: 0.2          # accelerometer measurement noise standard deviation. #0.2</span><br><span class="line">gyr_n: 0.05         # gyroscope measurement noise standard deviation.     #0.05</span><br><span class="line">acc_w: 0.02         # accelerometer bias random work noise standard deviation.  #0.02</span><br><span class="line">gyr_w: 4.0e-5       # gyroscope bias random work noise standard deviation.     #4.0e-5</span><br><span class="line">g_norm: 9.80       # gravity magnitude</span><br></pre></td></tr></tbody></table></figure></li>
-<li>是否需要在线估计同步时差，根据上述博主的建议这里选择不需要<figure class="highlight plain"><table><tbody><tr><td class="code"><pre><span class="line">#unsynchronization parameters</span><br><span class="line">estimate_td: 0                      # online estimate time offset between camera and imu</span><br><span class="line">td: 0.000                           # initial value of time offset. unit: s. readed image clock + td = real image clock (IMU clock)</span><br></pre></td></tr></tbody></table></figure></li>
-<li>相机曝光改成全局曝光<figure class="highlight plain"><table><tbody><tr><td class="code"><pre><span class="line">#rolling shutter parameters</span><br><span class="line">rolling_shutter: 0                      # 0: global shutter camera, 1: rolling shutter camera</span><br><span class="line">rolling_shutter_tr: 0               # unit: s. rolling shutter read out time per frame (from data sheet). </span><br></pre></td></tr></tbody></table></figure>
-<h3 id="3）运行"><a href="#3）运行" class="headerlink" title="3）运行"></a>3）运行</h3><figure class="highlight plain"><table><tbody><tr><td class="code"><pre><span class="line">roscore</span><br><span class="line">roslaunch realsense2_camera rs_camera.launch  #启动realsense驱动sdk，输出相应图像和IMU话题</span><br><span class="line">roslaunch vins_estimator realsense_color.launch #启动vins-mono，数据来源是相机</span><br><span class="line">roslaunch vins_estimator vins_rviz.launch #启动rviz界面</span><br></pre></td></tr></tbody></table></figure>
-在global option里把word改成camera_link</li>
-</ul>
-<h1 id="问题："><a href="#问题：" class="headerlink" title="问题："></a>问题：</h1><p>不显示特征点和轨迹，报错如下：</p>
-<figure class="highlight plain"><table><tbody><tr><td class="code"><pre><span class="line">[ INFO] [1629687186.636584239]: init begins</span><br><span class="line">[ INFO] [1629687186.672642097]: Loaded config_file: /home/yj/catkin_ws/src/VINS-Mono-master/feature_tracker/../config/realsense/realsense_color_config.yaml</span><br><span class="line">vocabulary_file/home/yj/catkin_ws/src/VINS-Mono-master/pose_graph/../support_files/brief_k10L6.bin</span><br><span class="line">result path /home/yj/HZL/VINS-MONO-REALSENSE/output//vins_result_no_loop.csv</span><br><span class="line">[ INFO] [1629687186.683639120]: ROW: 480.000000 COL: 640.000000 </span><br><span class="line">[ WARN] [1629687186.683652444]: have no prior about extrinsic param, calibrate extrinsic param</span><br><span class="line"></span><br><span class="line">[ INFO] [1629688187.806394607]: Synchronized sensors, fix time offset: 0</span><br><span class="line">[ WARN] [1629688187.806432117]: waiting for image and imu...</span><br><span class="line">vocabulary_file/home/yj/catkin_ws/src/VINS-Mono-master/pose_graph/../support_files/brief_k10L6.bin</span><br><span class="line">loop start load vocabulary</span><br><span class="line">BRIEF_PATTERN_FILE/home/yj/catkin_ws/src/VINS-Mono-master/pose_graph/../support_files/brief_pattern.yml</span><br><span class="line">no previous pose graph</span><br><span class="line">OpenCV Error: Assertion failed (_mask.empty() || (_mask.type() == CV_8UC1 &amp;&amp; _mask.sameSize(_image))) in goodFeaturesToTrack, file /build/opencv-L2vuMj/opencv-3.2.0+dfsg/modules/imgproc/src/featureselect.cpp, line 366</span><br><span class="line">terminate called after throwing an instance of 'cv::Exception'</span><br><span class="line">  what():  /build/opencv-L2vuMj/opencv-3.2.0+dfsg/modules/imgproc/src/featureselect.cpp:366: error: (-215) _mask.empty() || (_mask.type() == CV_8UC1 &amp;&amp; _mask.sameSize(_image)) in function goodFeaturesToTrack</span><br><span class="line"></span><br><span class="line">[feature_tracker-1] process has died [pid 1331, exit code -6, cmd /home/yj/catkin_ws/devel/lib/feature_tracker/feature_tracker __name:=feature_tracker __log:=/home/yj/.ros/log/8f26fcba-03bf-11ec-9c16-b07b250c6f90/feature_tracker-1.log].</span><br><span class="line">log file: /home/yj/.ros/log/8f26fcba-03bf-11ec-9c16-b07b250c6f90/feature_tracker-1*.log</span><br><span class="line"></span><br></pre></td></tr></tbody></table></figure>
-<p>解决策略：</p>
-<ul>
-<li><p>第一次跑的时候没配置opencv，现在补充配置opencv，按照《高翔SLAM》p108中的配置安装依赖包（这部分已补充在上文），以下是安装以上依赖时附带安装的依赖，仅作为记录，不作为参考：</p>
-<figure class="highlight plain"><table><tbody><tr><td class="code"><pre><span class="line">sudo apt-get install build-essential libopenmpi1.6 libvtk5.8 mpi-default-dev</span><br></pre></td></tr></tbody></table></figure></li>
-<li><p>还是不显示，参考<a href="https://github.com/HKUST-Aerial-Robotics/VINS-Mono/issues/26">链接</a>，发现是相机参数未同步的原因：</p>
-<p><strong>最终解决方案</strong>：除了要在上述的<code>realsense_color_config.yaml</code>中修改相机参数，还需要在<code>/home/yj/catkin_ws/src/VINS-Mono-master/config/euroc/euroc_config.yaml</code>文件中修改<code>#camera calibration</code></p>
-<p>我的problem还有，在<code>realsense_color_config.yaml</code>中只修改了<code>distortion_parameters</code>和<code>projection_parameters</code>，而未修改分辨率<code>(image_width: 1280, image_height: 720)</code></p>
-<ul>
-<li>查看相机内参指令(不同相机内参是不一样的)：</li>
-</ul>
-  <figure class="highlight plain"><table><tbody><tr><td class="code"><pre><span class="line">roscore</span><br><span class="line">roslaunch realsense2_camera rs_camera.launch  #打开相机节点</span><br><span class="line">rostopic echo /camera/color/camera_info   #查看相机内参</span><br></pre></td></tr></tbody></table></figure></li>
-</ul>
-]]></content>
-      <categories>
-        <category>教程</category>
-      </categories>
-      <tags>
-        <tag>SLAM</tag>
-        <tag>教程</tag>
+        <tag>学习</tag>
       </tags>
   </entry>
   <entry>
@@ -3253,6 +3426,160 @@
       </tags>
   </entry>
   <entry>
+    <title>论文收集</title>
+    <url>/%E8%AE%BA%E6%96%87%E6%94%B6%E9%9B%86/</url>
+    <content><![CDATA[<h1 id="一、智慧交通"><a href="#一、智慧交通" class="headerlink" title="一、智慧交通"></a>一、智慧交通</h1><h2 id="1-1"><a href="#1-1" class="headerlink" title="1-1"></a>1-1</h2><p>   Real-Time Adaptive Traffic Control System For Smart Cities <a href="https://ieeexplore.ieee.org/document/9402597">智慧城市实时自适应交通控制系统</a></p>
+<ul>
+<li><strong>作者</strong>：Shyam Shankaran R; Logesh Rajendran</li>
+<li><strong>会议</strong>: 2021 International Conference on Computer Communication and Informatics (ICCCI)</li>
+<li><strong>引用</strong>：0，浏览24</li>
+<li><strong>摘要</strong>：In-country like India, billions of people start and end each working day stuck in traffic or commuting on congested trains and buses. It is vital to the quality of life to enhance the everyday commute. By 2025, cities that implement smart mobility systems on average, reduce commuting cycles by 15-20 percent, with some individuals experiencing even greater reductions. Depending on each city’s density, current transit facilities, and commuting habits, the capacity associated with each application is highly variable. Slowed synchronization of traffic signals leads to traffic congestion and delays. The pre-programmed, regular signal timing patterns are employed in traditional signal systems. To overcome the problems of traditional traffic control systems, there is a shift in adaption to an Adaptive traffic control system. The Adaptive Traffic Control System (ATCS) is a traffic management technique that modifies or adapts the timing of traffic signals based on the real demand for traffic and achieved using a control system that includes both hardware and software, where hardware is the sensor used for real-time traffic density estimation and software is designed using captured data analysis of the city’s current traffic flow. This paper depicts a model of camera-based traffic monitoring and processing system which reduces the cycle time and possesses special provisions for emergency vehicles.</li>
+<li><strong>点评</strong>：使用opencv，光学传感器，偏向图像识别。</li>
+</ul>
+<h2 id="1-2"><a href="#1-2" class="headerlink" title="1-2"></a>1-2</h2><p>   Big Traffic Data Analytics For Smart Urban Intelligent Traffic System Using Machine Learning Techniques <a href="https://ieeexplore.ieee.org/document/9291790">使用机器学习技术的智慧城市智能交通系统大交通数据分析</a></p>
+<ul>
+<li><strong>作者</strong>：Su Su Hlaing; Mie Mie Tin; Mie Mie Khin</li>
+<li><strong>会议</strong>：2020 IEEE 9th Global Conference on Consumer Electronics (GCCE)</li>
+<li><strong>引用</strong>：1，浏览138</li>
+<li><strong>摘要</strong>：Due to huge number of private and public vehicles in last two decades, the traffic load and congestion have increased significantly, which is major problem in transportation system. An intelligent traffic management system becomes an important part of the transportation system to manage the traffic properly in smart cities. In this paper, we have proposed intelligent traffic management system to build smart platform in Mandalay, Myanmar. The main aim of the paper is to reduce traffic congestion, road crash accidents, fuel consumption and save travel time. To provide safe, comfortable, and less frustrating travel, this paper uses big data technology and machine learning technique for analysis of the volume of traffic data and predicts optimal road traffic using machine learning.</li>
+<li><strong>点评</strong>：论文很短，比起具体方法更像是框架构想。</li>
+</ul>
+<h2 id="1-3"><a href="#1-3" class="headerlink" title="1-3"></a>1-3</h2><p>   Internet of things — smart traffic management system for smart cities using big data analytics <a href="https://ieeexplore.ieee.org/document/8301496">物联网——使用大数据分析的智慧城市智能交通管理系统</a></p>
+<ul>
+<li><strong>作者</strong>：Abida Sharif; Jianping Li; Mudassir Khalil</li>
+<li><strong>会议</strong>：2017 14th International Computer Conference on Wavelet Active Media Technology and Information Processing (ICCWAMTIP)</li>
+<li><strong>引用</strong>：10，浏览2600</li>
+<li><strong>摘要</strong>：Smart Traffic System (STS) is a one of the important aspect for future smart city. STS is more expensive and highly configurable to provide better quality of service for public traffic management. This paper proposes a low cost future STS to provide better service by deploying traffic update instantly. Low cost vehicle detecting sensors are fixed in the middle of road for every 500 meters. Internet of Things (IoT) is being used to attain public traffic data quickly and send it for data processing. The Real time streaming data is sent for Big Data analytics. There are several analytical scriptures to analyze the traffic density and provide solution through predictive analytics.</li>
+<li><strong>点评</strong>：比较宏观，缺少细节</li>
+</ul>
+<h2 id="1-4"><a href="#1-4" class="headerlink" title="1-4"></a>1-4</h2><p>   Towards An Optimized Smart Traffic for Congestion Avoidance with Multi Layered (ST-CA) Framework<br>   <a href="https://ieeexplore.ieee.org/document/8538401">使用多层 (ST-CA) 框架实现优化的智能交通拥塞避免</a></p>
+<ul>
+<li><strong>作者</strong>：Nada M. Alhakkak; Ban Salman; Najeeb Abbas Al-Sammarraie</li>
+<li><strong>会议</strong>：2018 International Conference on Smart Computing and Electronic Enterprise (ICSCEE)</li>
+<li><strong>引用</strong>：1，浏览127</li>
+<li><strong>摘要</strong>：In many cities around the world, traffic congestion is considered a major problem that should be managed properly. Managing traffic flow is not simply applied by constructing new road or maintaining old ones; it is not just a matter of physical infrastructure. For managing traffic, there should be ‘’smart’’ ways to be taken by the use of available technologies’ facilities. Countries should think and act smart to manage today’s traffic in their cities. The use of controlled smart traffic systems is gaining a noticeable interest for the past few years and various solutions have been proposed, adopted and even implemented in several countries. In this paper, we propose Smart Traffic for Congestion Avoidance with Multi Layered (ST-CA) Framework, for solving the congestion problem. The proposed framework is constructed in multilayer approach for easy maintenance in the future. The STCA framework should be more flexible, in sending/ receiving messages, than others and depend in its decision making on expert systems.</li>
+<li><strong>点评</strong>：交通控制框架，信号灯算法，针对交通堵塞</li>
+</ul>
+<h2 id="1-5"><a href="#1-5" class="headerlink" title="1-5"></a>1-5</h2><p>   Foundations for Smarter Cities <a href="https://ieeexplore.ieee.org/document/5512826">智慧城市的基础</a></p>
+<ul>
+<li><strong>作者</strong>：C. Harrison; B. Eckman; R. Hamilton</li>
+<li><strong>年份</strong>：2010</li>
+<li><strong>发表</strong>：IBM Journal of Research and Development</li>
+<li><strong>引用</strong>：499，浏览1357</li>
+<li><strong>摘要</strong>：This paper describes the information technology (IT) foundation and principles for Smarter Cities™. Smarter Cities are urban areas that exploit operational data, such as that arising from traffic congestion, power consumption statistics, and public safety events, to optimize the operation of city services. The foundational concepts are instrumented, interconnected, and intelligent. Instrumented refers to sources of near-real-time real-world data from both physical and virtual sensors. Interconnected means the integration of those data into an enterprise computing platform and the communication of such information among the various city services. Intelligent refers to the inclusion of complex analytics, modeling, optimization, and visualization in the operational business processes to make better operational decisions. This approach enables the adaptation of city services to the behavior of the inhabitants, which permits the optimal use of the available physical infrastructure and resources, for example, in sensing and controlling consumption of energy and water, managing waste processing and transportation systems, and applying optimization to achieve new efficiencies among these resources. Additional roles exist in intelligent interaction between the city and its inhabitants and further contribute to operational efficiency while maintaining or enhancing quality of life.</li>
+<li><strong>关键词</strong>：Information technology, Urban areas, Smart buildings, Decision making, Intelligent structures, Structural engineering</li>
+<li><strong>点评</strong>：宏观框架，需要一读</li>
+</ul>
+<h2 id="1-6"><a href="#1-6" class="headerlink" title="1-6"></a>1-6</h2><p>   Three Decades of Driver Assistance Systems: Review and Future Perspectives <a href="https://ieeexplore.ieee.org/document/6936444">驾驶辅助系统的三个十年：回顾和未来展望</a></p>
+<ul>
+<li><strong>作者</strong>：Klaus Bengler; Klaus Dietmayer; Berthold Farbe</li>
+<li><strong>年份</strong>：2014</li>
+<li><strong>发表</strong>：IEEE Intelligent Transportation Systems Magazine</li>
+<li><strong>引用</strong>：414，,浏览10237</li>
+<li><strong>摘要</strong>：This contribution provides a review of fundamental goals, development and future perspectives of driver assistance systems. Mobility is a fundamental desire of mankind. Virtually any society strives for safe and efficient mobility at low ecological and economic costs. Nevertheless, its technical implementation significantly differs among societies, depending on their culture and their degree of industrialization. A potential evolutionary roadmap for driver assistance systems is discussed. Emerging from systems based on proprioceptive sensors, such as ABS or ESC, we review the progress incented by the use of exteroceptive sensors such as radar, video, or lidar. While the ultimate goal of automated and cooperative traffic still remains a vision of the future, intermediate steps towards that aim can be realized through systems that mitigate or avoid collisions in selected driving situations. Research extends the state-of-the-art in automated driving in urban traffic and in cooperative driving, the latter addressing communication and collaboration between different vehicles, as well as cooperative vehicle operation by its driver and its machine intelligence. These steps are considered important for the interim period, until reliable unsupervised automated driving for all conceivable traffic situations becomes available. The prospective evolution of driver assistance systems will be stimulated by several technological, societal and market trends. The paper closes with a view on current research fields.</li>
+<li><strong>关键词</strong>：Vehicle safety, Sensor systems, Laser radar, Advanced driver assistance systems, Vehicle dynamics, Automatic control, Research and development, Technology forecasting</li>
+<li><strong>点评</strong>：综述类型，需要一读。</li>
+</ul>
+<h1 id="二、雷达-AI-无人驾驶"><a href="#二、雷达-AI-无人驾驶" class="headerlink" title="二、雷达+AI+无人驾驶"></a>二、雷达+AI+无人驾驶</h1><h2 id="2-1"><a href="#2-1" class="headerlink" title="2-1"></a>2-1</h2><p>   On-Road Vehicle Detection and Tracking Using MMW Radar and Monovision Fusion <a href="https://ieeexplore.ieee.org/document/7463071">使用毫米波雷达和 Monovision Fusion 进行道路车辆检测和跟踪</a></p>
+<ul>
+<li><strong>作者</strong>：Xiao Wang; Linhai Xu; Hongbin Sun; Jingmin Xin; Nanning Zheng</li>
+<li><strong>年份</strong>：2016</li>
+<li><strong>发表</strong>：IEEE Transactions on Intelligent Transportation Systems</li>
+<li><strong>引用</strong>：80，浏览4229</li>
+<li><strong>摘要</strong>：With the potential to increase road safety and provide economic benefits, intelligent vehicles have elicited a significant amount of interest from both academics and industry. A robust and reliable vehicle detection and tracking system is one of the key modules for intelligent vehicles to perceive the surrounding environment. The millimeter-wave radar and the monocular camera are two vehicular sensors commonly used for vehicle detection and tracking. Despite their advantages, the drawbacks of these two sensors make them insufficient when used separately. Thus, the fusion of these two sensors is considered as an efficient way to address the challenge. This paper presents a collaborative fusion approach to achieve the optimal balance between vehicle detection accuracy and computational efficiency. The proposed vehicle detection and tracking design is extensively evaluated with a real-world data set collected by the developed intelligent vehicle. Experimental results show that the proposed system can detect on-road vehicles with 92.36% detection rate and 0% false alarm rate, and it only takes ten frames (0.16 s) for the detection and tracking of each vehicle. This system is installed on Kuafu-II intelligent vehicle for the fourth and fifth autonomous vehicle competitions, which is called “Intelligent Vehicle Future Challenge” in China.</li>
+<li><strong>关键词</strong>：Radar tracking, Radar detection, Vehicle detection, Vehicles, Cameras, Sensors</li>
+<li><strong>点评</strong>：SVM，协同融合毫米波雷达和单目摄像头，可以关注一下“智能汽车未来挑战赛”，需要一读。</li>
+</ul>
+<h2 id="2-2"><a href="#2-2" class="headerlink" title="2-2"></a>2-2</h2><p>   Architecture Design and Implementation of an Autonomous Vehicle <a href="https://ieeexplore.ieee.org/document/8340798">自动驾驶汽车的架构设计与实现</a></p>
+<ul>
+<li><strong>作者</strong>：Wenhao Zong; Changzhu Zhang; Zhuping Wang</li>
+<li><strong>年份</strong>：2018</li>
+<li><strong>发表</strong>：IEEE Access </li>
+<li><strong>引用</strong>：12，浏览11325</li>
+<li><strong>摘要</strong>：Architecture design is one of the most important problems for an intelligent system. In this paper, a practical framework of hardware and software is proposed to reveal the external configuration and internal mechanism of an autonomous vehicle-a typical intelligent system. The main contributions of this paper are as follows. First, we compare the advantages and disadvantages of three typical sensor plans and introduce a general autopilot for a vehicle. Second, we introduce a software architecture for an autonomous vehicle. The perception and planning performances are improved with the help of two inner loops of simultaneous localization and mapping. An algorithm to enlarge the detection range of the sensors is proposed by adding an inner loop to the perception system. A practical feedback to restrain mutations of two adjacent planning periods is also realized by the other inner loop. Third, a cross-platform virtual server (named project cocktail) for data transmission and exchange is presented in detail. Through comparisons with the robot operating system, the performance of project cocktail is proven to be considerably better in terms of transmission delay and throughput. Finally, a report on an autonomous driving test implemented using the proposed architecture is presented, which shows the effectiveness, flexibility, stability, and low-cost of the overall autonomous driving system.</li>
+<li><strong>关键词</strong>：Robot sensing systems, Autonomous vehicles, Cameras, Millimeter wave radar, Laser radar, Wheels</li>
+<li><strong>点评</strong>：论文里有三种传感器方案的比较，车的自动驾驶操作系统，硬软件都有，可以大致读一下</li>
+</ul>
+<h2 id="2-3"><a href="#2-3" class="headerlink" title="2-3"></a>2-3</h2><p>   Deep Learning-based Object Classification on Automotive Radar Spectra <a href="https://ieeexplore.ieee.org/document/8835775">基于深度学习的汽车雷达光谱对象分类</a></p>
+<ul>
+<li><strong>作者</strong>：Kanil Patel; Kilian Rambach; Tristan Visentin</li>
+<li><strong>年份</strong>：2019</li>
+<li><strong>发表</strong>：2019 IEEE Radar Conference (RadarConf)</li>
+<li><strong>引用</strong>：17，浏览1528</li>
+<li><strong>摘要</strong>：Scene understanding for automated driving requires accurate detection and classification of objects and other traffic participants. Automotive radar has shown great potential as a sensor for driver assistance systems due to its robustness to weather and light conditions, but reliable classification of object types in real time has proved to be very challenging. Here we propose a novel concept for radar-based classification, which utilizes the power of modern Deep Learning methods to learn favorable data representations and thereby replaces large parts of the traditional radar signal processing chain. We propose to apply deep Convolutional Neural Networks (CNNs) directly to regions-of-interest (ROI) in the radar spectrum and thereby achieve an accurate classification of different objects in a scene. Experiments on a real-world dataset demonstrate the ability to distinguish relevant objects from different viewpoints. We identify deep learning challenges that are specific to radar classification and introduce a set of novel mechanisms that lead to significant improvements in object classification performance compared to simpler classifiers. Our results demonstrate that Deep Learning methods can greatly augment the classification capabilities of automotive radar sensors.</li>
+<li><strong>关键词</strong>：Deep learning, Automotive engineering, Azimuth, Radar imaging, Radar tracking, Training</li>
+<li><strong>点评</strong>：CNN应用于分析雷达光谱，优化传统雷达信号处理方法，可用的现实世界训练数据有限情况下。</li>
+</ul>
+<h2 id="2-4"><a href="#2-4" class="headerlink" title="2-4"></a>2-4</h2><p>   Robust vehicle localization in urban environments using probabilistic maps <a href="https://ieeexplore.ieee.org/document/5509700">使用概率图在城市环境中进行稳健的车辆定位</a></p>
+<ul>
+<li><strong>作者</strong>：Jesse Levinson; Sebastian Thrun</li>
+<li><strong>年份</strong>：2010</li>
+<li><strong>发表</strong>：2010 IEEE International Conference on Robotics and Automation</li>
+<li><strong>引用</strong>：285，浏览4931</li>
+<li><strong>摘要</strong>：Autonomous vehicle navigation in dynamic urban environments requires localization accuracy exceeding that available from GPS-based inertial guidance systems. We have shown previously that GPS, IMU, and LIDAR data can be used to generate a high-resolution infrared remittance ground map that can be subsequently used for localization. We now propose an extension to this approach that yields substantial improvements over previous work in vehicle localization, including higher precision, the ability to learn and improve maps over time, and increased robustness to environment changes and dynamic obstacles. Specifically, we model the environment, instead of as a spatial grid of fixed infrared remittance values, as a probabilistic grid whereby every cell is represented as its own gaussian distribution over remittance values. Subsequently, Bayesian inference is able to preferentially weight parts of the map most likely to be stationary and of consistent angular reflectivity, thereby reducing uncertainty and catastrophic errors. Furthermore, by using offline SLAM to align multiple passes of the same environment, possibly separated in time by days or even months, it is possible to build an increasingly robust understanding of the world that can be then exploited for localization. We validate the effectiveness of our approach by using these algorithms to localize our vehicle against probabilistic maps in various dynamic environments, achieving RMS accuracy in the 10cm-range and thus outperforming previous work. Importantly, this approach has enabled us to autonomously drive our vehicle for hundreds of miles in dense traffic on narrow urban roads which were formerly unnavigable with previous localization methods.</li>
+<li><strong>关键词</strong>：Robustness, Remotely operated vehicles, Vehicle dynamics, Mobile robots, Navigation, Global Positioning System, Laser radar, Gaussian distribution, Bayesian methods, Reflectivity</li>
+<li><strong>点评</strong>：在动态环境中根据概率图做车辆定位，地图导航向，有点意思。</li>
+</ul>
+<h2 id="2-5"><a href="#2-5" class="headerlink" title="2-5"></a>2-5</h2><p>   MapLite: Autonomous Intersection Navigation Without a Detailed Prior Map <a href="https://ieeexplore.ieee.org/document/8936918">MapLite：无需详细事先地图的自主交叉路口导航</a></p>
+<ul>
+<li><strong>作者</strong>：Teddy Ort; Krishna Murthy; Rohan Banerjee</li>
+<li><strong>年份</strong>：2019</li>
+<li><strong>发表</strong>：IEEE Robotics and Automation Letters</li>
+<li><strong>引用</strong>：1，浏览2964</li>
+<li><strong>摘要</strong>：In this work, we present MapLite: a one-click autonomous navigation system capable of piloting a vehicle to an arbitrary desired destination point given only a sparse publicly available topometric map (from OpenStreetMap). The onboard sensors are used to segment the road region and register the topometric map in order to fuse the high-level navigation goals with a variational path planner in the vehicle frame. This enables the system to plan trajectories that correctly navigate road intersections without the use of an external localization system such as GPS or a detailed prior map. Since the topometric maps already exist for the vast majority of roads, this solution greatly increases the geographical scope for autonomous mobility solutions. We implement MapLite on a full-scale autonomous vehicle and exhaustively test it on over 15 km of road including over 100 autonomous intersection traversals. We further extend these results through simulated testing to validate the system on complex road junction topologies such as traffic circles.</li>
+<li><strong>关键词</strong>：Roads, Navigation, Sensors, Autonomous vehicles, Laser radar, Support vector machines, Surface texture</li>
+<li><strong>点评</strong>：地图导航向，激光雷达，无需详细地图的自动驾驶。</li>
+</ul>
+<h2 id="2-6"><a href="#2-6" class="headerlink" title="2-6"></a>2-6</h2><p>   Object Classification and Recognition From Mobile Laser Scanning Point Clouds in a Road Environment <a href="https://ieeexplore.ieee.org/document/7287763">基于移动激光扫描点云的道路环境目标分类与识别</a></p>
+<ul>
+<li><strong>作者</strong>：Matti Lehtomäki; Anttoni Jaakkola; Juha Hyyppä</li>
+<li><strong>年份</strong>：2015</li>
+<li><strong>发表</strong>：IEEE Transactions on Geoscience and Remote Sensing</li>
+<li><strong>引用</strong>：51，浏览2410</li>
+<li><strong>摘要</strong>：Automatic methods are needed to efficiently process the large point clouds collected using a mobile laser scanning (MLS) system for surveying applications. Machine-learning-based object recognition from MLS point clouds in a road and street environment was studied in order to create maps from the road environment infrastructure. The developed automatic processing workflow included the following phases: the removal of the ground and buildings, segmentation, segment classification, and object location estimation. Several novel geometry-based features, which were previously applied in autonomous driving and general point cloud processing, were applied for the segment classification of MLS point clouds. The features were divided into three sets, i.e., local descriptor histograms (LDHs), spin images, and general shape and point distribution features, respectively. These were used in the classification of the following roadside objects: trees, lamp posts, traffic signs, cars, pedestrians, and hoardings. The accuracy of the object recognition workflow was evaluated using a data set that contained more than 400 objects. LDHs and spin images were applied for the first time for machine-learning-based object classification in MLS point clouds in the surveying applications of the road and street environment. The use of these features improved the classification accuracy by 9.6% (resulting in 87.9% accuracy) compared with the accuracy obtained using 17 general shape and point distribution features that represent the current state of the art in the field of MLS; therefore, significant improvement in the classification accuracy was achieved. Connected component segmentation and ground extraction were the cause of most of the errors and should be thus improved in the future.</li>
+<li><strong>关键词</strong>：Three-dimensional displays, Histograms, Roads, Image segmentation, Buildings, Object recognition, Accuracy</li>
+<li><strong>点评</strong>：目标识别+移动激光扫描系统收集的大型点云，关系不大，仅供参考。</li>
+</ul>
+<h2 id="2-7"><a href="#2-7" class="headerlink" title="2-7"></a>2-7</h2><p>   Machine Vision Based Traffic Sign Detection Methods: Review, Analyses and Perspectives <a href="https://ieeexplore.ieee.org/document/8746141">基于机器视觉的交通标志检测方法：回顾、分析和展望</a></p>
+<ul>
+<li><strong>作者</strong>：Chunsheng Liu; Shuang Li; Faliang Chang</li>
+<li><strong>年份</strong>：2019</li>
+<li><strong>发表</strong>：IEEE Access</li>
+<li><strong>引用</strong>：18，浏览2431</li>
+<li><strong>摘要</strong>：Traffic signs recognition (TSR) is an important part of some advanced driver-assistance systems (ADASs) and auto driving systems (ADSs). As the first key step of TSR, traffic sign detection (TSD) is a challenging problem because of different types, small sizes, complex driving scenes, and occlusions. In recent years, there have been a large number of TSD algorithms based on machine vision and pattern recognition. In this paper, a comprehensive review of the literature on TSD is presented. We divide the reviewed detection methods into five main categories: color-based methods, shape-based methods, color- and shape-based methods, machine-learning-based methods, and LIDAR-based methods. The methods in each category are also classified into different subcategories for understanding and summarizing the mechanisms of different methods. For some reviewed methods that lack comparisons on public datasets, we reimplemented part of these methods for comparison. The experimental comparisons and analyses are presented on the reported performance and the performance of our reimplemented methods. Furthermore, future directions and recommendations of the TSD research are given to promote the development of the TSD.</li>
+<li><strong>关键词</strong>：Cameras, Shape, Laser radar, Color, Support vector machines, Machine vision, Roads</li>
+<li><strong>点评</strong>：综述类型，针对交通标志识别，激光雷达，道路场景</li>
+</ul>
+<h2 id="2-8"><a href="#2-8" class="headerlink" title="2-8"></a>2-8</h2><p>   Unexpected Collision Avoidance Driving Strategy Using Deep Reinforcement Learning <a href="https://ieeexplore.ieee.org/document/8961990">使用深度强化学习的意外碰撞避免驾驶策略</a></p>
+<ul>
+<li><strong>作者</strong>：Myounghoe Kim; Seongwon Lee; Jaehyun Lim</li>
+<li><strong>年份</strong>：2020</li>
+<li><strong>发表</strong>：IEEE Access</li>
+<li><strong>引用</strong>：4，浏览1380</li>
+<li><strong>摘要</strong>：In this paper, we generated intelligent self-driving policies that minimize the injury severity in unexpected traffic signal violation scenarios at an intersection using the deep reinforcement learning. We provided guidance on reward engineering in terms of the multiplicity of objective function. We used a deep deterministic policy gradient method in the simulated environment to train self-driving agents. We designed two agents, one with a single-objective reward function of collision avoidance and the other with a multi-objective reward function of both collision avoidance and goal-approaching. We evaluated their performances by comparing the percentages of collision avoidance and the average injury severity against those of human drivers and an autonomous emergency braking (AEB) system. The percentage of collision avoidance of our agents were 78.89% higher than human drivers and 84.70% higher than the AEB system. The average injury severity score of our agents were only 8.92% of human drivers and 6.25% of the AEB system.</li>
+<li><strong>关键词</strong>：Reinforcement learning, Collision avoidance, Injuries, Vehicles, Gradient methods, Wheels, Laser radar</li>
+<li><strong>点评</strong>：意外场景下避免碰撞的自动驾驶策略，仅使用单通道lidar，有点意思。</li>
+</ul>
+<h1 id="三、-多传感器融合"><a href="#三、-多传感器融合" class="headerlink" title="三、 多传感器融合"></a>三、 多传感器融合</h1><h2 id="2-1-1"><a href="#2-1-1" class="headerlink" title="2-1"></a>2-1</h2><h2 id="3-1"><a href="#3-1" class="headerlink" title="3-1"></a>3-1</h2><p>   An introduction to multisensor data fusion <a href="https://ieeexplore.ieee.org/document/554205">多传感器数据融合简介</a></p>
+<ul>
+<li><strong>作者</strong>：D.L. Hall; J. Llinas</li>
+<li><strong>年份</strong>：1997</li>
+<li><strong>发表</strong>：Proceedings of the IEEE</li>
+<li><strong>引用</strong>：1403，浏览15349</li>
+<li><strong>摘要</strong>：Multisensor data fusion is an emerging technology applied to Department of Defense (DoD) areas such as automated target recognition, battlefield surveillance, and guidance and control of autonomous vehicles, and to non-DoD applications such as monitoring of complex machinery, medical diagnosis, and smart buildings. Techniques for multisensor data fusion are drawn from a wide range of areas including artificial intelligence, pattern recognition, statistical estimation and other areas. This paper provides a tutorial on data fusion, introducing data fusion applications, process models, and identification of applicable techniques. Comments are made on the state-of-the-art in data fusion.</li>
+<li><strong>关键词</strong>：Target recognition, Surveillance, Navigation, Automatic control, Intelligent vehicles, Remotely operated vehicles, Mobile robots, Biomedical monitoring, Computerized monitoring, Condition monitoring</li>
+<li><strong>点评</strong>：综述类型，需要一读</li>
+</ul>
+<h1 id="四、5G定位-雷达"><a href="#四、5G定位-雷达" class="headerlink" title="四、5G定位+雷达"></a>四、5G定位+雷达</h1>]]></content>
+      <categories>
+        <category>科研</category>
+      </categories>
+      <tags>
+        <tag>科研</tag>
+        <tag>论文阅读</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>论文阅读：ORB-SALM2</title>
     <url>/%E8%AE%BA%E6%96%87%E9%98%85%E8%AF%BB%EF%BC%9AORB-SALM2/</url>
     <content><![CDATA[<h1 id="0-摘要"><a href="#0-摘要" class="headerlink" title="0. 摘要"></a>0. 摘要</h1><p>ORB-SLAM2：一个适用于单目、双目、RGB-D相机的完整SLAM系统。</p>
@@ -3584,160 +3911,6 @@
       <tags>
         <tag>科研</tag>
         <tag>SLAM</tag>
-        <tag>论文阅读</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>论文收集</title>
-    <url>/%E8%AE%BA%E6%96%87%E6%94%B6%E9%9B%86/</url>
-    <content><![CDATA[<h1 id="一、智慧交通"><a href="#一、智慧交通" class="headerlink" title="一、智慧交通"></a>一、智慧交通</h1><h2 id="1-1"><a href="#1-1" class="headerlink" title="1-1"></a>1-1</h2><p>   Real-Time Adaptive Traffic Control System For Smart Cities <a href="https://ieeexplore.ieee.org/document/9402597">智慧城市实时自适应交通控制系统</a></p>
-<ul>
-<li><strong>作者</strong>：Shyam Shankaran R; Logesh Rajendran</li>
-<li><strong>会议</strong>: 2021 International Conference on Computer Communication and Informatics (ICCCI)</li>
-<li><strong>引用</strong>：0，浏览24</li>
-<li><strong>摘要</strong>：In-country like India, billions of people start and end each working day stuck in traffic or commuting on congested trains and buses. It is vital to the quality of life to enhance the everyday commute. By 2025, cities that implement smart mobility systems on average, reduce commuting cycles by 15-20 percent, with some individuals experiencing even greater reductions. Depending on each city’s density, current transit facilities, and commuting habits, the capacity associated with each application is highly variable. Slowed synchronization of traffic signals leads to traffic congestion and delays. The pre-programmed, regular signal timing patterns are employed in traditional signal systems. To overcome the problems of traditional traffic control systems, there is a shift in adaption to an Adaptive traffic control system. The Adaptive Traffic Control System (ATCS) is a traffic management technique that modifies or adapts the timing of traffic signals based on the real demand for traffic and achieved using a control system that includes both hardware and software, where hardware is the sensor used for real-time traffic density estimation and software is designed using captured data analysis of the city’s current traffic flow. This paper depicts a model of camera-based traffic monitoring and processing system which reduces the cycle time and possesses special provisions for emergency vehicles.</li>
-<li><strong>点评</strong>：使用opencv，光学传感器，偏向图像识别。</li>
-</ul>
-<h2 id="1-2"><a href="#1-2" class="headerlink" title="1-2"></a>1-2</h2><p>   Big Traffic Data Analytics For Smart Urban Intelligent Traffic System Using Machine Learning Techniques <a href="https://ieeexplore.ieee.org/document/9291790">使用机器学习技术的智慧城市智能交通系统大交通数据分析</a></p>
-<ul>
-<li><strong>作者</strong>：Su Su Hlaing; Mie Mie Tin; Mie Mie Khin</li>
-<li><strong>会议</strong>：2020 IEEE 9th Global Conference on Consumer Electronics (GCCE)</li>
-<li><strong>引用</strong>：1，浏览138</li>
-<li><strong>摘要</strong>：Due to huge number of private and public vehicles in last two decades, the traffic load and congestion have increased significantly, which is major problem in transportation system. An intelligent traffic management system becomes an important part of the transportation system to manage the traffic properly in smart cities. In this paper, we have proposed intelligent traffic management system to build smart platform in Mandalay, Myanmar. The main aim of the paper is to reduce traffic congestion, road crash accidents, fuel consumption and save travel time. To provide safe, comfortable, and less frustrating travel, this paper uses big data technology and machine learning technique for analysis of the volume of traffic data and predicts optimal road traffic using machine learning.</li>
-<li><strong>点评</strong>：论文很短，比起具体方法更像是框架构想。</li>
-</ul>
-<h2 id="1-3"><a href="#1-3" class="headerlink" title="1-3"></a>1-3</h2><p>   Internet of things — smart traffic management system for smart cities using big data analytics <a href="https://ieeexplore.ieee.org/document/8301496">物联网——使用大数据分析的智慧城市智能交通管理系统</a></p>
-<ul>
-<li><strong>作者</strong>：Abida Sharif; Jianping Li; Mudassir Khalil</li>
-<li><strong>会议</strong>：2017 14th International Computer Conference on Wavelet Active Media Technology and Information Processing (ICCWAMTIP)</li>
-<li><strong>引用</strong>：10，浏览2600</li>
-<li><strong>摘要</strong>：Smart Traffic System (STS) is a one of the important aspect for future smart city. STS is more expensive and highly configurable to provide better quality of service for public traffic management. This paper proposes a low cost future STS to provide better service by deploying traffic update instantly. Low cost vehicle detecting sensors are fixed in the middle of road for every 500 meters. Internet of Things (IoT) is being used to attain public traffic data quickly and send it for data processing. The Real time streaming data is sent for Big Data analytics. There are several analytical scriptures to analyze the traffic density and provide solution through predictive analytics.</li>
-<li><strong>点评</strong>：比较宏观，缺少细节</li>
-</ul>
-<h2 id="1-4"><a href="#1-4" class="headerlink" title="1-4"></a>1-4</h2><p>   Towards An Optimized Smart Traffic for Congestion Avoidance with Multi Layered (ST-CA) Framework<br>   <a href="https://ieeexplore.ieee.org/document/8538401">使用多层 (ST-CA) 框架实现优化的智能交通拥塞避免</a></p>
-<ul>
-<li><strong>作者</strong>：Nada M. Alhakkak; Ban Salman; Najeeb Abbas Al-Sammarraie</li>
-<li><strong>会议</strong>：2018 International Conference on Smart Computing and Electronic Enterprise (ICSCEE)</li>
-<li><strong>引用</strong>：1，浏览127</li>
-<li><strong>摘要</strong>：In many cities around the world, traffic congestion is considered a major problem that should be managed properly. Managing traffic flow is not simply applied by constructing new road or maintaining old ones; it is not just a matter of physical infrastructure. For managing traffic, there should be ‘’smart’’ ways to be taken by the use of available technologies’ facilities. Countries should think and act smart to manage today’s traffic in their cities. The use of controlled smart traffic systems is gaining a noticeable interest for the past few years and various solutions have been proposed, adopted and even implemented in several countries. In this paper, we propose Smart Traffic for Congestion Avoidance with Multi Layered (ST-CA) Framework, for solving the congestion problem. The proposed framework is constructed in multilayer approach for easy maintenance in the future. The STCA framework should be more flexible, in sending/ receiving messages, than others and depend in its decision making on expert systems.</li>
-<li><strong>点评</strong>：交通控制框架，信号灯算法，针对交通堵塞</li>
-</ul>
-<h2 id="1-5"><a href="#1-5" class="headerlink" title="1-5"></a>1-5</h2><p>   Foundations for Smarter Cities <a href="https://ieeexplore.ieee.org/document/5512826">智慧城市的基础</a></p>
-<ul>
-<li><strong>作者</strong>：C. Harrison; B. Eckman; R. Hamilton</li>
-<li><strong>年份</strong>：2010</li>
-<li><strong>发表</strong>：IBM Journal of Research and Development</li>
-<li><strong>引用</strong>：499，浏览1357</li>
-<li><strong>摘要</strong>：This paper describes the information technology (IT) foundation and principles for Smarter Cities™. Smarter Cities are urban areas that exploit operational data, such as that arising from traffic congestion, power consumption statistics, and public safety events, to optimize the operation of city services. The foundational concepts are instrumented, interconnected, and intelligent. Instrumented refers to sources of near-real-time real-world data from both physical and virtual sensors. Interconnected means the integration of those data into an enterprise computing platform and the communication of such information among the various city services. Intelligent refers to the inclusion of complex analytics, modeling, optimization, and visualization in the operational business processes to make better operational decisions. This approach enables the adaptation of city services to the behavior of the inhabitants, which permits the optimal use of the available physical infrastructure and resources, for example, in sensing and controlling consumption of energy and water, managing waste processing and transportation systems, and applying optimization to achieve new efficiencies among these resources. Additional roles exist in intelligent interaction between the city and its inhabitants and further contribute to operational efficiency while maintaining or enhancing quality of life.</li>
-<li><strong>关键词</strong>：Information technology, Urban areas, Smart buildings, Decision making, Intelligent structures, Structural engineering</li>
-<li><strong>点评</strong>：宏观框架，需要一读</li>
-</ul>
-<h2 id="1-6"><a href="#1-6" class="headerlink" title="1-6"></a>1-6</h2><p>   Three Decades of Driver Assistance Systems: Review and Future Perspectives <a href="https://ieeexplore.ieee.org/document/6936444">驾驶辅助系统的三个十年：回顾和未来展望</a></p>
-<ul>
-<li><strong>作者</strong>：Klaus Bengler; Klaus Dietmayer; Berthold Farbe</li>
-<li><strong>年份</strong>：2014</li>
-<li><strong>发表</strong>：IEEE Intelligent Transportation Systems Magazine</li>
-<li><strong>引用</strong>：414，,浏览10237</li>
-<li><strong>摘要</strong>：This contribution provides a review of fundamental goals, development and future perspectives of driver assistance systems. Mobility is a fundamental desire of mankind. Virtually any society strives for safe and efficient mobility at low ecological and economic costs. Nevertheless, its technical implementation significantly differs among societies, depending on their culture and their degree of industrialization. A potential evolutionary roadmap for driver assistance systems is discussed. Emerging from systems based on proprioceptive sensors, such as ABS or ESC, we review the progress incented by the use of exteroceptive sensors such as radar, video, or lidar. While the ultimate goal of automated and cooperative traffic still remains a vision of the future, intermediate steps towards that aim can be realized through systems that mitigate or avoid collisions in selected driving situations. Research extends the state-of-the-art in automated driving in urban traffic and in cooperative driving, the latter addressing communication and collaboration between different vehicles, as well as cooperative vehicle operation by its driver and its machine intelligence. These steps are considered important for the interim period, until reliable unsupervised automated driving for all conceivable traffic situations becomes available. The prospective evolution of driver assistance systems will be stimulated by several technological, societal and market trends. The paper closes with a view on current research fields.</li>
-<li><strong>关键词</strong>：Vehicle safety, Sensor systems, Laser radar, Advanced driver assistance systems, Vehicle dynamics, Automatic control, Research and development, Technology forecasting</li>
-<li><strong>点评</strong>：综述类型，需要一读。</li>
-</ul>
-<h1 id="二、雷达-AI-无人驾驶"><a href="#二、雷达-AI-无人驾驶" class="headerlink" title="二、雷达+AI+无人驾驶"></a>二、雷达+AI+无人驾驶</h1><h2 id="2-1"><a href="#2-1" class="headerlink" title="2-1"></a>2-1</h2><p>   On-Road Vehicle Detection and Tracking Using MMW Radar and Monovision Fusion <a href="https://ieeexplore.ieee.org/document/7463071">使用毫米波雷达和 Monovision Fusion 进行道路车辆检测和跟踪</a></p>
-<ul>
-<li><strong>作者</strong>：Xiao Wang; Linhai Xu; Hongbin Sun; Jingmin Xin; Nanning Zheng</li>
-<li><strong>年份</strong>：2016</li>
-<li><strong>发表</strong>：IEEE Transactions on Intelligent Transportation Systems</li>
-<li><strong>引用</strong>：80，浏览4229</li>
-<li><strong>摘要</strong>：With the potential to increase road safety and provide economic benefits, intelligent vehicles have elicited a significant amount of interest from both academics and industry. A robust and reliable vehicle detection and tracking system is one of the key modules for intelligent vehicles to perceive the surrounding environment. The millimeter-wave radar and the monocular camera are two vehicular sensors commonly used for vehicle detection and tracking. Despite their advantages, the drawbacks of these two sensors make them insufficient when used separately. Thus, the fusion of these two sensors is considered as an efficient way to address the challenge. This paper presents a collaborative fusion approach to achieve the optimal balance between vehicle detection accuracy and computational efficiency. The proposed vehicle detection and tracking design is extensively evaluated with a real-world data set collected by the developed intelligent vehicle. Experimental results show that the proposed system can detect on-road vehicles with 92.36% detection rate and 0% false alarm rate, and it only takes ten frames (0.16 s) for the detection and tracking of each vehicle. This system is installed on Kuafu-II intelligent vehicle for the fourth and fifth autonomous vehicle competitions, which is called “Intelligent Vehicle Future Challenge” in China.</li>
-<li><strong>关键词</strong>：Radar tracking, Radar detection, Vehicle detection, Vehicles, Cameras, Sensors</li>
-<li><strong>点评</strong>：SVM，协同融合毫米波雷达和单目摄像头，可以关注一下“智能汽车未来挑战赛”，需要一读。</li>
-</ul>
-<h2 id="2-2"><a href="#2-2" class="headerlink" title="2-2"></a>2-2</h2><p>   Architecture Design and Implementation of an Autonomous Vehicle <a href="https://ieeexplore.ieee.org/document/8340798">自动驾驶汽车的架构设计与实现</a></p>
-<ul>
-<li><strong>作者</strong>：Wenhao Zong; Changzhu Zhang; Zhuping Wang</li>
-<li><strong>年份</strong>：2018</li>
-<li><strong>发表</strong>：IEEE Access </li>
-<li><strong>引用</strong>：12，浏览11325</li>
-<li><strong>摘要</strong>：Architecture design is one of the most important problems for an intelligent system. In this paper, a practical framework of hardware and software is proposed to reveal the external configuration and internal mechanism of an autonomous vehicle-a typical intelligent system. The main contributions of this paper are as follows. First, we compare the advantages and disadvantages of three typical sensor plans and introduce a general autopilot for a vehicle. Second, we introduce a software architecture for an autonomous vehicle. The perception and planning performances are improved with the help of two inner loops of simultaneous localization and mapping. An algorithm to enlarge the detection range of the sensors is proposed by adding an inner loop to the perception system. A practical feedback to restrain mutations of two adjacent planning periods is also realized by the other inner loop. Third, a cross-platform virtual server (named project cocktail) for data transmission and exchange is presented in detail. Through comparisons with the robot operating system, the performance of project cocktail is proven to be considerably better in terms of transmission delay and throughput. Finally, a report on an autonomous driving test implemented using the proposed architecture is presented, which shows the effectiveness, flexibility, stability, and low-cost of the overall autonomous driving system.</li>
-<li><strong>关键词</strong>：Robot sensing systems, Autonomous vehicles, Cameras, Millimeter wave radar, Laser radar, Wheels</li>
-<li><strong>点评</strong>：论文里有三种传感器方案的比较，车的自动驾驶操作系统，硬软件都有，可以大致读一下</li>
-</ul>
-<h2 id="2-3"><a href="#2-3" class="headerlink" title="2-3"></a>2-3</h2><p>   Deep Learning-based Object Classification on Automotive Radar Spectra <a href="https://ieeexplore.ieee.org/document/8835775">基于深度学习的汽车雷达光谱对象分类</a></p>
-<ul>
-<li><strong>作者</strong>：Kanil Patel; Kilian Rambach; Tristan Visentin</li>
-<li><strong>年份</strong>：2019</li>
-<li><strong>发表</strong>：2019 IEEE Radar Conference (RadarConf)</li>
-<li><strong>引用</strong>：17，浏览1528</li>
-<li><strong>摘要</strong>：Scene understanding for automated driving requires accurate detection and classification of objects and other traffic participants. Automotive radar has shown great potential as a sensor for driver assistance systems due to its robustness to weather and light conditions, but reliable classification of object types in real time has proved to be very challenging. Here we propose a novel concept for radar-based classification, which utilizes the power of modern Deep Learning methods to learn favorable data representations and thereby replaces large parts of the traditional radar signal processing chain. We propose to apply deep Convolutional Neural Networks (CNNs) directly to regions-of-interest (ROI) in the radar spectrum and thereby achieve an accurate classification of different objects in a scene. Experiments on a real-world dataset demonstrate the ability to distinguish relevant objects from different viewpoints. We identify deep learning challenges that are specific to radar classification and introduce a set of novel mechanisms that lead to significant improvements in object classification performance compared to simpler classifiers. Our results demonstrate that Deep Learning methods can greatly augment the classification capabilities of automotive radar sensors.</li>
-<li><strong>关键词</strong>：Deep learning, Automotive engineering, Azimuth, Radar imaging, Radar tracking, Training</li>
-<li><strong>点评</strong>：CNN应用于分析雷达光谱，优化传统雷达信号处理方法，可用的现实世界训练数据有限情况下。</li>
-</ul>
-<h2 id="2-4"><a href="#2-4" class="headerlink" title="2-4"></a>2-4</h2><p>   Robust vehicle localization in urban environments using probabilistic maps <a href="https://ieeexplore.ieee.org/document/5509700">使用概率图在城市环境中进行稳健的车辆定位</a></p>
-<ul>
-<li><strong>作者</strong>：Jesse Levinson; Sebastian Thrun</li>
-<li><strong>年份</strong>：2010</li>
-<li><strong>发表</strong>：2010 IEEE International Conference on Robotics and Automation</li>
-<li><strong>引用</strong>：285，浏览4931</li>
-<li><strong>摘要</strong>：Autonomous vehicle navigation in dynamic urban environments requires localization accuracy exceeding that available from GPS-based inertial guidance systems. We have shown previously that GPS, IMU, and LIDAR data can be used to generate a high-resolution infrared remittance ground map that can be subsequently used for localization. We now propose an extension to this approach that yields substantial improvements over previous work in vehicle localization, including higher precision, the ability to learn and improve maps over time, and increased robustness to environment changes and dynamic obstacles. Specifically, we model the environment, instead of as a spatial grid of fixed infrared remittance values, as a probabilistic grid whereby every cell is represented as its own gaussian distribution over remittance values. Subsequently, Bayesian inference is able to preferentially weight parts of the map most likely to be stationary and of consistent angular reflectivity, thereby reducing uncertainty and catastrophic errors. Furthermore, by using offline SLAM to align multiple passes of the same environment, possibly separated in time by days or even months, it is possible to build an increasingly robust understanding of the world that can be then exploited for localization. We validate the effectiveness of our approach by using these algorithms to localize our vehicle against probabilistic maps in various dynamic environments, achieving RMS accuracy in the 10cm-range and thus outperforming previous work. Importantly, this approach has enabled us to autonomously drive our vehicle for hundreds of miles in dense traffic on narrow urban roads which were formerly unnavigable with previous localization methods.</li>
-<li><strong>关键词</strong>：Robustness, Remotely operated vehicles, Vehicle dynamics, Mobile robots, Navigation, Global Positioning System, Laser radar, Gaussian distribution, Bayesian methods, Reflectivity</li>
-<li><strong>点评</strong>：在动态环境中根据概率图做车辆定位，地图导航向，有点意思。</li>
-</ul>
-<h2 id="2-5"><a href="#2-5" class="headerlink" title="2-5"></a>2-5</h2><p>   MapLite: Autonomous Intersection Navigation Without a Detailed Prior Map <a href="https://ieeexplore.ieee.org/document/8936918">MapLite：无需详细事先地图的自主交叉路口导航</a></p>
-<ul>
-<li><strong>作者</strong>：Teddy Ort; Krishna Murthy; Rohan Banerjee</li>
-<li><strong>年份</strong>：2019</li>
-<li><strong>发表</strong>：IEEE Robotics and Automation Letters</li>
-<li><strong>引用</strong>：1，浏览2964</li>
-<li><strong>摘要</strong>：In this work, we present MapLite: a one-click autonomous navigation system capable of piloting a vehicle to an arbitrary desired destination point given only a sparse publicly available topometric map (from OpenStreetMap). The onboard sensors are used to segment the road region and register the topometric map in order to fuse the high-level navigation goals with a variational path planner in the vehicle frame. This enables the system to plan trajectories that correctly navigate road intersections without the use of an external localization system such as GPS or a detailed prior map. Since the topometric maps already exist for the vast majority of roads, this solution greatly increases the geographical scope for autonomous mobility solutions. We implement MapLite on a full-scale autonomous vehicle and exhaustively test it on over 15 km of road including over 100 autonomous intersection traversals. We further extend these results through simulated testing to validate the system on complex road junction topologies such as traffic circles.</li>
-<li><strong>关键词</strong>：Roads, Navigation, Sensors, Autonomous vehicles, Laser radar, Support vector machines, Surface texture</li>
-<li><strong>点评</strong>：地图导航向，激光雷达，无需详细地图的自动驾驶。</li>
-</ul>
-<h2 id="2-6"><a href="#2-6" class="headerlink" title="2-6"></a>2-6</h2><p>   Object Classification and Recognition From Mobile Laser Scanning Point Clouds in a Road Environment <a href="https://ieeexplore.ieee.org/document/7287763">基于移动激光扫描点云的道路环境目标分类与识别</a></p>
-<ul>
-<li><strong>作者</strong>：Matti Lehtomäki; Anttoni Jaakkola; Juha Hyyppä</li>
-<li><strong>年份</strong>：2015</li>
-<li><strong>发表</strong>：IEEE Transactions on Geoscience and Remote Sensing</li>
-<li><strong>引用</strong>：51，浏览2410</li>
-<li><strong>摘要</strong>：Automatic methods are needed to efficiently process the large point clouds collected using a mobile laser scanning (MLS) system for surveying applications. Machine-learning-based object recognition from MLS point clouds in a road and street environment was studied in order to create maps from the road environment infrastructure. The developed automatic processing workflow included the following phases: the removal of the ground and buildings, segmentation, segment classification, and object location estimation. Several novel geometry-based features, which were previously applied in autonomous driving and general point cloud processing, were applied for the segment classification of MLS point clouds. The features were divided into three sets, i.e., local descriptor histograms (LDHs), spin images, and general shape and point distribution features, respectively. These were used in the classification of the following roadside objects: trees, lamp posts, traffic signs, cars, pedestrians, and hoardings. The accuracy of the object recognition workflow was evaluated using a data set that contained more than 400 objects. LDHs and spin images were applied for the first time for machine-learning-based object classification in MLS point clouds in the surveying applications of the road and street environment. The use of these features improved the classification accuracy by 9.6% (resulting in 87.9% accuracy) compared with the accuracy obtained using 17 general shape and point distribution features that represent the current state of the art in the field of MLS; therefore, significant improvement in the classification accuracy was achieved. Connected component segmentation and ground extraction were the cause of most of the errors and should be thus improved in the future.</li>
-<li><strong>关键词</strong>：Three-dimensional displays, Histograms, Roads, Image segmentation, Buildings, Object recognition, Accuracy</li>
-<li><strong>点评</strong>：目标识别+移动激光扫描系统收集的大型点云，关系不大，仅供参考。</li>
-</ul>
-<h2 id="2-7"><a href="#2-7" class="headerlink" title="2-7"></a>2-7</h2><p>   Machine Vision Based Traffic Sign Detection Methods: Review, Analyses and Perspectives <a href="https://ieeexplore.ieee.org/document/8746141">基于机器视觉的交通标志检测方法：回顾、分析和展望</a></p>
-<ul>
-<li><strong>作者</strong>：Chunsheng Liu; Shuang Li; Faliang Chang</li>
-<li><strong>年份</strong>：2019</li>
-<li><strong>发表</strong>：IEEE Access</li>
-<li><strong>引用</strong>：18，浏览2431</li>
-<li><strong>摘要</strong>：Traffic signs recognition (TSR) is an important part of some advanced driver-assistance systems (ADASs) and auto driving systems (ADSs). As the first key step of TSR, traffic sign detection (TSD) is a challenging problem because of different types, small sizes, complex driving scenes, and occlusions. In recent years, there have been a large number of TSD algorithms based on machine vision and pattern recognition. In this paper, a comprehensive review of the literature on TSD is presented. We divide the reviewed detection methods into five main categories: color-based methods, shape-based methods, color- and shape-based methods, machine-learning-based methods, and LIDAR-based methods. The methods in each category are also classified into different subcategories for understanding and summarizing the mechanisms of different methods. For some reviewed methods that lack comparisons on public datasets, we reimplemented part of these methods for comparison. The experimental comparisons and analyses are presented on the reported performance and the performance of our reimplemented methods. Furthermore, future directions and recommendations of the TSD research are given to promote the development of the TSD.</li>
-<li><strong>关键词</strong>：Cameras, Shape, Laser radar, Color, Support vector machines, Machine vision, Roads</li>
-<li><strong>点评</strong>：综述类型，针对交通标志识别，激光雷达，道路场景</li>
-</ul>
-<h2 id="2-8"><a href="#2-8" class="headerlink" title="2-8"></a>2-8</h2><p>   Unexpected Collision Avoidance Driving Strategy Using Deep Reinforcement Learning <a href="https://ieeexplore.ieee.org/document/8961990">使用深度强化学习的意外碰撞避免驾驶策略</a></p>
-<ul>
-<li><strong>作者</strong>：Myounghoe Kim; Seongwon Lee; Jaehyun Lim</li>
-<li><strong>年份</strong>：2020</li>
-<li><strong>发表</strong>：IEEE Access</li>
-<li><strong>引用</strong>：4，浏览1380</li>
-<li><strong>摘要</strong>：In this paper, we generated intelligent self-driving policies that minimize the injury severity in unexpected traffic signal violation scenarios at an intersection using the deep reinforcement learning. We provided guidance on reward engineering in terms of the multiplicity of objective function. We used a deep deterministic policy gradient method in the simulated environment to train self-driving agents. We designed two agents, one with a single-objective reward function of collision avoidance and the other with a multi-objective reward function of both collision avoidance and goal-approaching. We evaluated their performances by comparing the percentages of collision avoidance and the average injury severity against those of human drivers and an autonomous emergency braking (AEB) system. The percentage of collision avoidance of our agents were 78.89% higher than human drivers and 84.70% higher than the AEB system. The average injury severity score of our agents were only 8.92% of human drivers and 6.25% of the AEB system.</li>
-<li><strong>关键词</strong>：Reinforcement learning, Collision avoidance, Injuries, Vehicles, Gradient methods, Wheels, Laser radar</li>
-<li><strong>点评</strong>：意外场景下避免碰撞的自动驾驶策略，仅使用单通道lidar，有点意思。</li>
-</ul>
-<h1 id="三、-多传感器融合"><a href="#三、-多传感器融合" class="headerlink" title="三、 多传感器融合"></a>三、 多传感器融合</h1><h2 id="2-1-1"><a href="#2-1-1" class="headerlink" title="2-1"></a>2-1</h2><h2 id="3-1"><a href="#3-1" class="headerlink" title="3-1"></a>3-1</h2><p>   An introduction to multisensor data fusion <a href="https://ieeexplore.ieee.org/document/554205">多传感器数据融合简介</a></p>
-<ul>
-<li><strong>作者</strong>：D.L. Hall; J. Llinas</li>
-<li><strong>年份</strong>：1997</li>
-<li><strong>发表</strong>：Proceedings of the IEEE</li>
-<li><strong>引用</strong>：1403，浏览15349</li>
-<li><strong>摘要</strong>：Multisensor data fusion is an emerging technology applied to Department of Defense (DoD) areas such as automated target recognition, battlefield surveillance, and guidance and control of autonomous vehicles, and to non-DoD applications such as monitoring of complex machinery, medical diagnosis, and smart buildings. Techniques for multisensor data fusion are drawn from a wide range of areas including artificial intelligence, pattern recognition, statistical estimation and other areas. This paper provides a tutorial on data fusion, introducing data fusion applications, process models, and identification of applicable techniques. Comments are made on the state-of-the-art in data fusion.</li>
-<li><strong>关键词</strong>：Target recognition, Surveillance, Navigation, Automatic control, Intelligent vehicles, Remotely operated vehicles, Mobile robots, Biomedical monitoring, Computerized monitoring, Condition monitoring</li>
-<li><strong>点评</strong>：综述类型，需要一读</li>
-</ul>
-<h1 id="四、5G定位-雷达"><a href="#四、5G定位-雷达" class="headerlink" title="四、5G定位+雷达"></a>四、5G定位+雷达</h1>]]></content>
-      <categories>
-        <category>科研</category>
-      </categories>
-      <tags>
-        <tag>科研</tag>
         <tag>论文阅读</tag>
       </tags>
   </entry>
